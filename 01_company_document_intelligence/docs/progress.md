@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-**M1 — Document ingestion and parsing: implementation complete; validation pending**
+**M1 — Document ingestion and parsing: complete (2026-10-03)**
 
 ## Milestone log
 
@@ -26,8 +26,9 @@
 - Added conservative text normalization and application-specific failures.
 - Added deterministic synthetic-PDF tests and a bounded inspection CLI.
 - Documented parser selection, licensing, behavior, and known limitations.
+- Passed Ruff linting, Ruff formatting, strict mypy, and 10 pytest tests in GitHub Actions.
 
 ## Next review gate
 
-Complete automated validation and review the M1 pull request before beginning M2.
+Review the M1 pull request before beginning M2.
 
