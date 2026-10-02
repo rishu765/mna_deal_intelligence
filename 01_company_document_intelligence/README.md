@@ -15,8 +15,9 @@ page, section, and chunk identifier.
 
 ## Current status
 
-Milestone 0 establishes the architecture and repository foundation. No document ingestion,
-retrieval, generation, or user interface is implemented yet.
+Milestone 1 adds local, page-aware PDF ingestion with stable content IDs, conservative text
+normalization, explicit failures, and page-level provenance. Chunking, retrieval, generation,
+and user-facing interfaces are not implemented yet.
 
 See:
 
@@ -24,6 +25,7 @@ See:
 - [Roadmap](docs/roadmap.md)
 - [Technical decisions](docs/decisions.md)
 - [Progress log](docs/progress.md)
+- [PDF ingestion](docs/ingestion.md)
 
 ## V1 scope
 
@@ -74,7 +76,7 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 ```
 
-Run the foundation checks:
+Run the project checks:
 
 ```powershell
 python -m pytest
@@ -86,11 +88,15 @@ python -m mypy
 The same checks run in GitHub Actions for pull requests affecting this project and for pushes
 to `main`.
 
-At this milestone, importing the package is the only application behavior:
+Parse a local text-oriented PDF and inspect bounded output:
 
 ```powershell
-python -c "import ma_company_intelligence; print(ma_company_intelligence.__version__)"
+madi-inspect-pdf "data/raw/example-annual-report.pdf"
 ```
+
+Use `--max-pages`, `--preview-chars`, and `--max-warnings` to bound terminal output. See
+[PDF ingestion](docs/ingestion.md) for the data model, page-number convention, failures, and
+known limitations.
 
 ## Working principles
 

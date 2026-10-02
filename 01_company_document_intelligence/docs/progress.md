@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-**M0 — Architecture and repository foundation: complete (2026-10-03)**
+**M1 — Document ingestion and parsing: complete (2026-10-03)**
 
 ## Milestone log
 
@@ -18,9 +18,17 @@
   `01_company_document_intelligence/`.
 - Added path-scoped GitHub Actions checks for tests, linting, formatting, and type checking.
 
+### 2026-10-03 — M1 implementation
+
+- Added local PDF validation and page-aware parsing with PyMuPDF.
+- Added immutable document, page, provenance, and warning models.
+- Added content-derived IDs and explicit physical/canonical page-number semantics.
+- Added conservative text normalization and application-specific failures.
+- Added deterministic synthetic-PDF tests and a bounded inspection CLI.
+- Documented parser selection, licensing, behavior, and known limitations.
+- Passed Ruff linting, Ruff formatting, strict mypy, and 10 pytest tests in GitHub Actions.
+
 ## Next review gate
 
-Approve or revise the M1 plan before implementation. M1 should begin by selecting a small,
-legally usable set of representative PDFs and defining acceptance criteria for page-aware text
-extraction. No parser dependency has been selected yet.
+Review the M1 pull request before beginning M2.
 

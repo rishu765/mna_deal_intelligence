@@ -64,9 +64,42 @@ choice has meaningful alternatives or downstream effects.
   keep project boundaries clear.
 - **Tradeoff:** Tooling and workflows must be path-aware as additional projects are introduced.
 
+## D-007 — PyMuPDF is the M1 PDF parser
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Use PyMuPDF directly for local PDF validation, physical-page iteration, and
+  plain-text extraction.
+- **Why:** It provides a mature, fast page-aware API and clear corrupt-file behavior without
+  adding an orchestration framework. The adapter prevents PyMuPDF objects from leaking into
+  domain code.
+- **Alternatives:** `pdfplumber` offers stronger layout/table primitives but adds complexity not
+  required for the M1 baseline. `pypdf` has a permissive license and pure-Python implementation,
+  but PyMuPDF was selected for extraction maturity and performance on long reports.
+- **Tradeoffs:** PyMuPDF uses AGPL or commercial licensing. Plain-text extraction does not solve
+  tables, columns, OCR, charts, or printed page-label recovery.
+
+## D-008 — Content-derived IDs and explicit page-number semantics
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Identify documents as `sha256:<file digest>`. Store the zero-based physical PDF
+  index and a one-based canonical page number on every page; leave printed page labels unset.
+- **Why:** File-content hashes are deterministic and independent of local filenames. Explicit
+  page concepts prevent later citations from confusing PDF positions with printed labels.
+- **Tradeoff:** Any byte change creates a new ID, even when visible content is equivalent.
+
+## D-009 — Conservative text normalization
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Normalize line endings and remove non-text control characters while preserving
+  all visible characters and whitespace.
+- **Why:** Financial meaning and approximate layout can depend on symbols, parentheses, tabs,
+  and spacing. Aggressive cleanup would destroy evidence before evaluation.
+
 ## Open decisions
 
-- PDF parser and scanned-document policy (M1)
 - Domain schema library and exact metadata contract (M2)
 - Chunking strategy and stable-ID inputs (M2)
 - Embedding model and local vector store (M3)
