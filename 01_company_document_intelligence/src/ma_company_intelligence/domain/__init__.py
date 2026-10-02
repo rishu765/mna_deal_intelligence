@@ -1,4 +1,11 @@
-"""Provider-neutral document models."""
+"""Provider-neutral document and chunk models."""
+
+from ma_company_intelligence.domain.chunks import (
+    ChunkedDocument,
+    ChunkPageReference,
+    DocumentChunk,
+    DocumentMetadata,
+)
 
 from ma_company_intelligence.domain.documents import (
     DocumentSource,
@@ -10,6 +17,10 @@ from ma_company_intelligence.domain.documents import (
 )
 
 __all__ = [
+    "ChunkedDocument",
+    "ChunkPageReference",
+    "DocumentChunk",
+    "DocumentMetadata",
     "DocumentSource",
     "ParsedDocument",
     "ParsedPage",
