@@ -12,7 +12,7 @@ investment advice or autonomous deal decisions.
 
 | Project | Planned path | Status |
 | --- | --- | --- |
-| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Milestone 2 implementation; PR pending |
+| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Milestone 2 complete; PR pending review |
 | Target Screening & Sourcing | `02_target_screening_sourcing/` | Planned |
 | Comparable Companies & Valuation | `03_comparable_companies_valuation/` | Planned |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |

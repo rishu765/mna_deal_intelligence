@@ -21,7 +21,7 @@ Define validated document/page/chunk models, stable identifiers, provenance rule
 conservative normalization, and one baseline chunking strategy. Add fixtures that exercise
 headings, page boundaries, and financial tables.
 
-**Status:** Implemented on the M2 feature branch; validation and review pending.
+**Status:** Implemented and validated on the M2 feature branch; review pending.
 
 ## M3 — Embeddings and local vector indexing
 

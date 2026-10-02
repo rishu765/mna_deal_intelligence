@@ -38,6 +38,8 @@
 - Added invariant-focused tests for ordering, IDs, overlap, boundaries, empty pages, metadata,
   configuration failures, and bounded CLI output.
 - Added a bounded parse-to-chunk inspection command and documented strategy limitations.
+- Passed Ruff linting, Ruff formatting, strict mypy across 16 source files, and all 29 tests
+  in GitHub Actions.
 
 ## Next review gate
 
