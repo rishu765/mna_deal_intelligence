@@ -40,7 +40,7 @@ def _write_encrypted_pdf(path: Path) -> None:
     page.insert_text((72, 72), "Confidential financial results")
     document.save(  # type: ignore[no-untyped-call]
         path,
-        encryption=pymupdf.PDF_ENCRYPT_AES_256,
+        encryption=pymupdf.PDF_ENCRYPT_AES_256,  # type: ignore[attr-defined]
         owner_pw="owner-password",
         user_pw="user-password",
     )
