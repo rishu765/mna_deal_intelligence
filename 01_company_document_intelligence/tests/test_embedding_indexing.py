@@ -164,9 +164,11 @@ def test_empty_input_is_a_successful_no_op(tmp_path: Path) -> None:
 
 def test_malformed_chunk_is_rejected_with_its_position(tmp_path: Path) -> None:
     invalid = cast(DocumentChunk, object())
-    with _store(tmp_path / "vectors.sqlite3") as store:
-        with pytest.raises(InvalidChunkError, match="position 0"):
-            ChunkIndexingService(_FakeEmbedder(), store).index((invalid,))
+    with (
+        _store(tmp_path / "vectors.sqlite3") as store,
+        pytest.raises(InvalidChunkError, match="position 0"),
+    ):
+        ChunkIndexingService(_FakeEmbedder(), store).index((invalid,))
 
 
 def test_sqlite_store_persists_records_across_reopen(tmp_path: Path) -> None:
