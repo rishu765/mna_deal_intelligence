@@ -58,6 +58,12 @@ Normalization will make conservative, inspectable changes. Chunking will operate
 representation and preserve lineage back to source pages. Parser and chunker choices will be
 made with representative documents and measured, rather than assumed during scaffolding.
 
+M1 implements the first part of this boundary. A PyMuPDF adapter accepts local PDFs and returns
+immutable `ParsedDocument` and `ParsedPage` models. Third-party objects do not cross the
+ingestion boundary. Each page carries its content-derived document ID, source reference,
+zero-based physical PDF index, and one-based canonical page number. Printed page labels remain
+unknown. Pages without extractable text produce explicit warnings.
+
 ### Indexing and retrieval
 
 An embedding interface and a vector-index interface will isolate external providers. V1
@@ -85,8 +91,9 @@ deterministic checks and human review.
 - **Python 3.11+** for typing support and ecosystem compatibility.
 - **Standard-library dataclasses or Pydantic** for domain schemas; decide in Milestone 2 based
   on validation and serialization needs.
-- **PyMuPDF and/or pdfplumber** as parser candidates; select in Milestone 1 after comparison on
-  representative annual-report pages, including tables and page metadata.
+- **PyMuPDF** for M1 PDF validation and plain-text extraction. It offers mature page-aware
+  parsing with a small direct API; its AGPL/commercial licensing and layout limitations must be
+  considered before commercial distribution.
 - **pytest** for tests, **Ruff** for linting/formatting, and **mypy** for static type checking.
 - **Provider adapters** for embeddings and generation. The initial providers and models remain
   undecided until their cost, availability, and evaluation needs are clear.

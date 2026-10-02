@@ -13,6 +13,8 @@ Choose a PDF parser using representative company documents. Implement file valid
 page-aware extraction, basic document metadata input, and explicit error reporting. Include
 text-based PDFs first; treat OCR as a measured follow-up if fixtures require it.
 
+**Status:** Implemented on the M1 feature branch; validation and review pending.
+
 ## M2 — Canonical representation, normalization, and chunking
 
 Define validated document/page/chunk models, stable identifiers, provenance rules,
