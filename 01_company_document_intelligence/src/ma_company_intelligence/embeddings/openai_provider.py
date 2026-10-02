@@ -78,6 +78,11 @@ class OpenAIEmbedder:
             raise EmbeddingResponseError(
                 f"provider returned {len(data)} vectors for {len(texts)} texts"
             )
+        response_indexes = tuple(item.index for item in data)
+        if response_indexes != tuple(range(len(texts))):
+            raise EmbeddingResponseError(
+                f"provider returned invalid response indexes: {response_indexes}"
+            )
 
         vectors = tuple(tuple(float(value) for value in item.embedding) for item in data)
         for position, vector in enumerate(vectors):

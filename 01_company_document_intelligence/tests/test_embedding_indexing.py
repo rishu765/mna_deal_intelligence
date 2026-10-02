@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
+import pymupdf
 import pytest
 
 from ma_company_intelligence.domain import (
@@ -27,6 +29,7 @@ from ma_company_intelligence.indexing import (
     SQLiteVectorStore,
     VectorDimensionError,
 )
+from ma_company_intelligence.index_cli import main as index_cli_main
 
 
 def _chunk(tmp_path: Path, index: int, text: str | None = None) -> DocumentChunk:
@@ -90,6 +93,14 @@ def _store(path: Path) -> SQLiteVectorStore:
         model_name="deterministic-test-model",
         dimension=3,
     )
+
+
+def _write_pdf(path: Path, text: str) -> None:
+    document = pymupdf.open()  # type: ignore[no-untyped-call]
+    page = document.new_page()
+    page.insert_text((72, 72), text)
+    document.save(path)  # type: ignore[no-untyped-call]
+    document.close()  # type: ignore[no-untyped-call]
 
 
 def test_indexing_batches_in_order_and_preserves_chunk_provenance(tmp_path: Path) -> None:
@@ -272,3 +283,40 @@ def test_openai_adapter_wraps_provider_failure_without_exposing_key() -> None:
         embedder.embed_text("Revenue increased")
 
     assert "super-secret-key" not in str(captured.value)
+
+
+def test_build_index_cli_runs_complete_pipeline_with_bounded_summary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    pdf_path = tmp_path / "report.pdf"
+    index_path = tmp_path / "vectors.sqlite3"
+    _write_pdf(pdf_path, "Revenue increased to $125 million in 2025.")
+    embedder = _FakeEmbedder()
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setattr(
+        "ma_company_intelligence.index_cli.OpenAIEmbedder",
+        lambda **_arguments: embedder,
+    )
+
+    exit_code = index_cli_main(
+        [
+            str(pdf_path),
+            "--index-path",
+            str(index_path),
+            "--company",
+            "Example plc",
+        ]
+    )
+    summary = json.loads(capsys.readouterr().out)
+
+    assert exit_code == 0
+    assert summary["page_count"] == 1
+    assert summary["chunk_count"] == 1
+    assert summary["embedding_dimension"] == 3
+    assert summary["records_upserted"] == 1
+    assert summary["total_index_records"] == 1
+    assert summary["sample_record"]["company"] == "Example plc"
+    assert "vector" not in summary["sample_record"]
+    assert index_path.exists()

@@ -116,6 +116,7 @@ class SQLiteVectorStore:
         )
         expected = (_SCHEMA_VERSION, self.provider_name, self.model_name, self.dimension)
         if actual != expected:
+            self._connection.close()
             raise IndexCompatibilityError(
                 "existing vector store manifest is incompatible: "
                 f"found {actual}, expected {expected}"
