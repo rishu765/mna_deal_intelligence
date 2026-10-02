@@ -85,9 +85,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 batch_size=settings.batch_size,
             ).index(chunked_document.chunks)
             sample = (
-                store.get(chunked_document.chunks[0].chunk_id)
-                if chunked_document.chunks
-                else None
+                store.get(chunked_document.chunks[0].chunk_id) if chunked_document.chunks else None
             )
     except (DocumentIngestionError, EmbeddingError, IndexingError, ValueError) as error:
         parser.exit(status=2, message=f"error: {error}\n")

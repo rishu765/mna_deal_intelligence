@@ -112,9 +112,7 @@ class ChunkIndexingService:
         unique: dict[str, DocumentChunk] = {}
         for position, chunk in enumerate(chunks):
             if not isinstance(chunk, DocumentChunk):
-                raise InvalidChunkError(
-                    f"item at position {position} is not a DocumentChunk"
-                )
+                raise InvalidChunkError(f"item at position {position} is not a DocumentChunk")
             if not chunk.text.strip():
                 raise InvalidChunkError(f"chunk {chunk.chunk_id!r} has blank text")
             existing = unique.get(chunk.chunk_id)
