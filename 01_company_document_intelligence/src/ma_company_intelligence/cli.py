@@ -42,11 +42,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     parser = _build_parser()
     arguments = parser.parse_args(argv)
-    if (
-        arguments.max_pages < 0
-        or arguments.preview_chars < 0
-        or arguments.max_warnings < 0
-    ):
+    if arguments.max_pages < 0 or arguments.preview_chars < 0 or arguments.max_warnings < 0:
         parser.error("--max-pages, --preview-chars, and --max-warnings must be non-negative")
 
     try:
