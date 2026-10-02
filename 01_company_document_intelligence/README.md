@@ -94,7 +94,7 @@ Parse a local text-oriented PDF and inspect bounded output:
 madi-inspect-pdf "data/raw/example-annual-report.pdf"
 ```
 
-Use `--max-pages` and `--preview-chars` to adjust the preview. See
+Use `--max-pages`, `--preview-chars`, and `--max-warnings` to bound terminal output. See
 [PDF ingestion](docs/ingestion.md) for the data model, page-number convention, failures, and
 known limitations.
 

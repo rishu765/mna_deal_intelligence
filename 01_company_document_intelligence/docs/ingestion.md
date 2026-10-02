@@ -75,11 +75,12 @@ After installing the project, inspect a local PDF with bounded output:
 
 ```powershell
 madi-inspect-pdf "data/raw/example-annual-report.pdf"
-madi-inspect-pdf "C:\path\report.pdf" --max-pages 5 --preview-chars 500
+madi-inspect-pdf "C:\path\report.pdf" --max-pages 5 --preview-chars 500 --max-warnings 20
 ```
 
-The command parses the complete file but prints only bounded previews, plus the document ID,
-resolved source, page count, page provenance, and warnings.
+The command parses the complete file but prints only bounded page previews and warnings, plus
+the document ID, resolved source, page count, provenance, total warning count, and whether the
+warning list was truncated.
 
 ## Known limitations
 

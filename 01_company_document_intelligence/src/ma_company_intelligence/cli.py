@@ -28,6 +28,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default=300,
         help="Maximum characters per page preview (default: 300)",
     )
+    parser.add_argument(
+        "--max-warnings",
+        type=int,
+        default=20,
+        help="Maximum parsing warnings to print (default: 20)",
+    )
     return parser
 
 
@@ -36,8 +42,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     parser = _build_parser()
     arguments = parser.parse_args(argv)
-    if arguments.max_pages < 0 or arguments.preview_chars < 0:
-        parser.error("--max-pages and --preview-chars must be non-negative")
+    if (
+        arguments.max_pages < 0
+        or arguments.preview_chars < 0
+        or arguments.max_warnings < 0
+    ):
+        parser.error("--max-pages, --preview-chars, and --max-warnings must be non-negative")
 
     try:
         document = parse_pdf(arguments.pdf_path)
@@ -53,18 +63,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         }
         for page in document.pages[: arguments.max_pages]
     ]
+    displayed_warnings = document.warnings[: arguments.max_warnings]
     summary = {
         "document_id": document.document_id,
         "source_filename": document.source.filename,
         "source_path": str(document.source.path),
         "page_count": document.page_count,
+        "warning_count": len(document.warnings),
+        "warnings_displayed": len(displayed_warnings),
+        "warnings_truncated": len(displayed_warnings) < len(document.warnings),
         "warnings": [
             {
                 "code": warning.code.value,
                 "page_number": warning.page_number,
                 "message": warning.message,
             }
-            for warning in document.warnings
+            for warning in displayed_warnings
         ],
         "page_previews": previews,
     }
