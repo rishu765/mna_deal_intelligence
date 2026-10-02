@@ -22,13 +22,13 @@ from ma_company_intelligence.ingestion import (
 def _write_pdf(path: Path, page_texts: list[str]) -> None:
     """Create a tiny deterministic PDF without committing a binary fixture."""
 
-    document = pymupdf.open()
+    document = pymupdf.open()  # type: ignore[no-untyped-call]
     for text in page_texts:
         page = document.new_page()
         if text:
             page.insert_text((72, 72), text)
-    document.save(path)
-    document.close()
+    document.save(path)  # type: ignore[no-untyped-call]
+    document.close()  # type: ignore[no-untyped-call]
 
 
 def test_parse_pdf_preserves_page_order_text_and_provenance(tmp_path: Path) -> None:

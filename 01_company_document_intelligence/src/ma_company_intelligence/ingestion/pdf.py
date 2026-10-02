@@ -42,7 +42,8 @@ class PdfParser:
         document_id = f"sha256:{source.sha256}"
 
         try:
-            with pymupdf.open(path) as pdf:
+            # PyMuPDF 1.x exposes this constructor without complete type annotations.
+            with pymupdf.open(path) as pdf:  # type: ignore[no-untyped-call]
                 if not pdf.is_pdf:
                     raise InvalidPdfError(path, "file contents are not recognized as PDF")
                 if pdf.needs_pass:
