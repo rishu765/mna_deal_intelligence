@@ -10,11 +10,15 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Proprietary" }
 authors = [{ name = "Project Maintainer" }]
-dependencies = ["pymupdf>=1.24,<2"]
+dependencies = [
+  "openai>=2.0,<3",
+  "pymupdf>=1.24,<2",
+]
 
 [project.scripts]
 madi-inspect-pdf = "ma_company_intelligence.cli:main"
 madi-inspect-chunks = "ma_company_intelligence.chunk_cli:main"
+madi-build-index = "ma_company_intelligence.index_cli:main"
 
 [project.optional-dependencies]
 dev = [

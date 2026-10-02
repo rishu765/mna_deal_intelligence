@@ -21,12 +21,14 @@ Define validated document/page/chunk models, stable identifiers, provenance rule
 conservative normalization, and one baseline chunking strategy. Add fixtures that exercise
 headings, page boundaries, and financial tables.
 
-**Status:** Implemented and validated on the M2 feature branch; review pending.
+**Status:** Complete and merged into `main`.
 
 ## M3 — Embeddings and local vector indexing
 
 Define embedding and index ports, select one baseline embedding model and local store, persist
 index metadata/configuration, and support reproducible index builds.
+
+**Status:** Implemented and validated on the M3 feature branch; review pending.
 
 ## M4 — Retrieval baseline
 

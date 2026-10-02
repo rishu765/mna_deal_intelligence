@@ -14,6 +14,7 @@ from ma_company_intelligence.domain.documents import (
     ParsingWarningCode,
     SourceProvenance,
 )
+from ma_company_intelligence.domain.vectors import EmbeddingVector, VectorRecord
 
 __all__ = [
     "ChunkedDocument",
@@ -21,9 +22,11 @@ __all__ = [
     "DocumentChunk",
     "DocumentMetadata",
     "DocumentSource",
+    "EmbeddingVector",
     "ParsedDocument",
     "ParsedPage",
     "ParsingWarning",
     "ParsingWarningCode",
     "SourceProvenance",
+    "VectorRecord",
 ]

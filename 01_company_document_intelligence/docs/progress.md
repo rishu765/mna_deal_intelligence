@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-**M2 — Document metadata and chunking: implementation complete (2026-10-03)**
+**M3 — Embeddings and vector indexing: complete (2026-10-03)**
 
 ## Milestone log
 
@@ -41,7 +41,19 @@
 - Passed Ruff linting, Ruff formatting, strict mypy across 16 source files, and all 29 tests
   in GitHub Actions.
 
+### 2026-10-03 — M3 implementation
+
+- Added a provider-neutral synchronous embedding interface and environment-driven settings.
+- Added the OpenAI `text-embedding-3-small` baseline with 1,536-dimensional vectors.
+- Added immutable embedding/vector-record models that retain complete M2 chunks.
+- Added atomic batch indexing with output-count, dimension, and finite-value validation.
+- Added an inspectable SQLite store with a compatibility manifest and stable-ID upserts.
+- Added a bounded PDF-to-index command without query retrieval or vector output.
+- Added offline tests for ordering, mapping, provenance, upserts, persistence, configuration,
+  provider failures, malformed inputs, dimensions, and partial-write prevention.
+- Passed Ruff linting, Ruff formatting, strict mypy, and all automated tests in GitHub Actions.
+
 ## Next review gate
 
-Review and merge the M2 pull request before beginning M3.
+Review and merge the M3 pull request before beginning M4.
 

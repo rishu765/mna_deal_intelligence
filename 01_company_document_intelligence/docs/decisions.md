@@ -133,9 +133,58 @@ choice has meaningful alternatives or downstream effects.
   prevents filenames or weak heuristics from becoming trusted retrieval filters.
 - **Tradeoff:** Retuning chunk configuration invalidates chunk IDs and requires re-indexing.
 
+## D-013 — OpenAI small embedding model behind an interface
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Use the official OpenAI SDK with `text-embedding-3-small` at 1,536 dimensions
+  as the baseline implementation of a provider-neutral `Embedder` protocol.
+- **Why:** The model offers practical general retrieval quality, low current input cost, simple
+  hosted operation, and explicit dimension control. The interface keeps provider response
+  types outside domain and indexing code.
+- **Alternatives:** The large OpenAI model has higher benchmark quality but doubles default
+  dimensions and costs more. Local sentence transformers remove API dependency but add model
+  downloads, runtime weight, and local compute requirements.
+- **Tradeoff:** Index builds require a key, network access, and external API spend. Financial
+  retrieval quality is not assumed and must be evaluated.
+
+## D-014 — SQLite stores self-contained vector records
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Persist vectors, complete M2 chunks, and an embedding manifest in a local SQLite
+  database under `artifacts/`. Store vector values as inspectable JSON in M3.
+- **Why:** SQLite is transactional, debuggable, dependency-free, and suitable for a local
+  educational corpus. Complete chunks guarantee that citation provenance survives indexing.
+- **Alternatives:** FAISS offers efficient numeric search but weak metadata persistence. Chroma
+  provides vector-native features but adds a larger dependency and abstraction before M4 has
+  defined retrieval requirements. Production-scale systems may use pgvector or a managed
+  vector database.
+- **Tradeoff:** JSON vectors use more space and SQLite has no native approximate-nearest-neighbor
+  index. M4 may use exact scoring for small corpora or replace the store behind its interface.
+
+## D-015 — Atomic stable-ID upserts
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Embed and validate every batch before one transactional SQLite upsert keyed by
+  M2 `chunk_id`. Reject conflicting objects with the same ID and incompatible index manifests.
+- **Why:** Rebuilding an unchanged document is idempotent, and provider failure cannot leave a
+  partially persisted indexing run. Model or dimension changes cannot silently mix vectors.
+- **Tradeoff:** Successful API calls before a later failure may still incur cost and must be
+  repeated because M3 does not add an embedding cache or checkpointing.
+
+## D-016 — Retrieval remains a separate milestone
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** M3 stores document vectors but exposes no query embedding, similarity search,
+  filtering, or ranking behavior.
+- **Why:** Storage integrity and retrieval quality need separate contracts and tests. M4 can
+  evaluate an exact baseline before selecting more infrastructure.
+
 ## Open decisions
 
-- Embedding model and local vector store (M3)
 - Need for hybrid retrieval or reranking, based on evaluation (M4)
 - Generation provider and citation representation (M5–M6)
 - Thin interface type: CLI, API, or minimal UI (M9)
