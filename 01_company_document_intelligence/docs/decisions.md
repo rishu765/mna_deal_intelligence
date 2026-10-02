@@ -1,0 +1,76 @@
+# Technical decision log
+
+This lightweight log records decisions that constrain later work. Add a dated entry when a
+choice has meaningful alternatives or downstream effects.
+
+## D-001 — Python package with a `src` layout
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Use Python 3.11+ and package code under `src/ma_company_intelligence`.
+- **Why:** Python has the strongest practical document/ML ecosystem. A `src` layout prevents
+  tests from accidentally importing the working directory instead of the installed package.
+- **Alternatives:** A flat module layout is simpler initially but becomes easier to misuse as
+  the project grows.
+
+## D-002 — Provider-neutral core with narrow adapters
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Keep document, chunk, evidence, answer, and evaluation models independent of
+  parsing, embedding, vector-store, and LLM vendors.
+- **Why:** Later portfolio projects should reuse the pipeline, and evaluation must be able to
+  compare implementations without rewriting domain logic.
+- **Tradeoff:** Interfaces add a small amount of structure. They will be introduced alongside
+  real implementations rather than created speculatively.
+
+## D-003 — Provenance is an invariant
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Every derived chunk and retrieval result must retain lineage to its source
+  document and the most precise reliable location available.
+- **Why:** Evidence-backed M&A research requires users and evaluators to verify claims.
+- **Tradeoff:** Parsing and transformations need stricter contracts and more metadata tests.
+
+## D-004 — Defer RAG framework and provider selection
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Do not add LangChain, LlamaIndex, LangGraph, parser, embedding, LLM, or vector
+  database dependencies in Milestone 0.
+- **Why:** Representative documents and baseline evaluation should drive these choices. Early
+  selection would add coupling without implemented behavior.
+- **Alternatives:** A batteries-included framework speeds up a demo but can conceal retrieval
+  and provenance behavior that this project is intended to teach and evaluate.
+
+## D-005 — Evaluation seams from the start
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Keep parsing, chunking, retrieval, context construction, and generation callable
+  independently, with serializable inputs and outputs where practical.
+- **Why:** This enables stage-specific metrics and makes errors attributable instead of treating
+  the system as an opaque end-to-end chat application.
+
+## D-006 — Project lives in the canonical portfolio monorepo
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Place Project 1 under `01_company_document_intelligence/` in
+  `rishu765/mna_deal_intelligence`; do not retain nested Git metadata.
+- **Why:** The six projects form a progressive portfolio and later projects may reuse proven
+  components. One repository supports integrated history and shared CI while numbered paths
+  keep project boundaries clear.
+- **Tradeoff:** Tooling and workflows must be path-aware as additional projects are introduced.
+
+## Open decisions
+
+- PDF parser and scanned-document policy (M1)
+- Domain schema library and exact metadata contract (M2)
+- Chunking strategy and stable-ID inputs (M2)
+- Embedding model and local vector store (M3)
+- Need for hybrid retrieval or reranking, based on evaluation (M4)
+- Generation provider and citation representation (M5–M6)
+- Thin interface type: CLI, API, or minimal UI (M9)
+
