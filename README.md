@@ -12,7 +12,7 @@ investment advice or autonomous deal decisions.
 
 | Project | Planned path | Status |
 | --- | --- | --- |
-| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Milestone 1 complete; PR pending |
+| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Milestone 2 implementation; PR pending |
 | Target Screening & Sourcing | `02_target_screening_sourcing/` | Planned |
 | Comparable Companies & Valuation | `03_comparable_companies_valuation/` | Planned |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |
@@ -26,8 +26,8 @@ package will be introduced only after genuinely reusable components emerge.
 
 [Project 1](01_company_document_intelligence/) establishes a provenance-first document
 intelligence and retrieval-augmented generation foundation for company and M&A research.
-Its current milestone adds provenance-preserving PDF ingestion and parsing. It does not yet
-contain chunking, retrieval, or a working RAG pipeline.
+Its current milestone adds provenance-preserving document metadata and chunking on top of PDF
+ingestion. It does not yet contain embeddings, retrieval, or a working RAG pipeline.
 
 ## Development workflow
 
