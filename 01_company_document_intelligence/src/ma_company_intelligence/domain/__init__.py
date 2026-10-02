@@ -6,7 +6,6 @@ from ma_company_intelligence.domain.chunks import (
     DocumentChunk,
     DocumentMetadata,
 )
-
 from ma_company_intelligence.domain.documents import (
     DocumentSource,
     ParsedDocument,
