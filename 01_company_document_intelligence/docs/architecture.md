@@ -74,10 +74,17 @@ metadata is accepted only from an external caller and is never guessed by the ch
 
 ### Indexing and retrieval
 
-An embedding interface and a vector-index interface will isolate external providers. V1
-should begin with one simple local index. Retrieval will return ranked chunks and scores in a
-stable result model. Reranking will be added only if baseline evaluation shows a worthwhile
-gain for tables, financial terminology, or long-document ambiguity.
+M3 adds an `Embedder` protocol, an OpenAI `text-embedding-3-small` adapter, immutable
+`EmbeddingVector` and `VectorRecord` models, an atomic `ChunkIndexingService`, and a persistent
+`SQLiteVectorStore`. Stable chunk IDs are vector-record primary keys. Complete M2 chunks remain
+attached to vectors so source, page references, and externally supplied metadata survive
+indexing. A manifest prevents provider, model, dimension, and schema mismatches.
+
+SQLite stores inspectable JSON vectors and metadata under ignored `artifacts/`. It does not
+provide similarity search or a native approximate-nearest-neighbor index in M3. Retrieval will
+be introduced behind a separate boundary in M4, beginning with an exact baseline appropriate
+to the measured corpus size. A specialized vector engine will be considered only if scale or
+evaluation requires it. Reranking remains deferred until retrieval evaluation shows a gain.
 
 ### Answering and structured research
 
@@ -103,10 +110,11 @@ deterministic checks and human review.
   parsing with a small direct API; its AGPL/commercial licensing and layout limitations must be
   considered before commercial distribution.
 - **pytest** for tests, **Ruff** for linting/formatting, and **mypy** for static type checking.
-- **Provider adapters** for embeddings and generation. The initial providers and models remain
-  undecided until their cost, availability, and evaluation needs are clear.
-- **A lightweight local vector store** for V1. FAISS, Chroma, and SQLite-backed alternatives
-  will be compared in Milestone 3; no dependency is selected in Milestone 0.
+- **OpenAI `text-embedding-3-small`** behind a provider-neutral adapter, using 1,536 dimensions
+  by default. It is a low-cost general retrieval baseline whose financial-domain quality will
+  be measured later.
+- **SQLite vector-record persistence** for V1. It is transactional, inspectable, and requires
+  no service. M4 evaluation will determine whether a native vector engine is warranted.
 
 LangChain or LlamaIndex may be used later for a narrow capability if they reduce maintenance
 without obscuring provenance or evaluation. The core domain models and pipeline boundaries

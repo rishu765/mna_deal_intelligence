@@ -15,9 +15,9 @@ page, section, and chunk identifier.
 
 ## Current status
 
-Milestone 2 adds typed optional document metadata and deterministic, provenance-aware character
-chunking on top of M1 PDF ingestion. Embeddings, retrieval, generation, and user-facing
-interfaces are not implemented yet.
+Milestone 3 adds a provider-neutral embedding boundary, the OpenAI
+`text-embedding-3-small` baseline, atomic batch indexing, and persistent SQLite vector records.
+Retrieval, generation, and user-facing interfaces are not implemented yet.
 
 See:
 
@@ -27,6 +27,7 @@ See:
 - [Progress log](docs/progress.md)
 - [PDF ingestion](docs/ingestion.md)
 - [Metadata and chunking](docs/chunking.md)
+- [Embeddings and vector indexing](docs/embeddings-indexing.md)
 
 ## V1 scope
 
@@ -109,6 +110,18 @@ The default strategy uses a maximum of 1,800 characters, 200 characters of overl
 300-character minimum preferred span. These values and the output limits are configurable.
 See [metadata and chunking](docs/chunking.md) for the model, provenance rules, rationale, and
 limitations.
+
+After exporting `OPENAI_API_KEY`, build a local persistent vector-record store:
+
+```powershell
+madi-build-index "data/raw/example-annual-report.pdf"
+```
+
+The default OpenAI model produces 1,536-dimensional vectors in batches of 64 and stores them
+under `artifacts/vector_index.sqlite3`, which Git ignores. The summary is bounded and does not
+print vectors or run retrieval. See
+[embeddings and vector indexing](docs/embeddings-indexing.md) for configuration, costs,
+idempotency, persistence, and limitations.
 
 ## Working principles
 
