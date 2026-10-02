@@ -22,6 +22,7 @@ from ma_company_intelligence.embeddings import (
     EmbeddingSettings,
     OpenAIEmbedder,
 )
+from ma_company_intelligence.index_cli import main as index_cli_main
 from ma_company_intelligence.indexing import (
     ChunkIndexingService,
     IndexCompatibilityError,
@@ -29,7 +30,6 @@ from ma_company_intelligence.indexing import (
     SQLiteVectorStore,
     VectorDimensionError,
 )
-from ma_company_intelligence.index_cli import main as index_cli_main
 
 
 def _chunk(tmp_path: Path, index: int, text: str | None = None) -> DocumentChunk:
