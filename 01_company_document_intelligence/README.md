@@ -15,9 +15,9 @@ page, section, and chunk identifier.
 
 ## Current status
 
-Milestone 1 adds local, page-aware PDF ingestion with stable content IDs, conservative text
-normalization, explicit failures, and page-level provenance. Chunking, retrieval, generation,
-and user-facing interfaces are not implemented yet.
+Milestone 2 adds typed optional document metadata and deterministic, provenance-aware character
+chunking on top of M1 PDF ingestion. Embeddings, retrieval, generation, and user-facing
+interfaces are not implemented yet.
 
 See:
 
@@ -26,6 +26,7 @@ See:
 - [Technical decisions](docs/decisions.md)
 - [Progress log](docs/progress.md)
 - [PDF ingestion](docs/ingestion.md)
+- [Metadata and chunking](docs/chunking.md)
 
 ## V1 scope
 
@@ -97,6 +98,17 @@ madi-inspect-pdf "data/raw/example-annual-report.pdf"
 Use `--max-pages`, `--preview-chars`, and `--max-warnings` to bound terminal output. See
 [PDF ingestion](docs/ingestion.md) for the data model, page-number convention, failures, and
 known limitations.
+
+Parse and chunk a local PDF while displaying only a bounded sample:
+
+```powershell
+madi-inspect-chunks "data/raw/example-annual-report.pdf"
+```
+
+The default strategy uses a maximum of 1,800 characters, 200 characters of overlap, and a
+300-character minimum preferred span. These values and the output limits are configurable.
+See [metadata and chunking](docs/chunking.md) for the model, provenance rules, rationale, and
+limitations.
 
 ## Working principles
 

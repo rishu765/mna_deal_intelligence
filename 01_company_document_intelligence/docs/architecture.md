@@ -64,6 +64,14 @@ ingestion boundary. Each page carries its content-derived document ID, source re
 zero-based physical PDF index, and one-based canonical page number. Printed page labels remain
 unknown. Pages without extractable text produce explicit warnings.
 
+M2 implements the second part with immutable `DocumentMetadata`, `DocumentChunk`, and
+`ChunkedDocument` models plus a provider-neutral `ProvenanceAwareChunker`. It joins nonempty
+pages in physical order and applies configurable character-based splitting that prefers
+paragraph, line, and word boundaries. Chunks may cross pages and retain an ordered reference
+to every page that contributed text. Stable chunk IDs include the parent document identity,
+algorithm version, configuration, order, page indexes, and exact text. Optional research
+metadata is accepted only from an external caller and is never guessed by the chunker.
+
 ### Indexing and retrieval
 
 An embedding interface and a vector-index interface will isolate external providers. V1
@@ -89,8 +97,8 @@ deterministic checks and human review.
 ## Proposed V1 stack
 
 - **Python 3.11+** for typing support and ecosystem compatibility.
-- **Standard-library dataclasses or Pydantic** for domain schemas; decide in Milestone 2 based
-  on validation and serialization needs.
+- **Frozen standard-library dataclasses** for domain schemas. They provide explicit validation,
+  type checking, and immutable value objects without a runtime schema dependency at this stage.
 - **PyMuPDF** for M1 PDF validation and plain-text extraction. It offers mature page-aware
   parsing with a small direct API; its AGPL/commercial licensing and layout limitations must be
   considered before commercial distribution.

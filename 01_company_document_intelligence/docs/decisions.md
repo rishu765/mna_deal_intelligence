@@ -98,10 +98,43 @@ choice has meaningful alternatives or downstream effects.
 - **Why:** Financial meaning and approximate layout can depend on symbols, parentheses, tabs,
   and spacing. Aggressive cleanup would destroy evidence before evaluation.
 
+## D-010 — Character-based structural chunking baseline
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Split with configurable character counts, defaulting to 1,800 maximum, 200
+  overlap, and a 300-character minimum preferred span. Prefer paragraph, line, and space
+  boundaries in that order.
+- **Why:** Character counts are deterministic and inspectable without selecting an embedding
+  tokenizer in M2. The defaults approximate 400-500 English tokens while retaining enough
+  context for financial explanations. Evaluation will determine later tuning.
+- **Alternatives:** Token splitting couples output to a tokenizer before M3. Semantic splitting
+  adds model cost and nondeterminism before a baseline exists.
+
+## D-011 — Cross-page chunks with explicit page sets
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Permit chunks to cross physical page boundaries and store an ordered
+  `ChunkPageReference` for every contributing page.
+- **Why:** Sentences, tables, and notes frequently continue across annual-report pages. Page
+  sets preserve citation lineage without forcing context-breaking page cuts.
+- **Tradeoff:** A cited chunk may refer to a page span, and extraction errors can still affect
+  reading order.
+
+## D-012 — Versioned content-derived chunk IDs and explicit metadata origin
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Hash the algorithm version, document ID, full configuration, chunk order, page
+  indexes, and exact text. Keep source facts separate from optional caller-supplied research
+  metadata; do not infer optional fields in M2.
+- **Why:** Derived IDs must change when index-relevant output changes. Explicit metadata origin
+  prevents filenames or weak heuristics from becoming trusted retrieval filters.
+- **Tradeoff:** Retuning chunk configuration invalidates chunk IDs and requires re-indexing.
+
 ## Open decisions
 
-- Domain schema library and exact metadata contract (M2)
-- Chunking strategy and stable-ID inputs (M2)
 - Embedding model and local vector store (M3)
 - Need for hybrid retrieval or reranking, based on evaluation (M4)
 - Generation provider and citation representation (M5–M6)

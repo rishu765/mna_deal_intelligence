@@ -14,6 +14,7 @@ dependencies = ["pymupdf>=1.24,<2"]
 
 [project.scripts]
 madi-inspect-pdf = "ma_company_intelligence.cli:main"
+madi-inspect-chunks = "ma_company_intelligence.chunk_cli:main"
 
 [project.optional-dependencies]
 dev = [

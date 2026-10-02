@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-**M1 — Document ingestion and parsing: complete (2026-10-03)**
+**M2 — Document metadata and chunking: implementation complete (2026-10-03)**
 
 ## Milestone log
 
@@ -26,9 +26,22 @@
 - Added conservative text normalization and application-specific failures.
 - Added deterministic synthetic-PDF tests and a bounded inspection CLI.
 - Documented parser selection, licensing, behavior, and known limitations.
-- Passed Ruff linting, Ruff formatting, strict mypy, and 10 pytest tests in GitHub Actions.
+- Passed Ruff linting, Ruff formatting, strict mypy, and 15 pytest tests in GitHub Actions.
+
+### 2026-10-03 — M2 implementation
+
+- Added immutable, provider-neutral metadata, chunk, page-reference, and chunked-document
+  models.
+- Added deterministic character chunking with configurable size, overlap, and minimum span.
+- Preserved source identity, all contributing physical pages, and M1 parser warnings.
+- Kept optional company-document metadata caller-supplied and left unknown values unset.
+- Added invariant-focused tests for ordering, IDs, overlap, boundaries, empty pages, metadata,
+  configuration failures, and bounded CLI output.
+- Added a bounded parse-to-chunk inspection command and documented strategy limitations.
+- Passed Ruff linting, Ruff formatting, strict mypy across 16 source files, and all 29 tests
+  in GitHub Actions.
 
 ## Next review gate
 
-Review the M1 pull request before beginning M2.
+Review and merge the M2 pull request before beginning M3.
 
