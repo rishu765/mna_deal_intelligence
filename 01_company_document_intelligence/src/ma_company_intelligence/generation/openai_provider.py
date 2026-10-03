@@ -82,15 +82,25 @@ class OpenAIGenerator:
         api_key: str,
         model: str = "gpt-6-luna",
         reasoning_effort: ReasoningEffort = "low",
+        timeout: float = 30.0,
+        max_retries: int = 2,
         client: Any | None = None,
     ) -> None:
         if not api_key.strip():
             raise ValueError("api_key must not be blank")
         if not model.strip():
             raise ValueError("model must not be blank")
+        if timeout <= 0:
+            raise ValueError("timeout must be positive")
+        if max_retries < 0 or max_retries > 5:
+            raise ValueError("max_retries must be between 0 and 5")
         self._model = model
         self._reasoning_effort = reasoning_effort
-        self._client = client or OpenAI(api_key=api_key)
+        self._client = client or OpenAI(
+            api_key=api_key,
+            timeout=timeout,
+            max_retries=max_retries,
+        )
 
     @property
     def provider_name(self) -> str:

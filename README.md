@@ -12,7 +12,7 @@ investment advice or autonomous deal decisions.
 
 | Project | Planned path | Status |
 | --- | --- | --- |
-| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | M8 evaluation implemented; PR pending review |
+| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | M9/10 API and hardening implemented; PR pending review |
 | Target Screening & Sourcing | `02_target_screening_sourcing/` | Planned |
 | Comparable Companies & Valuation | `03_comparable_companies_valuation/` | Planned |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |
@@ -26,8 +26,8 @@ package will be introduced only after genuinely reusable components emerge.
 
 [Project 1](01_company_document_intelligence/) establishes a provenance-first document
 intelligence and retrieval-augmented generation foundation for company and M&A research.
-Its current milestone adds a reproducible, component-level evaluation benchmark for retrieval,
-generation correctness, faithfulness, citations, and structured company research.
+Its current milestone exposes the evaluated pipeline through a thin FastAPI interface with
+strict validation, sanitized errors, bounded provider behavior, and operational safeguards.
 
 ## Development workflow
 

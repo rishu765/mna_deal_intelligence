@@ -126,7 +126,29 @@ validated (2026-10-03)**
 - Passed Ruff linting and formatting, strict mypy across 74 source files, and all 103 tests
   locally. No live paid API call was run.
 
+### 2026-10-04 — Combined M9/10 implementation
+
+- Added a FastAPI interface with liveness, local PDF indexing, grounded Q&A, and structured
+  research endpoints plus generated OpenAPI documentation.
+- Added strict Pydantic request/response schemas and a reusable application facade that composes
+  the existing M1–M7 services instead of duplicating business logic in routes.
+- Added a stable sanitized error envelope covering validation, document, index, retrieval,
+  provider, generation, configuration, and unexpected failures.
+- Added safe document-root resolution, file/body/question/top-k limits, rejection of unknown
+  fields, lazy provider construction, and operation-scoped SQLite connections.
+- Added explicit 30-second provider timeouts and at most two SDK retries by default, with bounded
+  environment overrides shared by CLI and API workflows.
+- Added request IDs, duration/status logging, and stage completion events without logging request
+  bodies, prompts, document text, vectors, secrets, or local paths.
+- Added 27 API/application tests covering successful routes, OpenAPI, missing configuration,
+  parser/provider/index failures, safe errors, limits, idempotent indexing, blank PDFs, path
+  restrictions, request IDs, and a synthetic PDF-to-answer integration flow.
+- Passed Ruff linting/formatting across 100 files, strict mypy across 85 source files, and all
+  130 tests locally. Manually started Uvicorn and verified health, OpenAPI paths, request IDs,
+  and safe missing-provider behavior. No live paid API call was run.
+
 ## Next review gate
 
-Review and merge the M8 pull request before beginning the M9 API/interface milestone.
+Review and merge the combined M9/10 pull request before beginning M11 portfolio polish and
+deployment/readiness work.
 

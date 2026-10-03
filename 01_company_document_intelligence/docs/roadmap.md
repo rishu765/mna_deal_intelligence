@@ -60,17 +60,17 @@ Version a compact evaluation set and report retrieval quality, answer correctnes
 faithfulness, citation correctness, and absent-evidence behavior. Evaluation contracts and
 sample cases begin earlier; this milestone turns them into an end-to-end harness.
 
-**Status:** Implemented and locally validated on the M8 feature branch; review pending.
+**Status:** Complete and merged into `main`.
 
-## M9 — API or interface
+## M9/10 — API, robustness, testing, and error handling
 
 Expose the evaluated pipeline through a thin interface chosen from actual usage needs. Keep
 business logic in the package rather than the transport layer.
-
-## M10 — Robustness, testing, and error handling
-
 Harden malformed-input handling, retries, observability, configuration validation, and test
 coverage based on failures found in earlier milestones.
+
+**Status:** M9 and M10 are intentionally combined. Implemented and locally validated on the
+combined feature branch; review pending.
 
 ## M11 — Portfolio polish and deployment
 

@@ -22,6 +22,8 @@ class OpenAIEmbedder:
         api_key: str,
         model: str = "text-embedding-3-small",
         dimension: int = 1_536,
+        timeout: float = 30.0,
+        max_retries: int = 2,
         client: Any | None = None,
     ) -> None:
         if not api_key.strip():
@@ -30,9 +32,17 @@ class OpenAIEmbedder:
             raise ValueError("model must not be blank")
         if dimension <= 0:
             raise ValueError("dimension must be positive")
+        if timeout <= 0:
+            raise ValueError("timeout must be positive")
+        if max_retries < 0 or max_retries > 5:
+            raise ValueError("max_retries must be between 0 and 5")
         self._model = model
         self._dimension = dimension
-        self._client = client or OpenAI(api_key=api_key)
+        self._client = client or OpenAI(
+            api_key=api_key,
+            timeout=timeout,
+            max_retries=max_retries,
+        )
 
     @property
     def provider_name(self) -> str:
