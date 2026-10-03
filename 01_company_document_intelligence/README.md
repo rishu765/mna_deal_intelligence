@@ -15,11 +15,10 @@ page, section, and chunk identifier.
 
 ## Current status
 
-The combined M6/7 milestone adds validated user-facing citations and structured M&A-oriented
-company research. Free-form answers cite only model-selected evidence IDs that application code
-maps to real retrieved chunks. Structured research uses targeted category queries and returns
-typed sections with facts, separately labeled analysis, financial qualifiers, section-local
-citations, and explicit insufficient-evidence states.
+M8 adds a versioned synthetic benchmark and an offline evaluation runner that measures
+retrieval, generation correctness, faithfulness, citations, and structured research separately.
+It produces inspectable JSON and Markdown reports, supports gold-context decomposition, and can
+optionally add a structured LLM-judge assessment without making paid calls part of CI.
 
 See:
 
@@ -33,6 +32,7 @@ See:
 - [Semantic retrieval](docs/semantic-retrieval.md)
 - [Grounded RAG generation](docs/grounded-rag.md)
 - [Citations and structured company research](docs/citations-structured-research.md)
+- [Evaluation and quality measurement](docs/evaluation.md)
 
 ## V1 scope
 
@@ -169,6 +169,17 @@ The command runs fixed category-specific retrieval, one schema-validated synthes
 deterministic citation mapping. Unsupported sections remain explicitly insufficient. See
 [citations and structured company research](docs/citations-structured-research.md) for the
 schema, evidence strategy, financial safeguards, examples, and limitations.
+
+Run the reproducible offline M8 benchmark:
+
+```powershell
+madi-evaluate
+```
+
+It writes detailed JSON and a compact Markdown report under ignored `artifacts/evaluation/`.
+Use `--llm-judge` only when an optional live judge assessment and API cost are intended. See
+[evaluation and quality measurement](docs/evaluation.md) for metric definitions, the committed
+baseline, failure analysis, and limitations.
 
 ## Working principles
 

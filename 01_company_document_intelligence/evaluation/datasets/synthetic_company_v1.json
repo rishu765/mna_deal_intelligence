@@ -1,0 +1,218 @@
+{
+  "dataset_id": "synthetic_apex_company_research",
+  "version": "1.0.0",
+  "description": "Copyright-safe synthetic annual-report evidence with recorded imperfect outputs for component-level M&A document intelligence evaluation.",
+  "evidence": [
+    {"chunk_id": "c01-overview", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [1], "text": "Apex Industrial Analytics provides predictive maintenance software and industrial sensor monitoring services to manufacturers."},
+    {"chunk_id": "c02-products", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [2], "text": "Key offerings are the ForgeAI analytics platform, Sentinel vibration sensors, and implementation and support services."},
+    {"chunk_id": "c03-segments", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [3], "text": "The company reports two operating segments: Software and Connected Devices."},
+    {"chunk_id": "c04-geography", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [4], "text": "North America represented 62% of FY2025 revenue, Europe 25%, and Asia-Pacific 13%."},
+    {"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [5], "text": "FY2025 reported revenue was USD 125 million."},
+    {"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [5], "text": "FY2025 adjusted EBITDA was USD 18 million and adjusted EBITDA margin was 14.4%."},
+    {"chunk_id": "c07-growth", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [6], "text": "Revenue increased 12.4% in FY2025, driven primarily by subscription renewals and new sensor deployments."},
+    {"chunk_id": "c08-risks", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [7], "text": "Material risks include cybersecurity incidents and supplier concentration for specialized sensor components."},
+    {"chunk_id": "c09-strategy", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [8], "text": "During FY2025 Apex acquired VectorSense and expanded its cloud analytics capacity."},
+    {"chunk_id": "c10-outlook", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [9], "text": "Management priorities are international channel expansion, platform integration, and improved gross margin."},
+    {"chunk_id": "c11-customers", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [10], "text": "Customers operate in automotive, aerospace, and general industrial end markets; no individual customer exceeded 10% of revenue."},
+    {"chunk_id": "c12-governance", "document_id": "apex-ar-2025", "source_filename": "apex-annual-report-2025.pdf", "page_numbers": [11], "text": "The board maintains audit, compensation, and nominating committees."},
+    {"chunk_id": "c13-prior-revenue", "document_id": "apex-investor-2024", "source_filename": "apex-investor-presentation-2024.pdf", "page_numbers": [12], "text": "A prior unaudited planning presentation estimated FY2025 revenue of USD 120 million."}
+  ],
+  "cases": [
+    {
+      "case_id": "overview-01", "question": "What does Apex Industrial Analytics do?", "category": "business_overview",
+      "expected_facts": ["provides predictive maintenance software and industrial sensor monitoring services"],
+      "expected_evidence": [{"chunk_id": "c01-overview", "document_id": "apex-ar-2025", "page_numbers": [1]}],
+      "should_be_insufficient": false, "acceptable_variants": ["predictive maintenance and sensor monitoring"], "notes": "Direct overview lookup.",
+      "observation": {
+        "retrieved_chunk_ids": ["c01-overview", "c12-governance"], "context_chunk_ids": ["c01-overview"],
+        "retrieved_context_answer": {"answer": "Apex provides predictive maintenance software and industrial sensor monitoring services.", "insufficient_evidence": false, "claims": [{"text": "provides predictive maintenance software and industrial sensor monitoring services", "citation_chunk_ids": ["c01-overview"]}], "citations": [{"chunk_id": "c01-overview", "document_id": "apex-ar-2025", "page_numbers": [1]}]},
+        "gold_context_answer": {"answer": "Apex provides predictive maintenance software and industrial sensor monitoring services.", "insufficient_evidence": false, "claims": [{"text": "provides predictive maintenance software and industrial sensor monitoring services", "citation_chunk_ids": ["c01-overview"]}], "citations": [{"chunk_id": "c01-overview", "document_id": "apex-ar-2025", "page_numbers": [1]}]}
+      }
+    },
+    {
+      "case_id": "products-01", "question": "What are the company's key products and services?", "category": "products_services",
+      "expected_facts": ["ForgeAI analytics platform", "Sentinel vibration sensors", "implementation and support services"],
+      "expected_evidence": [{"chunk_id": "c02-products", "document_id": "apex-ar-2025", "page_numbers": [2]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "The answer is correct but the recorded citation page is fabricated.",
+      "observation": {
+        "retrieved_chunk_ids": ["c12-governance", "c02-products"], "context_chunk_ids": ["c12-governance", "c02-products"],
+        "retrieved_context_answer": {"answer": "Key offerings are the ForgeAI analytics platform, Sentinel vibration sensors, and implementation and support services.", "insufficient_evidence": false, "claims": [{"text": "ForgeAI analytics platform", "citation_chunk_ids": ["c02-products"]}, {"text": "Sentinel vibration sensors", "citation_chunk_ids": ["c02-products"]}, {"text": "implementation and support services", "citation_chunk_ids": ["c02-products"]}], "citations": [{"chunk_id": "c02-products", "document_id": "apex-ar-2025", "page_numbers": [99]}]},
+        "gold_context_answer": {"answer": "Key offerings are the ForgeAI analytics platform, Sentinel vibration sensors, and implementation and support services.", "insufficient_evidence": false, "claims": [{"text": "ForgeAI analytics platform", "citation_chunk_ids": ["c02-products"]}, {"text": "Sentinel vibration sensors", "citation_chunk_ids": ["c02-products"]}, {"text": "implementation and support services", "citation_chunk_ids": ["c02-products"]}], "citations": [{"chunk_id": "c02-products", "document_id": "apex-ar-2025", "page_numbers": [2]}]}
+      }
+    },
+    {
+      "case_id": "segments-01", "question": "What business segments does Apex report?", "category": "business_segments",
+      "expected_facts": ["Software and Connected Devices"],
+      "expected_evidence": [{"chunk_id": "c03-segments", "document_id": "apex-ar-2025", "page_numbers": [3]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "Direct segment lookup.",
+      "observation": {
+        "retrieved_chunk_ids": ["c03-segments", "c01-overview"], "context_chunk_ids": ["c03-segments"],
+        "retrieved_context_answer": {"answer": "Apex reports Software and Connected Devices.", "insufficient_evidence": false, "claims": [{"text": "Software and Connected Devices", "citation_chunk_ids": ["c03-segments"]}], "citations": [{"chunk_id": "c03-segments", "document_id": "apex-ar-2025", "page_numbers": [3]}]},
+        "gold_context_answer": {"answer": "Apex reports Software and Connected Devices.", "insufficient_evidence": false, "claims": [{"text": "Software and Connected Devices", "citation_chunk_ids": ["c03-segments"]}], "citations": [{"chunk_id": "c03-segments", "document_id": "apex-ar-2025", "page_numbers": [3]}]}
+      }
+    },
+    {
+      "case_id": "geography-01", "question": "What was Apex's geographic revenue exposure in FY2025?", "category": "geographic_exposure",
+      "expected_facts": ["North America represented 62%", "Europe 25%", "Asia-Pacific 13%"],
+      "expected_evidence": [{"chunk_id": "c04-geography", "document_id": "apex-ar-2025", "page_numbers": [4]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "Relevant evidence ranks fourth and is omitted by the recorded three-chunk context.",
+      "observation": {
+        "retrieved_chunk_ids": ["c12-governance", "c01-overview", "c03-segments", "c04-geography"], "context_chunk_ids": ["c12-governance", "c01-overview", "c03-segments"],
+        "retrieved_context_answer": {"answer": "I could not find sufficient evidence in the provided documents to answer this reliably.", "insufficient_evidence": true, "claims": [], "citations": []},
+        "gold_context_answer": {"answer": "North America represented 62%, Europe 25%, and Asia-Pacific 13% of FY2025 revenue.", "insufficient_evidence": false, "claims": [{"text": "North America represented 62%", "citation_chunk_ids": ["c04-geography"]}, {"text": "Europe 25%", "citation_chunk_ids": ["c04-geography"]}, {"text": "Asia-Pacific 13%", "citation_chunk_ids": ["c04-geography"]}], "citations": [{"chunk_id": "c04-geography", "document_id": "apex-ar-2025", "page_numbers": [4]}]}
+      }
+    },
+    {
+      "case_id": "revenue-01", "question": "What was FY2025 reported revenue?", "category": "revenue",
+      "expected_facts": ["FY2025 reported revenue was USD 125 million"],
+      "expected_evidence": [{"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "page_numbers": [5]}],
+      "should_be_insufficient": false, "acceptable_variants": ["$125 million"], "notes": "Direct financial lookup.",
+      "observation": {
+        "retrieved_chunk_ids": ["c05-revenue", "c13-prior-revenue"], "context_chunk_ids": ["c05-revenue"],
+        "retrieved_context_answer": {"answer": "FY2025 reported revenue was USD 125 million.", "insufficient_evidence": false, "claims": [{"text": "FY2025 reported revenue was USD 125 million", "citation_chunk_ids": ["c05-revenue"]}], "citations": [{"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "page_numbers": [5]}]},
+        "gold_context_answer": {"answer": "FY2025 reported revenue was USD 125 million.", "insufficient_evidence": false, "claims": [{"text": "FY2025 reported revenue was USD 125 million", "citation_chunk_ids": ["c05-revenue"]}], "citations": [{"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "page_numbers": [5]}]}
+      }
+    },
+    {
+      "case_id": "ebitda-01", "question": "What was FY2025 adjusted EBITDA?", "category": "ebitda",
+      "expected_facts": ["FY2025 adjusted EBITDA was USD 18 million"],
+      "expected_evidence": [{"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}],
+      "should_be_insufficient": false, "acceptable_variants": ["$18 million"], "notes": "Adjusted measure must remain qualified.",
+      "observation": {
+        "retrieved_chunk_ids": ["c06-ebitda", "c05-revenue"], "context_chunk_ids": ["c06-ebitda"],
+        "retrieved_context_answer": {"answer": "FY2025 adjusted EBITDA was USD 18 million.", "insufficient_evidence": false, "claims": [{"text": "FY2025 adjusted EBITDA was USD 18 million", "citation_chunk_ids": ["c06-ebitda"]}], "citations": [{"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}]},
+        "gold_context_answer": {"answer": "FY2025 adjusted EBITDA was USD 18 million.", "insufficient_evidence": false, "claims": [{"text": "FY2025 adjusted EBITDA was USD 18 million", "citation_chunk_ids": ["c06-ebitda"]}], "citations": [{"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}]}
+      }
+    },
+    {
+      "case_id": "growth-01", "question": "How much did revenue grow in FY2025?", "category": "growth",
+      "expected_facts": ["Revenue increased 12.4% in FY2025"],
+      "expected_evidence": [{"chunk_id": "c07-growth", "document_id": "apex-ar-2025", "page_numbers": [6]}],
+      "should_be_insufficient": false, "acceptable_variants": ["12.4%"], "notes": "Correct relative to gold but unsupported by retrieved context.",
+      "observation": {
+        "retrieved_chunk_ids": ["c12-governance", "c05-revenue"], "context_chunk_ids": ["c12-governance", "c05-revenue"],
+        "retrieved_context_answer": {"answer": "Revenue increased 12.4% in FY2025.", "insufficient_evidence": false, "claims": [{"text": "Revenue increased 12.4% in FY2025", "citation_chunk_ids": ["c05-revenue"]}], "citations": [{"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "page_numbers": [5]}]},
+        "gold_context_answer": {"answer": "Revenue increased 12.4% in FY2025.", "insufficient_evidence": false, "claims": [{"text": "Revenue increased 12.4% in FY2025", "citation_chunk_ids": ["c07-growth"]}], "citations": [{"chunk_id": "c07-growth", "document_id": "apex-ar-2025", "page_numbers": [6]}]}
+      }
+    },
+    {
+      "case_id": "risks-01", "question": "What major risks were disclosed?", "category": "risk_factors",
+      "expected_facts": ["cybersecurity incidents", "supplier concentration"],
+      "expected_evidence": [{"chunk_id": "c08-risks", "document_id": "apex-ar-2025", "page_numbers": [7]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "Retrieval succeeds but generation omits one disclosed risk even with gold context.",
+      "observation": {
+        "retrieved_chunk_ids": ["c08-risks"], "context_chunk_ids": ["c08-risks"],
+        "retrieved_context_answer": {"answer": "Apex disclosed cybersecurity incidents as a material risk.", "insufficient_evidence": false, "claims": [{"text": "cybersecurity incidents", "citation_chunk_ids": ["c08-risks"]}], "citations": [{"chunk_id": "c08-risks", "document_id": "apex-ar-2025", "page_numbers": [7]}]},
+        "gold_context_answer": {"answer": "Apex disclosed cybersecurity incidents as a material risk.", "insufficient_evidence": false, "claims": [{"text": "cybersecurity incidents", "citation_chunk_ids": ["c08-risks"]}], "citations": [{"chunk_id": "c08-risks", "document_id": "apex-ar-2025", "page_numbers": [7]}]}
+      }
+    },
+    {
+      "case_id": "strategy-01", "question": "What strategic developments occurred in FY2025?", "category": "strategy",
+      "expected_facts": ["acquired VectorSense", "expanded its cloud analytics capacity"],
+      "expected_evidence": [{"chunk_id": "c09-strategy", "document_id": "apex-ar-2025", "page_numbers": [8]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "Answer includes an unnecessary governance citation.",
+      "observation": {
+        "retrieved_chunk_ids": ["c09-strategy", "c12-governance"], "context_chunk_ids": ["c09-strategy", "c12-governance"],
+        "retrieved_context_answer": {"answer": "Apex acquired VectorSense and expanded its cloud analytics capacity.", "insufficient_evidence": false, "claims": [{"text": "acquired VectorSense", "citation_chunk_ids": ["c09-strategy"]}, {"text": "expanded its cloud analytics capacity", "citation_chunk_ids": ["c09-strategy"]}], "citations": [{"chunk_id": "c09-strategy", "document_id": "apex-ar-2025", "page_numbers": [8]}, {"chunk_id": "c12-governance", "document_id": "apex-ar-2025", "page_numbers": [11]}]},
+        "gold_context_answer": {"answer": "Apex acquired VectorSense and expanded its cloud analytics capacity.", "insufficient_evidence": false, "claims": [{"text": "acquired VectorSense", "citation_chunk_ids": ["c09-strategy"]}, {"text": "expanded its cloud analytics capacity", "citation_chunk_ids": ["c09-strategy"]}], "citations": [{"chunk_id": "c09-strategy", "document_id": "apex-ar-2025", "page_numbers": [8]}]}
+      }
+    },
+    {
+      "case_id": "outlook-01", "question": "What priorities did management state?", "category": "management_priorities",
+      "expected_facts": ["international channel expansion", "platform integration", "improved gross margin"],
+      "expected_evidence": [{"chunk_id": "c10-outlook", "document_id": "apex-ar-2025", "page_numbers": [9]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "Management priorities lookup.",
+      "observation": {
+        "retrieved_chunk_ids": ["c10-outlook", "c09-strategy"], "context_chunk_ids": ["c10-outlook"],
+        "retrieved_context_answer": {"answer": "Management priorities are international channel expansion, platform integration, and improved gross margin.", "insufficient_evidence": false, "claims": [{"text": "international channel expansion", "citation_chunk_ids": ["c10-outlook"]}, {"text": "platform integration", "citation_chunk_ids": ["c10-outlook"]}, {"text": "improved gross margin", "citation_chunk_ids": ["c10-outlook"]}], "citations": [{"chunk_id": "c10-outlook", "document_id": "apex-ar-2025", "page_numbers": [9]}]},
+        "gold_context_answer": {"answer": "Management priorities are international channel expansion, platform integration, and improved gross margin.", "insufficient_evidence": false, "claims": [{"text": "international channel expansion", "citation_chunk_ids": ["c10-outlook"]}, {"text": "platform integration", "citation_chunk_ids": ["c10-outlook"]}, {"text": "improved gross margin", "citation_chunk_ids": ["c10-outlook"]}], "citations": [{"chunk_id": "c10-outlook", "document_id": "apex-ar-2025", "page_numbers": [9]}]}
+      }
+    },
+    {
+      "case_id": "customers-01", "question": "Which end markets does Apex serve and was customer concentration disclosed?", "category": "customers_end_markets",
+      "expected_facts": ["automotive, aerospace, and general industrial end markets", "no individual customer exceeded 10% of revenue"],
+      "expected_evidence": [{"chunk_id": "c11-customers", "document_id": "apex-ar-2025", "page_numbers": [10]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "Multi-fact customer and end-market lookup.",
+      "observation": {
+        "retrieved_chunk_ids": ["c11-customers"], "context_chunk_ids": ["c11-customers"],
+        "retrieved_context_answer": {"answer": "Apex serves automotive, aerospace, and general industrial end markets; no individual customer exceeded 10% of revenue.", "insufficient_evidence": false, "claims": [{"text": "automotive, aerospace, and general industrial end markets", "citation_chunk_ids": ["c11-customers"]}, {"text": "no individual customer exceeded 10% of revenue", "citation_chunk_ids": ["c11-customers"]}], "citations": [{"chunk_id": "c11-customers", "document_id": "apex-ar-2025", "page_numbers": [10]}]},
+        "gold_context_answer": {"answer": "Apex serves automotive, aerospace, and general industrial end markets; no individual customer exceeded 10% of revenue.", "insufficient_evidence": false, "claims": [{"text": "automotive, aerospace, and general industrial end markets", "citation_chunk_ids": ["c11-customers"]}, {"text": "no individual customer exceeded 10% of revenue", "citation_chunk_ids": ["c11-customers"]}], "citations": [{"chunk_id": "c11-customers", "document_id": "apex-ar-2025", "page_numbers": [10]}]}
+      }
+    },
+    {
+      "case_id": "margin-01", "question": "What was the FY2025 adjusted EBITDA margin?", "category": "direct_factual_lookup",
+      "expected_facts": ["adjusted EBITDA margin was 14.4%"],
+      "expected_evidence": [{"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}],
+      "should_be_insufficient": false, "acceptable_variants": ["14.4%"], "notes": "Direct percentage lookup.",
+      "observation": {
+        "retrieved_chunk_ids": ["c06-ebitda"], "context_chunk_ids": ["c06-ebitda"],
+        "retrieved_context_answer": {"answer": "The FY2025 adjusted EBITDA margin was 14.4%.", "insufficient_evidence": false, "claims": [{"text": "adjusted EBITDA margin was 14.4%", "citation_chunk_ids": ["c06-ebitda"]}], "citations": [{"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}]},
+        "gold_context_answer": {"answer": "The FY2025 adjusted EBITDA margin was 14.4%.", "insufficient_evidence": false, "claims": [{"text": "adjusted EBITDA margin was 14.4%", "citation_chunk_ids": ["c06-ebitda"]}], "citations": [{"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}]}
+      }
+    },
+    {
+      "case_id": "multi-financial-01", "question": "Summarize FY2025 revenue and adjusted EBITDA.", "category": "multi_evidence",
+      "expected_facts": ["FY2025 reported revenue was USD 125 million", "FY2025 adjusted EBITDA was USD 18 million"],
+      "expected_evidence": [{"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "page_numbers": [5]}, {"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}],
+      "should_be_insufficient": false, "acceptable_variants": [], "notes": "Only one of two required evidence chunks is retrieved.",
+      "observation": {
+        "retrieved_chunk_ids": ["c05-revenue", "c12-governance"], "context_chunk_ids": ["c05-revenue"],
+        "retrieved_context_answer": {"answer": "FY2025 reported revenue was USD 125 million.", "insufficient_evidence": false, "claims": [{"text": "FY2025 reported revenue was USD 125 million", "citation_chunk_ids": ["c05-revenue"]}], "citations": [{"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "page_numbers": [5]}]},
+        "gold_context_answer": {"answer": "FY2025 reported revenue was USD 125 million and adjusted EBITDA was USD 18 million.", "insufficient_evidence": false, "claims": [{"text": "FY2025 reported revenue was USD 125 million", "citation_chunk_ids": ["c05-revenue"]}, {"text": "adjusted EBITDA was USD 18 million", "citation_chunk_ids": ["c06-ebitda"]}], "citations": [{"chunk_id": "c05-revenue", "document_id": "apex-ar-2025", "page_numbers": [5]}, {"chunk_id": "c06-ebitda", "document_id": "apex-ar-2025", "page_numbers": [5]}]}
+      }
+    },
+    {
+      "case_id": "unanswerable-01", "question": "What was Apex's global market share in FY2025?", "category": "unanswerable",
+      "expected_facts": [], "expected_evidence": [], "should_be_insufficient": true, "acceptable_variants": [], "notes": "The synthetic corpus contains no market-share disclosure.",
+      "observation": {
+        "retrieved_chunk_ids": ["c12-governance"], "context_chunk_ids": ["c12-governance"],
+        "retrieved_context_answer": {"answer": "Apex had 35% global market share in FY2025.", "insufficient_evidence": false, "claims": [{"text": "35% global market share in FY2025", "citation_chunk_ids": ["c12-governance"]}], "citations": [{"chunk_id": "c12-governance", "document_id": "apex-ar-2025", "page_numbers": [11]}]},
+        "gold_context_answer": {"answer": "I could not find sufficient evidence in the provided documents to answer this reliably.", "insufficient_evidence": true, "claims": [], "citations": []}
+      }
+    }
+  ],
+  "structured_cases": [
+    {
+      "case_id": "profile-complete-01", "company_name": "Apex Industrial Analytics",
+      "expected_sections": [
+        {"key": "company_context", "should_be_insufficient": false, "expected_facts": ["Apex Industrial Analytics"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c01-overview"]},
+        {"key": "business_overview", "should_be_insufficient": false, "expected_facts": ["predictive maintenance software and industrial sensor monitoring services"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c01-overview"]},
+        {"key": "products_services", "should_be_insufficient": false, "expected_facts": ["ForgeAI analytics platform", "Sentinel vibration sensors"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c02-products"]},
+        {"key": "business_segments", "should_be_insufficient": false, "expected_facts": ["Software and Connected Devices"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c03-segments"]},
+        {"key": "geographic_exposure", "should_be_insufficient": false, "expected_facts": ["North America represented 62%"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c04-geography"]},
+        {"key": "customers_end_markets", "should_be_insufficient": false, "expected_facts": ["automotive, aerospace, and general industrial end markets"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c11-customers"]},
+        {"key": "financial_highlights", "should_be_insufficient": false, "expected_facts": [], "expected_observations": [], "expected_metrics": [{"metric_name": "Revenue", "value": "USD 125 million", "fiscal_period": "FY2025", "unit": "million", "currency": "USD", "basis": "reported revenue"}, {"metric_name": "Adjusted EBITDA", "value": "USD 18 million", "fiscal_period": "FY2025", "unit": "million", "currency": "USD", "basis": "adjusted EBITDA"}], "expected_evidence_chunk_ids": ["c05-revenue", "c06-ebitda"]},
+        {"key": "major_risks", "should_be_insufficient": false, "expected_facts": ["cybersecurity incidents", "supplier concentration"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c08-risks"]},
+        {"key": "strategic_developments", "should_be_insufficient": false, "expected_facts": ["acquired VectorSense"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c09-strategy"]},
+        {"key": "management_outlook", "should_be_insufficient": false, "expected_facts": ["international channel expansion"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c10-outlook"]},
+        {"key": "ma_relevant_observations", "should_be_insufficient": false, "expected_facts": [], "expected_observations": ["Recurring software revenue and industrial sensor coverage may be relevant to an acquirer"], "expected_metrics": [], "expected_evidence_chunk_ids": ["c01-overview", "c02-products"]}
+      ],
+      "observed_sections": [
+        {"key": "company_context", "insufficient_evidence": false, "facts": ["Apex Industrial Analytics provides industrial analytics."], "observations": [], "metrics": [], "citation_chunk_ids": ["c01-overview"]},
+        {"key": "business_overview", "insufficient_evidence": false, "facts": ["Apex provides predictive maintenance software and industrial sensor monitoring services."], "observations": [], "metrics": [], "citation_chunk_ids": ["c01-overview"]},
+        {"key": "products_services", "insufficient_evidence": false, "facts": ["Products include the ForgeAI analytics platform and Sentinel vibration sensors."], "observations": [], "metrics": [], "citation_chunk_ids": ["c02-products"]},
+        {"key": "business_segments", "insufficient_evidence": true, "facts": [], "observations": [], "metrics": [], "citation_chunk_ids": []},
+        {"key": "geographic_exposure", "insufficient_evidence": false, "facts": ["North America represented 62% of FY2025 revenue."], "observations": [], "metrics": [], "citation_chunk_ids": ["c04-geography"]},
+        {"key": "customers_end_markets", "insufficient_evidence": false, "facts": ["Apex serves automotive, aerospace, and general industrial end markets."], "observations": [], "metrics": [], "citation_chunk_ids": ["c11-customers"]},
+        {"key": "financial_highlights", "insufficient_evidence": false, "facts": [], "observations": [], "metrics": [{"metric_name": "Revenue", "value": "USD 125 million", "fiscal_period": "FY2025", "unit": "million", "currency": "EUR", "basis": "reported revenue", "citation_chunk_ids": ["c05-revenue"]}, {"metric_name": "Adjusted EBITDA", "value": "USD 18 million", "fiscal_period": "FY2025", "unit": "million", "currency": "USD", "basis": "adjusted EBITDA", "citation_chunk_ids": ["c06-ebitda"]}], "citation_chunk_ids": ["c05-revenue", "c06-ebitda"]},
+        {"key": "major_risks", "insufficient_evidence": false, "facts": ["Cybersecurity incidents are a material risk."], "observations": ["Supplier concentration is a disclosed risk."], "metrics": [], "citation_chunk_ids": ["c08-risks"]},
+        {"key": "strategic_developments", "insufficient_evidence": false, "facts": ["Apex acquired VectorSense."], "observations": [], "metrics": [], "citation_chunk_ids": ["c12-governance"]},
+        {"key": "management_outlook", "insufficient_evidence": true, "facts": [], "observations": [], "metrics": [], "citation_chunk_ids": []},
+        {"key": "ma_relevant_observations", "insufficient_evidence": false, "facts": [], "observations": ["Recurring software revenue and industrial sensor coverage may be relevant to an acquirer."], "metrics": [], "citation_chunk_ids": ["c01-overview"]}
+      ]
+    },
+    {
+      "case_id": "profile-limited-01", "company_name": "Apex Industrial Analytics",
+      "expected_sections": [
+        {"key": "business_overview", "should_be_insufficient": false, "expected_facts": ["predictive maintenance software"], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": ["c01-overview"]},
+        {"key": "customers_end_markets", "should_be_insufficient": true, "expected_facts": [], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": []},
+        {"key": "financial_highlights", "should_be_insufficient": true, "expected_facts": [], "expected_observations": [], "expected_metrics": [], "expected_evidence_chunk_ids": []}
+      ],
+      "observed_sections": [
+        {"key": "business_overview", "insufficient_evidence": false, "facts": ["Apex provides predictive maintenance software."], "observations": [], "metrics": [], "citation_chunk_ids": ["c01-overview"]},
+        {"key": "customers_end_markets", "insufficient_evidence": false, "facts": ["Apex primarily serves energy companies."], "observations": [], "metrics": [], "citation_chunk_ids": ["c12-governance"]},
+        {"key": "financial_highlights", "insufficient_evidence": true, "facts": [], "observations": [], "metrics": [], "citation_chunk_ids": []}
+      ]
+    }
+  ]
+}
