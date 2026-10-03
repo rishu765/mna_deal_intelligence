@@ -7,6 +7,7 @@ from ma_company_intelligence.domain.chunks import (
     DocumentChunk,
     DocumentMetadata,
 )
+from ma_company_intelligence.domain.citations import Citation
 from ma_company_intelligence.domain.documents import (
     DocumentSource,
     ParsedDocument,
@@ -14,6 +15,15 @@ from ma_company_intelligence.domain.documents import (
     ParsingWarning,
     ParsingWarningCode,
     SourceProvenance,
+)
+from ma_company_intelligence.domain.research import (
+    RESEARCH_SECTION_ORDER,
+    CompanyResearchProfile,
+    FinancialMetric,
+    ResearchFact,
+    ResearchObservation,
+    ResearchSection,
+    ResearchSectionKey,
 )
 from ma_company_intelligence.domain.retrieval import (
     RetrievalFilters,
@@ -24,11 +34,14 @@ from ma_company_intelligence.domain.vectors import EmbeddingVector, VectorRecord
 
 __all__ = [
     "ChunkedDocument",
+    "Citation",
+    "CompanyResearchProfile",
     "ChunkPageReference",
     "DocumentChunk",
     "DocumentMetadata",
     "DocumentSource",
     "EmbeddingVector",
+    "FinancialMetric",
     "ParsedDocument",
     "ParsedPage",
     "ParsingWarning",
@@ -36,6 +49,11 @@ __all__ = [
     "RetrievalFilters",
     "RetrievalResult",
     "RAGAnswer",
+    "RESEARCH_SECTION_ORDER",
+    "ResearchFact",
+    "ResearchObservation",
+    "ResearchSection",
+    "ResearchSectionKey",
     "SourceProvenance",
     "VectorRecord",
     "VectorSearchMatch",

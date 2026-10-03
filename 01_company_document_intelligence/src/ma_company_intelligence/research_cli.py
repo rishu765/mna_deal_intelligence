@@ -1,4 +1,4 @@
-"""Bounded developer command for the complete PDF-to-grounded-answer pipeline."""
+"""Developer command for PDF-to-structured-company-research validation."""
 
 from __future__ import annotations
 
@@ -10,38 +10,33 @@ from pathlib import Path
 from ma_company_intelligence.chunking import ChunkingConfig, chunk_document
 from ma_company_intelligence.citations import CitationError
 from ma_company_intelligence.domain import DocumentMetadata, RetrievalFilters
-from ma_company_intelligence.embeddings import (
-    EmbeddingError,
-    EmbeddingSettings,
-    OpenAIEmbedder,
-)
-from ma_company_intelligence.generation import (
-    GenerationError,
-    GenerationSettings,
-    OpenAIGenerator,
-)
+from ma_company_intelligence.embeddings import EmbeddingError, EmbeddingSettings, OpenAIEmbedder
+from ma_company_intelligence.generation import GenerationError, GenerationSettings, OpenAIGenerator
 from ma_company_intelligence.indexing import (
     ChunkIndexingService,
     IndexingError,
     SQLiteVectorStore,
 )
 from ma_company_intelligence.ingestion import DocumentIngestionError, parse_pdf
-from ma_company_intelligence.rag import ContextBuilder, GroundedRAGService, RAGError
+from ma_company_intelligence.research import (
+    CompanyResearchService,
+    ResearchError,
+    ResearchEvidenceCollector,
+)
 from ma_company_intelligence.retrieval import RetrievalError, SemanticRetriever
 
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="madi-answer",
-        description="Parse, chunk, index, retrieve, and generate one grounded answer.",
+        prog="madi-research",
+        description="Parse a PDF and produce a cited structured company research profile.",
     )
     parser.add_argument("pdf_path", type=Path)
-    parser.add_argument("question")
     parser.add_argument("--index-path", type=Path)
-    parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--top-k-per-section", type=int, default=3)
+    parser.add_argument("--max-context-characters", type=int, default=40_000)
+    parser.add_argument("--max-output-tokens", type=int, default=4_000)
     parser.add_argument("--preview-chars", type=int, default=300)
-    parser.add_argument("--max-context-characters", type=int, default=12_000)
-    parser.add_argument("--max-context-chunks", type=int, default=5)
     parser.add_argument("--chunk-size", type=int, default=1_800)
     parser.add_argument("--overlap", type=int, default=200)
     parser.add_argument("--min-chunk-size", type=int, default=300)
@@ -56,7 +51,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Run the complete local RAG pipeline and print a bounded JSON summary."""
+    """Run the complete local research pipeline and print bounded JSON."""
 
     parser = _build_parser()
     arguments = parser.parse_args(argv)
@@ -106,43 +101,75 @@ def main(argv: Sequence[str] | None = None) -> int:
                 store,
                 batch_size=embedding_settings.batch_size,
             ).index(chunked_document.chunks)
-            rag_answer = GroundedRAGService(
-                SemanticRetriever(embedder, store),
-                ContextBuilder(
+            retriever = SemanticRetriever(embedder, store)
+            profile = CompanyResearchService(
+                ResearchEvidenceCollector(
+                    retriever,
+                    top_k_per_section=arguments.top_k_per_section,
                     max_characters=arguments.max_context_characters,
-                    max_chunks=arguments.max_context_chunks,
                 ),
                 generator,
-                max_output_tokens=generation_settings.max_output_tokens,
-            ).answer(
-                arguments.question,
-                top_k=arguments.top_k,
+                max_output_tokens=arguments.max_output_tokens,
+            ).research(
+                company_name=arguments.company,
                 filters=RetrievalFilters(document_id=parsed_document.document_id),
             )
     except (
-        DocumentIngestionError,
         CitationError,
+        DocumentIngestionError,
         EmbeddingError,
         GenerationError,
         IndexingError,
-        RAGError,
+        ResearchError,
         RetrievalError,
         ValueError,
     ) as error:
         parser.exit(status=2, message=f"error: {error}\n")
 
     summary = {
-        "question": rag_answer.question,
-        "answer": rag_answer.answer,
-        "insufficient_evidence": rag_answer.insufficient_evidence,
-        "generator": {
-            "provider": rag_answer.generator_provider,
-            "model": rag_answer.generator_model,
-        },
+        "company_name": profile.company_name,
         "document_id": parsed_document.document_id,
         "chunks_indexed": indexing_report.records_upserted,
-        "evidence_used": len(rag_answer.supporting_results),
-        "warnings": rag_answer.warnings,
+        "generator": {
+            "provider": profile.generator_provider,
+            "model": profile.generator_model,
+        },
+        "warnings": profile.warnings,
+        "sections": [
+            {
+                "key": section.key,
+                "summary": section.summary,
+                "insufficient_evidence": section.insufficient_evidence,
+                "facts": [
+                    {
+                        "statement": fact.statement,
+                        "citations": [citation.marker for citation in fact.citations],
+                    }
+                    for fact in section.facts
+                ],
+                "analysis": [
+                    {
+                        "observation": observation.observation,
+                        "citations": [citation.marker for citation in observation.citations],
+                    }
+                    for observation in section.observations
+                ],
+                "financial_metrics": [
+                    {
+                        "metric_name": metric.metric_name,
+                        "value": metric.value,
+                        "fiscal_period": metric.fiscal_period,
+                        "unit": metric.unit,
+                        "currency": metric.currency,
+                        "basis": metric.basis,
+                        "citations": [citation.marker for citation in metric.citations],
+                    }
+                    for metric in section.financial_metrics
+                ],
+                "citations": [citation.marker for citation in section.citations],
+            }
+            for section in profile.sections
+        ],
         "citations": [
             {
                 "id": citation.citation_id,
@@ -154,21 +181,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "printed_page_labels": citation.printed_page_labels,
                 "excerpt": citation.excerpt[: arguments.preview_chars],
             }
-            for citation in rag_answer.citations
-        ],
-        "evidence": [
-            {
-                "rank": result.rank,
-                "score": result.score,
-                "chunk_id": result.chunk_id,
-                "source_filename": result.chunk.source.filename,
-                "page_numbers": result.chunk.page_numbers,
-                "company": result.chunk.metadata.company,
-                "document_type": result.chunk.metadata.document_type,
-                "fiscal_year": result.chunk.metadata.fiscal_year,
-                "text_preview": result.text[: arguments.preview_chars],
-            }
-            for result in rag_answer.supporting_results
+            for citation in profile.citations
         ],
     }
     print(json.dumps(summary, indent=2, ensure_ascii=False))

@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from ma_company_intelligence.domain import RAGAnswer, RetrievalFilters
+from ma_company_intelligence.citations import CitationBuilder, CitationReferenceError
+from ma_company_intelligence.domain import Citation, RAGAnswer, RetrievalFilters
 from ma_company_intelligence.generation import GenerationRequest, Generator
 from ma_company_intelligence.rag.context import ContextBuilder
 from ma_company_intelligence.rag.errors import InvalidQuestionError
@@ -24,6 +25,7 @@ class GroundedRAGService:
         generator: Generator,
         *,
         max_output_tokens: int = 800,
+        citation_builder: CitationBuilder | None = None,
     ) -> None:
         if max_output_tokens <= 0:
             raise ValueError("max_output_tokens must be positive")
@@ -31,6 +33,7 @@ class GroundedRAGService:
         self._context_builder = context_builder
         self._generator = generator
         self._max_output_tokens = max_output_tokens
+        self._citation_builder = citation_builder or CitationBuilder()
 
     def answer(
         self,
@@ -80,9 +83,19 @@ class GroundedRAGService:
             )
         )
         answer_text = generated.answer
+        citations: tuple[Citation, ...] = ()
         if generated.insufficient_evidence:
             answer_text = INSUFFICIENT_EVIDENCE_MESSAGE
             warnings.append("The generator classified the supplied evidence as insufficient.")
+        else:
+            if not generated.cited_evidence_ids:
+                raise CitationReferenceError(
+                    "a supported generated answer must identify at least one evidence ID"
+                )
+            citations = self._citation_builder.build(
+                generated.cited_evidence_ids,
+                context.evidence_by_id,
+            ).citations
 
         return RAGAnswer(
             question=question,
@@ -91,6 +104,7 @@ class GroundedRAGService:
             insufficient_evidence=generated.insufficient_evidence,
             generator_provider=self._generator.provider_name,
             generator_model=self._generator.model_name,
+            citations=citations,
             warnings=tuple(warnings),
         )
 

@@ -8,6 +8,7 @@ from pathlib import Path
 import pymupdf
 import pytest
 
+from ma_company_intelligence.citations import CitationReferenceError
 from ma_company_intelligence.domain import (
     ChunkPageReference,
     DocumentChunk,
@@ -98,6 +99,7 @@ class _FakeGenerator:
         self.output = output or GenerationOutput(
             answer="FY25 revenue was $125.0 million, with a 17.5% margin.",
             insufficient_evidence=False,
+            cited_evidence_ids=("E1",),
         )
         self.fail = fail
         self.requests: list[GenerationRequest] = []
@@ -142,7 +144,7 @@ def test_context_budget_uses_only_complete_ranked_prefix(tmp_path: Path) -> None
 
     assert context.included_results == (first,)
     assert context.omitted_result_count == 1
-    assert "[/EVIDENCE 1]" in context.text
+    assert "[/EVIDENCE E1]" in context.text
     assert "Second evidence" not in context.text
 
 
@@ -181,6 +183,8 @@ def test_grounded_service_passes_question_and_evidence_to_generator(tmp_path: Pa
     assert answer.supporting_results == results
     assert answer.supporting_chunk_ids == (results[0].chunk_id,)
     assert answer.insufficient_evidence is False
+    assert len(answer.citations) == 1
+    assert answer.citations[0].format_reference() == "[1] Annual Report FY2025 — pp. 1–2"
 
 
 def test_empty_retrieval_returns_safe_answer_without_generation() -> None:
@@ -210,6 +214,49 @@ def test_model_insufficiency_is_normalized_to_safe_message(tmp_path: Path) -> No
     assert answer.insufficient_evidence is True
     assert len(answer.supporting_results) == 1
     assert "classified" in answer.warnings[-1]
+
+
+def test_answer_cites_only_model_selected_evidence(tmp_path: Path) -> None:
+    results = (
+        _result(tmp_path, rank=1, text="General company description."),
+        _result(tmp_path, rank=2, text="FY25 revenue was $125 million."),
+    )
+    generator = _FakeGenerator(
+        GenerationOutput(
+            answer="FY25 revenue was $125 million.",
+            insufficient_evidence=False,
+            cited_evidence_ids=("E2", "E2"),
+        )
+    )
+
+    answer = GroundedRAGService(
+        _FakeRetriever(results),
+        ContextBuilder(),
+        generator,
+    ).answer("What was revenue?")
+
+    assert answer.supporting_results == results
+    assert len(answer.citations) == 1
+    assert answer.citations[0].chunk_id == results[1].chunk_id
+    assert answer.citations[0].reference_number == 1
+
+
+def test_answer_rejects_generated_reference_not_in_context(tmp_path: Path) -> None:
+    result = _result(tmp_path, rank=1, text="FY25 revenue was $125 million.")
+    generator = _FakeGenerator(
+        GenerationOutput(
+            answer="FY25 revenue was $125 million.",
+            insufficient_evidence=False,
+            cited_evidence_ids=("E99",),
+        )
+    )
+
+    with pytest.raises(CitationReferenceError, match="E99"):
+        GroundedRAGService(
+            _FakeRetriever((result,)),
+            ContextBuilder(),
+            generator,
+        ).answer("What was revenue?")
 
 
 def test_context_budget_failure_skips_generation(tmp_path: Path) -> None:
@@ -275,6 +322,7 @@ def test_rag_cli_runs_complete_pipeline_with_bounded_evidence(
         GenerationOutput(
             answer="FY25 revenue increased to $125 million due to subscriptions.",
             insufficient_evidence=False,
+            cited_evidence_ids=("E1",),
         )
     )
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
@@ -312,6 +360,7 @@ def test_rag_cli_runs_complete_pipeline_with_bounded_evidence(
     }
     assert summary["chunks_indexed"] == 1
     assert summary["evidence_used"] == 1
+    assert summary["citations"][0]["reference"] == "[1] report.pdf — p. 1"
     assert summary["evidence"][0]["page_numbers"] == [1]
     assert summary["evidence"][0]["company"] == "Example plc"
     assert len(summary["evidence"][0]["text_preview"]) == 24

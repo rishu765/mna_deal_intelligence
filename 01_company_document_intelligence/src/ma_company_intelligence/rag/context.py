@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 
 from ma_company_intelligence.domain import RetrievalResult
@@ -18,6 +19,14 @@ class EvidenceContext:
     @property
     def character_count(self) -> int:
         return len(self.text)
+
+    @property
+    def evidence_by_id(self) -> Mapping[str, RetrievalResult]:
+        """Map the stable model-visible IDs in this context to real results."""
+
+        return {
+            f"E{number}": result for number, result in enumerate(self.included_results, start=1)
+        }
 
 
 class ContextBuilder:
@@ -45,7 +54,7 @@ class ContextBuilder:
         blocks: list[str] = []
         included: list[RetrievalResult] = []
         for result in results[: self._max_chunks]:
-            block = _format_result(result, evidence_number=len(included) + 1)
+            block = format_evidence_result(result, evidence_id=f"E{len(included) + 1}")
             candidate = "\n\n".join((*blocks, block))
             if len(candidate) > self._max_characters:
                 break
@@ -59,7 +68,11 @@ class ContextBuilder:
         )
 
 
-def _format_result(result: RetrievalResult, *, evidence_number: int) -> str:
+def format_evidence_result(result: RetrievalResult, *, evidence_id: str) -> str:
+    """Format one result with a caller-supplied stable evidence ID."""
+
+    if not evidence_id.strip():
+        raise ValueError("evidence_id must not be blank")
     chunk = result.chunk
     canonical_pages = ", ".join(str(reference.page_number) for reference in chunk.page_references)
     physical_indexes = ", ".join(
@@ -69,7 +82,7 @@ def _format_result(result: RetrievalResult, *, evidence_number: int) -> str:
         reference.printed_page_label or "unknown" for reference in chunk.page_references
     )
     lines = [
-        f"[EVIDENCE {evidence_number}]",
+        f"[EVIDENCE {evidence_id}]",
         f"retrieval_rank: {result.rank}",
         f"similarity_score: {result.score:.6f}",
         f"chunk_id: {chunk.chunk_id}",
@@ -90,5 +103,5 @@ def _format_result(result: RetrievalResult, *, evidence_number: int) -> str:
         ("section", chunk.section),
     )
     lines.extend(f"{name}: {value}" for name, value in optional_metadata if value is not None)
-    lines.extend(("text:", chunk.text, f"[/EVIDENCE {evidence_number}]"))
+    lines.extend(("text:", chunk.text, f"[/EVIDENCE {evidence_id}]"))
     return "\n".join(lines)
