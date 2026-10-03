@@ -74,8 +74,8 @@ receive up to `top_k` results; an empty store or filters with no matches return 
 
 The default `top_k` is 5. This is large enough to expose several potentially relevant passages
 for inspection while remaining small enough for a later evidence context. It is configurable
-per request and must be positive. M5 will decide how many returned chunks fit its context
-budget; that concern does not change M4 ranking.
+per request and must be positive. M5 decides how many returned chunks fit its context budget;
+that concern does not change M4 ranking.
 
 ## Exact metadata filters
 
@@ -124,7 +124,7 @@ chunks for revenue, employees, and disclosed risks. Handcrafted vectors verify t
 - ties resolve by stable chunk ID.
 
 This makes ranking behavior inspectable without network calls or API spend. It is a smoke test
-of retrieval mechanics, not the formal retrieval evaluation dataset planned for M8.
+of retrieval mechanics, not the formal retrieval evaluation dataset implemented in M8.
 
 ## Manual retrieval
 
@@ -178,6 +178,5 @@ a claim about a real annual report.
 - PDF extraction and chunking errors can reduce retrieval quality.
 
 Reranking is deferred until evaluation shows that the vector baseline returns useful evidence
-but orders ambiguous candidates poorly. M5 will consume retrieval results to construct bounded
-evidence context and generate a grounded answer; that generation behavior is not implemented
-in M4.
+but orders ambiguous candidates poorly. M5 consumes retrieval results to construct bounded
+evidence context and generate a grounded answer; that generation behavior remains outside M4.

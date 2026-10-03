@@ -112,9 +112,9 @@ test, and requires no service or additional vector-database dependency. The data
 
 SQLite is a vector **record store** in M3, not a native approximate-nearest-neighbor index.
 This keeps storage understandable while M4 establishes the corpus size and retrieval baseline.
-M4 can implement exact cosine scoring for a small portfolio corpus or replace the store behind
-the `VectorStore` interface if evaluation shows a need for FAISS, pgvector, or another ANN
-engine. Search methods are intentionally absent in M3.
+M4 implements exact cosine scoring for the current portfolio corpus. A future implementation
+can replace the store behind the `VectorStore` interface if scale or evaluation shows a need
+for FAISS, pgvector, or another ANN engine. Search methods remain outside the M3 layer.
 
 The default database is under `artifacts/`, which Git ignores. It is reproducible from source
 PDFs and should not be committed.
@@ -181,5 +181,5 @@ rebuild it from source.
 - Source extraction and chunking limitations from M1/M2 still affect embedding quality.
 - Index portability depends on preserving the configured model and dimension.
 
-M4 will add query models, query embedding, similarity scoring, top-k retrieval, and retrieval
-diagnostics. Those behaviors are intentionally absent from M3.
+M4 adds query models, query embedding, similarity scoring, top-k retrieval, and retrieval
+diagnostics. Those behaviors remain intentionally absent from M3.

@@ -7,7 +7,7 @@ answers or structured research. Each stage should expose a small Python boundary
 provider-neutral domain models. This lets later M&A projects reuse document processing and
 retrieval without inheriting a particular UI, LLM, or vector database.
 
-## Proposed data flow
+## Implemented data flow
 
 ```text
 Source documents
@@ -39,7 +39,7 @@ Grounded generation
 Evaluation across retrieval, grounding, answers, citations, and abstention
 ```
 
-## Proposed components
+## Implemented components
 
 ### Domain models
 
@@ -151,7 +151,7 @@ messages omit underlying exception text so local paths and provider diagnostics 
 server-side logs. Provider calls use explicit timeouts and bounded SDK retries; deterministic
 validation and parsing are never retried.
 
-## Proposed V1 stack
+## V1 technical stack
 
 - **Python 3.11+** for typing support and ecosystem compatibility.
 - **Frozen standard-library dataclasses** for domain schemas. They provide explicit validation,
@@ -178,11 +178,12 @@ without obscuring provenance or evaluation. The core domain models and pipeline 
 should not depend on them. LangGraph and multi-agent orchestration are outside V1 unless a
 future requirement demonstrates a real need.
 
-## Planned package shape
+## Package boundaries
 
-Modules will be introduced only when their milestone begins. The likely eventual boundaries
-are `domain`, `ingestion`, `chunking`, `indexing`, `retrieval`, `generation`, `research`,
-`evaluation`, `application`, and `api`. Avoid creating empty abstractions in advance.
+The implemented boundaries are `domain`, `ingestion`, `chunking`, `indexing`, `retrieval`,
+`generation`, `rag`, `citations`, `research`, `evaluation`, `application`, and `api`. Each maps
+to a concrete responsibility; the project avoids empty abstractions created for anticipated
+future work.
 
 ## Cross-cutting constraints
 
@@ -191,4 +192,96 @@ are `domain`, `ingestion`, `chunking`, `indexing`, `retrieval`, `generation`, `r
 - Page numbers must distinguish source labels from zero-based internal indexes when both exist.
 - Logs and evaluation artifacts must make failures inspectable without exposing secrets.
 - Absence of evidence is a supported outcome, not an invitation to fill gaps from model memory.
+
+## Final system diagrams
+
+These diagrams describe the implemented Project 1 version 1.0.0 boundaries.
+
+### Ingestion and indexing
+
+```mermaid
+flowchart LR
+    PDF[Local PDF] --> Validate[Type, path, size validation]
+    Validate --> Parser[PyMuPDF adapter]
+    Parser --> Pages[ParsedDocument + ordered ParsedPage objects]
+    Pages --> Normalize[Conservative normalization]
+    Normalize --> Chunker[ProvenanceAwareChunker]
+    Chunker --> Chunks[Ordered DocumentChunk objects]
+    Chunks --> Embedder[Embedder batch interface]
+    Embedder --> Records[VectorRecord objects]
+    Records --> Store[(SQLiteVectorStore)]
+```
+
+Document and chunk IDs are content-derived. Every vector record retains its complete chunk,
+trusted metadata, and ordered page references. Re-indexing an unchanged chunk upserts the same
+primary key.
+
+### Grounded question answering
+
+```mermaid
+flowchart LR
+    Question[Question] --> QueryEmbedding[Query embedding]
+    QueryEmbedding --> Search[Exact cosine search]
+    Search --> Results[Ranked RetrievalResult objects]
+    Results --> Builder[Deterministic ContextBuilder]
+    Builder --> Evidence[Bounded labeled evidence]
+    Evidence --> Generator[Structured generator]
+    Generator --> Answer[RAGAnswer]
+    Answer --> CitationMapper[Evidence ID validation]
+    CitationMapper --> Citations[Source and canonical pages]
+```
+
+The generator can select only evidence IDs supplied in context. Deterministic mapping rejects
+unknown identifiers and never manufactures missing page provenance.
+
+### Structured company research
+
+```mermaid
+flowchart LR
+    Sections[11 research categories] --> Queries[Fixed targeted queries]
+    Queries --> Retrieval[Semantic retrieval per category]
+    Retrieval --> Catalog[Deduplicated bounded evidence catalog]
+    Catalog --> Synthesis[One structured generation request]
+    Synthesis --> Validation[Application-owned schema validation]
+    Validation --> Profile[CompanyResearchProfile]
+    Profile --> SectionEvidence[Section and metric citations]
+```
+
+The profile separates facts, M&A-relevant observations, and qualified financial metrics.
+Unsupported sections remain explicitly insufficient.
+
+### Evaluation
+
+```mermaid
+flowchart LR
+    Cases[Versioned evaluation cases] --> RetrievalEval[Retrieval metrics]
+    Cases --> GenerationEval[Correctness + gold-context comparison]
+    Cases --> GroundingEval[Claim support]
+    Cases --> CitationEval[Citation validity, support, coverage]
+    Cases --> StructuredEval[Structured-field metrics]
+    RetrievalEval --> Report[JSON + Markdown report]
+    GenerationEval --> Report
+    GroundingEval --> Report
+    CitationEval --> Report
+    StructuredEval --> Report
+```
+
+Metrics remain separate so a reviewer can distinguish retrieval, context, generation,
+citation, and structured-output failures. Evaluation data never enters runtime prompts.
+
+### API composition
+
+```mermaid
+flowchart LR
+    Client --> FastAPI[FastAPI + Pydantic]
+    FastAPI --> Facade[ProjectApplicationService]
+    Facade --> Pipeline[Existing domain services]
+    Pipeline --> Providers[OpenAI adapters]
+    Pipeline --> SQLite[(SQLite index)]
+    Pipeline --> Domain[Domain result]
+    Domain --> Response[Stable response schema]
+```
+
+The transport owns HTTP validation and safe errors. It does not duplicate parsing, retrieval,
+prompting, citation, or research logic.
 

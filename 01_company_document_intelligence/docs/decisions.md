@@ -405,5 +405,38 @@ choice has meaningful alternatives or downstream effects.
 
 - Need for hybrid retrieval or reranking, based on evaluation (M4/M8)
 - Need for clause-level entailment or claim-specific excerpt selection, based on M8 evaluation
-- Whether final deployment should remain local-only or add a protected hosted demonstration
+
+## D-035 — Deterministic synthetic PDF for the public demo
+
+- **Date:** 2026-10-04
+- **Status:** Accepted
+- **Decision:** Generate a five-page fictional company report locally with a versioned console
+  command. Do not commit a third-party annual report or download one during setup.
+- **Why:** Every reviewer can exercise parsing and provenance without hidden files, copyright
+  ambiguity, or network access. Fixed content also makes the demo inspectable and repeatable.
+- **Tradeoff:** A synthetic report does not reproduce the layout complexity of a real filing;
+  users should separately test legally obtained public documents.
+
+## D-036 — Single trusted-host container as the deployment baseline
+
+- **Date:** 2026-10-04
+- **Status:** Accepted
+- **Decision:** Ship a minimal non-root Docker image for one trusted host with mounted document
+  and SQLite-index directories. Do not publish an unsafe one-click public-host configuration.
+- **Why:** The current path-reference API, SQLite store, and lack of authentication fit a local
+  or controlled deployment. A public service needs uploads/object storage, authentication,
+  rate limits, TLS termination, and measured concurrency that Project 1 does not implement.
+- **Tradeoff:** Hosted portfolio demonstrations require platform controls and a separate trusted
+  method for placing documents in persistent storage.
+
+## D-037 — Keep reusable code inside Project 1 until Project 2 consumes it
+
+- **Date:** 2026-10-04
+- **Status:** Accepted
+- **Decision:** Document likely reusable ingestion, retrieval, evidence, provider, and evaluation
+  boundaries but do not move them into `shared/` during finalization.
+- **Why:** A second concrete consumer should define the real common interface. Premature
+  extraction would destabilize a completed project and create abstractions from predicted use.
+- **Tradeoff:** Project 2 may initially import or copy a narrow boundary before a deliberate
+  shared-package refactor.
 

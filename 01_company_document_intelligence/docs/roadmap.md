@@ -69,12 +69,14 @@ business logic in the package rather than the transport layer.
 Harden malformed-input handling, retries, observability, configuration validation, and test
 coverage based on failures found in earlier milestones.
 
-**Status:** M9 and M10 are intentionally combined. Implemented and locally validated on the
-combined feature branch; review pending.
+**Status:** M9 and M10 were intentionally combined. Complete and merged into `main`.
 
 ## M11 — Portfolio polish and deployment
 
 Create an architecture walkthrough, reproducible demo, benchmark summary, deployment path,
 and clear limitations. Publish only after secrets, sample-data rights, and reproducibility are
 reviewed.
+
+**Status:** Implemented on `feat/p01-m11-finalization`; final review pending. This completes
+Project 1 without introducing another core RAG capability.
 

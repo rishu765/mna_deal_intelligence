@@ -40,8 +40,8 @@ formatter never substitutes physical indexes or guesses printed labels. If page 
 unavailable to a future source adapter, it says `page unavailable`.
 
 This is an answer-level baseline. It validates that every citation maps to supplied evidence
-but does not yet run natural-language entailment for every clause. M8 will measure citation
-correctness and faithfulness using curated expected evidence.
+but does not run natural-language entailment for every clause. M8 measures citation correctness
+and faithfulness using curated expected evidence.
 
 ## Structured research flow
 
@@ -199,12 +199,13 @@ A shortened output shape is:
 - Exact vector retrieval has no reranker or lexical component.
 - Table structure, multicolumn reading order, charts, and scanned PDFs inherit M1/M2 limits.
 - Research covers the indexed local corpus only; there is no web search or company discovery.
-- No formal evaluation scores are reported until M8.
+- Formal M8 scores are reported in `evaluation.md`; clause-level entailment remains a
+  limitation of the deterministic baseline.
 
 ## Evaluation hooks retained for M8
 
 Stable question, answer, evidence ID, chunk ID, document ID, page, section, factual/analytical
 type, financial qualifier, abstention state, and citation objects can be inspected separately.
-M8 can measure retrieval recall, answer correctness, grounding, citation validity, citation
-page correctness, structured-field accuracy, and absent-evidence behavior without parsing
-terminal prose.
+M8 measures retrieval recall, answer correctness, grounding, citation validity, citation page
+correctness, structured-field accuracy, and absent-evidence behavior without parsing terminal
+prose.
