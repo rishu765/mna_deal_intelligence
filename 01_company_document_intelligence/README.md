@@ -15,9 +15,9 @@ page, section, and chunk identifier.
 
 ## Current status
 
-Milestone 3 adds a provider-neutral embedding boundary, the OpenAI
-`text-embedding-3-small` baseline, atomic batch indexing, and persistent SQLite vector records.
-Retrieval, generation, and user-facing interfaces are not implemented yet.
+Milestone 4 adds validated query embedding, deterministic exact cosine-similarity retrieval,
+typed ranked results, complete provenance, and explicit exact metadata filters over the M3
+SQLite records. Answer generation and user-facing interfaces are not implemented yet.
 
 See:
 
@@ -28,6 +28,7 @@ See:
 - [PDF ingestion](docs/ingestion.md)
 - [Metadata and chunking](docs/chunking.md)
 - [Embeddings and vector indexing](docs/embeddings-indexing.md)
+- [Semantic retrieval](docs/semantic-retrieval.md)
 
 ## V1 scope
 
@@ -122,6 +123,17 @@ under `artifacts/vector_index.sqlite3`, which Git ignores. The summary is bounde
 print vectors or run retrieval. See
 [embeddings and vector indexing](docs/embeddings-indexing.md) for configuration, costs,
 idempotency, persistence, and limitations.
+
+Run the complete document-to-retrieval developer pipeline without generating an answer:
+
+```powershell
+madi-retrieve "data/raw/example-annual-report.pdf" `
+  "What were the main growth drivers?" --top-k 3
+```
+
+Results include cosine score, stable IDs, source document, page provenance, trusted metadata,
+and a bounded text preview. See [semantic retrieval](docs/semantic-retrieval.md) for score
+semantics, filters, deterministic ordering, quality checks, and limitations.
 
 ## Working principles
 

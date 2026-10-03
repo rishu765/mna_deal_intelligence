@@ -86,6 +86,14 @@ be introduced behind a separate boundary in M4, beginning with an exact baseline
 to the measured corpus size. A specialized vector engine will be considered only if scale or
 evaluation requires it. Reranking remains deferred until retrieval evaluation shows a gain.
 
+M4 extends the existing store with exact cosine-similarity search and adds a
+`SemanticRetriever` boundary. The retriever validates and embeds a query in the same embedding
+space as document chunks, applies optional exact filters over stored metadata, and returns
+typed `RetrievalResult` objects ordered by descending similarity. Results retain the complete
+M2 chunk, so source and page provenance do not depend on a later prompt or citation stage.
+Equal scores use stable chunk IDs for deterministic ordering. Search remains an exact linear
+scan suitable for the current local corpus; reranking and answer generation remain deferred.
+
 ### Answering and structured research
 
 The answering layer will consume an explicit evidence bundle rather than reaching directly

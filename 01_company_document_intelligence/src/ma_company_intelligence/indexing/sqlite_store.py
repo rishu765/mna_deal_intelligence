@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import sqlite3
 from dataclasses import asdict
 from pathlib import Path
@@ -14,13 +15,16 @@ from ma_company_intelligence.domain import (
     DocumentMetadata,
     DocumentSource,
     EmbeddingVector,
+    RetrievalFilters,
     VectorRecord,
+    VectorSearchMatch,
 )
 from ma_company_intelligence.indexing.errors import (
     IndexCompatibilityError,
     VectorDimensionError,
     VectorStoreError,
 )
+from ma_company_intelligence.retrieval.errors import StoredVectorError
 
 _SCHEMA_VERSION = 1
 
@@ -168,6 +172,49 @@ class SQLiteVectorStore:
         ).fetchone()
         return None if row is None else self._deserialize(row)
 
+    def similarity_search(
+        self,
+        query_vector: EmbeddingVector,
+        *,
+        top_k: int,
+        filters: RetrievalFilters | None = None,
+    ) -> tuple[VectorSearchMatch, ...]:
+        """Return exact cosine matches with stable chunk-ID tie-breaking."""
+
+        if top_k <= 0:
+            raise ValueError("top_k must be positive")
+        self._validate_query_vector(query_vector)
+        query_norm = math.sqrt(sum(value * value for value in query_vector.values))
+        if query_norm == 0.0:
+            raise ValueError("query vector must have nonzero magnitude")
+
+        rows = self._connection.execute("SELECT * FROM vector_records").fetchall()
+        matches: list[VectorSearchMatch] = []
+        for row in rows:
+            record = self._deserialize(row)
+            if filters is not None and not filters.matches(record.chunk):
+                continue
+            stored_values = record.embedding.values
+            stored_norm = math.sqrt(sum(value * value for value in stored_values))
+            if stored_norm == 0.0:
+                raise StoredVectorError(
+                    f"stored vector for record {record.record_id!r} has zero magnitude"
+                )
+            dot_product = sum(
+                query_value * stored_value
+                for query_value, stored_value in zip(
+                    query_vector.values,
+                    stored_values,
+                    strict=True,
+                )
+            )
+            raw_score = dot_product / (query_norm * stored_norm)
+            score = max(-1.0, min(1.0, raw_score))
+            matches.append(VectorSearchMatch(record=record, score=score))
+
+        matches.sort(key=lambda match: (-match.score, match.record.record_id))
+        return tuple(matches[:top_k])
+
     def close(self) -> None:
         self._connection.close()
 
@@ -192,6 +239,17 @@ class SQLiteVectorStore:
         if embedding.provider != self.provider_name or embedding.model != self.model_name:
             raise IndexCompatibilityError(
                 f"record {record.record_id!r} uses {embedding.provider}/{embedding.model}; "
+                f"store expects {self.provider_name}/{self.model_name}"
+            )
+
+    def _validate_query_vector(self, vector: EmbeddingVector) -> None:
+        if vector.dimension != self.dimension or len(vector.values) != self.dimension:
+            raise VectorDimensionError(
+                f"query vector has dimension {vector.dimension}; expected {self.dimension}"
+            )
+        if vector.provider != self.provider_name or vector.model != self.model_name:
+            raise IndexCompatibilityError(
+                f"query vector uses {vector.provider}/{vector.model}; "
                 f"store expects {self.provider_name}/{self.model_name}"
             )
 

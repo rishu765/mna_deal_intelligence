@@ -14,6 +14,11 @@ from ma_company_intelligence.domain.documents import (
     ParsingWarningCode,
     SourceProvenance,
 )
+from ma_company_intelligence.domain.retrieval import (
+    RetrievalFilters,
+    RetrievalResult,
+    VectorSearchMatch,
+)
 from ma_company_intelligence.domain.vectors import EmbeddingVector, VectorRecord
 
 __all__ = [
@@ -27,6 +32,9 @@ __all__ = [
     "ParsedPage",
     "ParsingWarning",
     "ParsingWarningCode",
+    "RetrievalFilters",
+    "RetrievalResult",
     "SourceProvenance",
     "VectorRecord",
+    "VectorSearchMatch",
 ]
