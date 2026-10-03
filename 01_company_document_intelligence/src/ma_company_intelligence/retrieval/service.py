@@ -47,8 +47,7 @@ class SemanticRetriever:
         values = self._embedder.embed_text(query)
         if len(values) != self._embedder.dimension:
             raise QueryVectorError(
-                f"query embedding has dimension {len(values)}; "
-                f"expected {self._embedder.dimension}"
+                f"query embedding has dimension {len(values)}; expected {self._embedder.dimension}"
             )
         if not all(math.isfinite(value) for value in values):
             raise QueryVectorError("query embedding contains a non-finite value")

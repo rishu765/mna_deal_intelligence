@@ -32,19 +32,10 @@ class RetrievalFilters:
 
         return (
             (self.document_id is None or chunk.document_id == self.document_id)
-            and (
-                self.source_filename is None
-                or chunk.source.filename == self.source_filename
-            )
+            and (self.source_filename is None or chunk.source.filename == self.source_filename)
             and (self.company is None or chunk.metadata.company == self.company)
-            and (
-                self.document_type is None
-                or chunk.metadata.document_type == self.document_type
-            )
-            and (
-                self.fiscal_year is None
-                or chunk.metadata.fiscal_year == self.fiscal_year
-            )
+            and (self.document_type is None or chunk.metadata.document_type == self.document_type)
+            and (self.fiscal_year is None or chunk.metadata.fiscal_year == self.fiscal_year)
         )
 
 
