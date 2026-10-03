@@ -110,7 +110,7 @@ chunk rather than reconstructing an incomplete search-result shape. Consequently
 - every page contributing to a cross-page chunk;
 - optional externally supplied company-document metadata.
 
-This is the evidence M5/M6 will need for grounded context and human-facing citations.
+This is the evidence M5–M7 use for grounded context, citations, and structured research.
 
 ## Lightweight quality check
 
