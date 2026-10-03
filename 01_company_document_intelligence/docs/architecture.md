@@ -130,6 +130,27 @@ taxonomy. Its default synthetic benchmark and normal tests require no network or
 optional provider-isolated structured LLM judge can supplement deterministic measures when
 credentials are deliberately supplied; its score is never merged into a composite metric.
 
+### API and application composition
+
+M9/10 adds a FastAPI transport over a reusable `ProjectApplicationService`. HTTP routes validate
+and translate data but do not parse PDFs, create embeddings, retrieve evidence, build prompts,
+or call models directly. A small lazy container constructs provider clients once when a
+provider-dependent endpoint is first used. The application facade opens the SQLite store per
+operation, composes the stable M1–M7 services, and returns domain results for conversion into
+explicit response schemas.
+
+```text
+client -> FastAPI/Pydantic -> application facade -> existing domain services -> providers/store
+                                   |
+                                   +-> domain result -> response schema
+```
+
+The transport assigns request IDs, records bounded operational events, rejects unsafe paths and
+oversized inputs, and maps expected exception families into a stable error envelope. API error
+messages omit underlying exception text so local paths and provider diagnostics remain in
+server-side logs. Provider calls use explicit timeouts and bounded SDK retries; deterministic
+validation and parsing are never retried.
+
 ## Proposed V1 stack
 
 - **Python 3.11+** for typing support and ecosystem compatibility.
@@ -147,8 +168,10 @@ credentials are deliberately supplied; its score is never merged into a composit
 - **OpenAI `gpt-6-luna`** with low reasoning effort behind a provider-neutral generator. It is
   a cost-conscious baseline for focused evidence synthesis; later evaluation must compare it
   with stronger models before production use.
-- **Pydantic** only at the OpenAI adapter boundary for Structured Outputs response validation.
-  Provider-neutral domain objects remain frozen standard-library dataclasses.
+- **Pydantic** at external boundaries for OpenAI Structured Outputs and HTTP request/response
+  validation. Provider-neutral domain objects remain frozen standard-library dataclasses.
+- **FastAPI and Uvicorn** for the local programmatic interface, with Pydantic transport schemas
+  kept separate from frozen provider-neutral domain models.
 
 LangChain or LlamaIndex may be used later for a narrow capability if they reduce maintenance
 without obscuring provenance or evaluation. The core domain models and pipeline boundaries
@@ -158,8 +181,8 @@ future requirement demonstrates a real need.
 ## Planned package shape
 
 Modules will be introduced only when their milestone begins. The likely eventual boundaries
-are `domain`, `ingestion`, `chunking`, `indexing`, `retrieval`, `generation`, `research`, and
-`evaluation`. Avoid creating empty abstractions in advance.
+are `domain`, `ingestion`, `chunking`, `indexing`, `retrieval`, `generation`, `research`,
+`evaluation`, `application`, and `api`. Avoid creating empty abstractions in advance.
 
 ## Cross-cutting constraints
 

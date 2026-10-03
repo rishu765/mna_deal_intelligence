@@ -15,10 +15,9 @@ page, section, and chunk identifier.
 
 ## Current status
 
-M8 adds a versioned synthetic benchmark and an offline evaluation runner that measures
-retrieval, generation correctness, faithfulness, citations, and structured research separately.
-It produces inspectable JSON and Markdown reports, supports gold-context decomposition, and can
-optionally add a structured LLM-judge assessment without making paid calls part of CI.
+M9/10 adds a thin FastAPI interface over the existing indexing, grounded Q&A, and structured
+research services. It includes strict schemas, sanitized errors, safe path and input limits,
+bounded provider timeouts/retries, request correlation, and multi-level offline tests.
 
 See:
 
@@ -33,6 +32,7 @@ See:
 - [Grounded RAG generation](docs/grounded-rag.md)
 - [Citations and structured company research](docs/citations-structured-research.md)
 - [Evaluation and quality measurement](docs/evaluation.md)
+- [API and production hardening](docs/api-robustness.md)
 
 ## V1 scope
 
@@ -180,6 +180,17 @@ It writes detailed JSON and a compact Markdown report under ignored `artifacts/e
 Use `--llm-judge` only when an optional live judge assessment and API cost are intended. See
 [evaluation and quality measurement](docs/evaluation.md) for metric definitions, the committed
 baseline, failure analysis, and limitations.
+
+Start the local API after exporting `OPENAI_API_KEY`:
+
+```powershell
+madi-api
+```
+
+Health is available at `http://127.0.0.1:8000/health`, interactive OpenAPI documentation at
+`/docs`, and the document-indexing, grounded-answer, and structured-research routes under `/v1`.
+See [API and production hardening](docs/api-robustness.md) for schemas, examples, configuration,
+the error model, security boundaries, and deployment limitations.
 
 ## Working principles
 

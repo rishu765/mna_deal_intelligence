@@ -367,9 +367,43 @@ choice has meaningful alternatives or downstream effects.
 - **Tradeoff:** Substring-style checks do not establish semantic entailment; the optional judge
   adds cost, nondeterminism, and model drift.
 
+## D-032 — FastAPI as a thin transport over one application facade
+
+- **Date:** 2026-10-04
+- **Status:** Accepted
+- **Decision:** Add explicit Pydantic HTTP schemas and route all provider-dependent work through
+  `ProjectApplicationService`, which composes the existing M1–M7 services.
+- **Why:** FastAPI supplies useful OpenAPI documentation and validation while the facade prevents
+  route handlers from duplicating ingestion, retrieval, prompt, or citation behavior.
+- **Tradeoff:** Domain results require explicit response conversion, but provider-neutral frozen
+  dataclasses remain independent of the HTTP framework.
+
+## D-033 — Local path-reference ingestion within a configured root
+
+- **Date:** 2026-10-04
+- **Status:** Accepted
+- **Decision:** Accept a PDF reference only after resolving it beneath `MADI_DOCUMENT_ROOT`, with
+  configured document/request size limits. Defer multipart uploads and remote URLs.
+- **Why:** This is the smallest safe interface for a local single-user portfolio deployment and
+  avoids arbitrary filesystem reads, upload storage, and cloud-object lifecycle concerns.
+- **Tradeoff:** API clients must arrange documents in the configured directory. A deployed
+  upload/object-store design would require separate storage and malware controls.
+
+## D-034 — Lazy providers, operation-scoped SQLite, and bounded retries
+
+- **Date:** 2026-10-04
+- **Status:** Accepted
+- **Decision:** Construct reusable OpenAI clients on first use, open/close SQLite stores per
+  operation, and configure a 30-second provider timeout with at most two SDK retries by default.
+- **Why:** Health remains independent of credentials, expensive clients are not rebuilt per
+  request, and SQLite connections are not shared across worker threads. Bounded retries cover
+  transient provider failures without retrying deterministic invalid inputs.
+- **Tradeoff:** Synchronous provider calls occupy worker threads, and per-operation SQLite setup
+  adds small overhead. Higher concurrency needs measurement before a more complex design.
+
 ## Open decisions
 
 - Need for hybrid retrieval or reranking, based on evaluation (M4/M8)
 - Need for clause-level entailment or claim-specific excerpt selection, based on M8 evaluation
-- Thin interface type: CLI, API, or minimal UI (M9)
+- Whether final deployment should remain local-only or add a protected hosted demonstration
 

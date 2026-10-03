@@ -84,6 +84,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             api_key=settings.api_key or "",
             model=settings.model,
             dimension=settings.dimension,
+            timeout=settings.timeout_seconds,
+            max_retries=settings.max_retries,
         )
         with SQLiteVectorStore(
             index_path,

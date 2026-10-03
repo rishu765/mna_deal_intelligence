@@ -84,11 +84,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             api_key=embedding_settings.api_key or "",
             model=embedding_settings.model,
             dimension=embedding_settings.dimension,
+            timeout=embedding_settings.timeout_seconds,
+            max_retries=embedding_settings.max_retries,
         )
         generator = OpenAIGenerator(
             api_key=generation_settings.api_key or "",
             model=generation_settings.model,
             reasoning_effort=generation_settings.reasoning_effort,
+            timeout=generation_settings.timeout_seconds,
+            max_retries=generation_settings.max_retries,
         )
         with SQLiteVectorStore(
             index_path,
