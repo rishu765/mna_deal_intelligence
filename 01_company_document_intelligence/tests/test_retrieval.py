@@ -229,23 +229,29 @@ def test_equal_scores_use_stable_chunk_id_tie_break(tmp_path: Path) -> None:
 
 def test_provider_failure_propagates_without_searching(tmp_path: Path) -> None:
     embedder = _MappedEmbedder({}, fail_query="provider failure")
-    with _store(tmp_path / "failure.sqlite3") as store:
-        with pytest.raises(EmbeddingProviderError, match="synthetic"):
-            SemanticRetriever(embedder, store).retrieve("provider failure")
+    with (
+        _store(tmp_path / "failure.sqlite3") as store,
+        pytest.raises(EmbeddingProviderError, match="synthetic"),
+    ):
+        SemanticRetriever(embedder, store).retrieve("provider failure")
 
 
 def test_unexpected_query_dimension_is_rejected(tmp_path: Path) -> None:
     embedder = _MappedEmbedder({"bad dimension": (1.0, 0.0)})
-    with _store(tmp_path / "dimension.sqlite3") as store:
-        with pytest.raises(QueryVectorError, match="dimension 2"):
-            SemanticRetriever(embedder, store).retrieve("bad dimension")
+    with (
+        _store(tmp_path / "dimension.sqlite3") as store,
+        pytest.raises(QueryVectorError, match="dimension 2"),
+    ):
+        SemanticRetriever(embedder, store).retrieve("bad dimension")
 
 
 def test_zero_magnitude_query_vector_is_rejected(tmp_path: Path) -> None:
     embedder = _MappedEmbedder({"zero": (0.0, 0.0, 0.0)})
-    with _store(tmp_path / "zero.sqlite3") as store:
-        with pytest.raises(QueryVectorError, match="zero magnitude"):
-            SemanticRetriever(embedder, store).retrieve("zero")
+    with (
+        _store(tmp_path / "zero.sqlite3") as store,
+        pytest.raises(QueryVectorError, match="zero magnitude"),
+    ):
+        SemanticRetriever(embedder, store).retrieve("zero")
 
 
 def _write_pdf(path: Path, text: str) -> None:
