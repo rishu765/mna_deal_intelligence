@@ -7,6 +7,7 @@ from typing import Any
 
 import pytest
 
+from ma_company_intelligence.domain import RESEARCH_SECTION_ORDER, ResearchSectionKey
 from ma_company_intelligence.generation import (
     GenerationConfigurationError,
     GenerationProviderError,
@@ -23,11 +24,13 @@ class _FakeResponses:
         *,
         answer: str = "Revenue was $125 million.",
         insufficient_evidence: bool = False,
+        cited_evidence_ids: tuple[str, ...] = ("E1",),
         fail: bool = False,
         malformed: bool = False,
     ) -> None:
         self.answer = answer
         self.insufficient_evidence = insufficient_evidence
+        self.cited_evidence_ids = cited_evidence_ids
         self.fail = fail
         self.malformed = malformed
         self.arguments: dict[str, Any] | None = None
@@ -43,6 +46,7 @@ class _FakeResponses:
             output_parsed=output_type(
                 answer=self.answer,
                 insufficient_evidence=self.insufficient_evidence,
+                cited_evidence_ids=list(self.cited_evidence_ids),
             )
         )
 
@@ -107,6 +111,7 @@ def test_openai_generator_uses_responses_structured_output() -> None:
 
     assert output.answer == "Revenue was $125 million."
     assert output.insufficient_evidence is False
+    assert output.cited_evidence_ids == ("E1",)
     assert responses.arguments is not None
     assert responses.arguments["model"] == "test-model"
     assert responses.arguments["reasoning"] == {"effort": "low"}
@@ -131,3 +136,56 @@ def test_openai_generator_rejects_malformed_structured_response() -> None:
 
     with pytest.raises(GenerationResponseError, match="no valid structured answer"):
         generator.generate(_request())
+
+
+class _FakeResearchResponses:
+    def parse(self, **arguments: Any) -> SimpleNamespace:
+        output_type = arguments["text_format"]
+        sections = []
+        for key in RESEARCH_SECTION_ORDER:
+            supported = key is ResearchSectionKey.FINANCIAL_HIGHLIGHTS
+            sections.append(
+                {
+                    "key": key,
+                    "summary": "FY2025 revenue was $125 million." if supported else None,
+                    "summary_evidence_ids": ["E1"] if supported else [],
+                    "facts": [],
+                    "observations": [],
+                    "financial_metrics": (
+                        [
+                            {
+                                "metric_name": "Revenue",
+                                "value": "$125 million",
+                                "fiscal_period": "FY2025",
+                                "unit": "million",
+                                "currency": "USD",
+                                "basis": "reported revenue",
+                                "evidence_ids": ["E1"],
+                            }
+                        ]
+                        if supported
+                        else []
+                    ),
+                    "insufficient_evidence": not supported,
+                }
+            )
+        return SimpleNamespace(
+            output_parsed=output_type(company_name="Example plc", sections=sections)
+        )
+
+
+def test_openai_generator_converts_structured_research_to_application_models() -> None:
+    generator = OpenAIGenerator(
+        api_key="test-key",
+        client=SimpleNamespace(responses=_FakeResearchResponses()),
+    )
+
+    output = generator.generate_research(_request())
+
+    assert output.company_name == "Example plc"
+    assert tuple(section.key for section in output.sections) == RESEARCH_SECTION_ORDER
+    financials = output.sections[
+        RESEARCH_SECTION_ORDER.index(ResearchSectionKey.FINANCIAL_HIGHLIGHTS)
+    ]
+    assert financials.financial_metrics[0].value == "$125 million"
+    assert financials.financial_metrics[0].evidence_ids == ("E1",)

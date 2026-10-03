@@ -29,10 +29,15 @@ class GenerationOutput:
 
     answer: str
     insufficient_evidence: bool
+    cited_evidence_ids: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.answer.strip():
             raise ValueError("generated answer must not be blank")
+        if any(not evidence_id.strip() for evidence_id in self.cited_evidence_ids):
+            raise ValueError("cited evidence IDs must not be blank")
+        if self.insufficient_evidence and self.cited_evidence_ids:
+            raise ValueError("an insufficient answer cannot cite evidence")
 
 
 class Generator(Protocol):

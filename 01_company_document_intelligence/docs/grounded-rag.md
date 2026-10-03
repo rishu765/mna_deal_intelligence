@@ -21,11 +21,11 @@ ContextBuilder -> bounded, complete evidence blocks
 Generator -> schema-validated GenerationOutput
     |
     v
-RAGAnswer -> answer + exact supporting RetrievalResult objects
+RAGAnswer -> answer + selected citations + exact supporting RetrievalResult objects
 ```
 
 `GroundedRAGService` coordinates these stages but does not parse files, generate embeddings,
-search storage directly, or format final citations. Its dependencies are narrow `Retriever`
+or search storage directly. Its dependencies are narrow `Retriever`
 and `Generator` protocols, so unit tests use deterministic fakes without network calls.
 
 ## Generation model and API
@@ -54,7 +54,8 @@ References:
 Structured Output with exactly:
 
 - `answer`: nonempty text;
-- `insufficient_evidence`: a boolean used by application code.
+- `insufficient_evidence`: a boolean used by application code;
+- `cited_evidence_ids`: only the supplied evidence blocks that directly support the answer.
 
 Provider response objects never enter the domain layer. Missing structured output and blank
 answers fail as `GenerationResponseError`; provider/API failures become
@@ -174,8 +175,8 @@ performed for M5 validation because it is optional and incurs external cost.
 - PDF table, column, OCR, and layout limitations from M1/M2 still affect the evidence.
 - Generated answers are nondeterministic even with fixed reasoning settings; tests validate
   application behavior with fakes, while M8 will evaluate real model outputs.
-- M5 preserves evidence but does not render or validate polished user-facing citations. M6
-  will add that layer.
+- M6/7 now validates model-selected evidence IDs and renders deterministic citations. It does
+  not yet perform clause-level entailment; see `citations-structured-research.md`.
 
 LangGraph and agents are unnecessary here because the pipeline is a fixed sequence with clear
 typed boundaries and no dynamic planning. Adding orchestration would obscure the retrieval and

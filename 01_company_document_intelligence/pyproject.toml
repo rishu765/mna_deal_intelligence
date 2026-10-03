@@ -22,6 +22,7 @@ madi-inspect-chunks = "ma_company_intelligence.chunk_cli:main"
 madi-build-index = "ma_company_intelligence.index_cli:main"
 madi-retrieve = "ma_company_intelligence.retrieval_cli:main"
 madi-answer = "ma_company_intelligence.rag_cli:main"
+madi-research = "ma_company_intelligence.research_cli:main"
 
 [project.optional-dependencies]
 dev = [

@@ -13,6 +13,13 @@ from ma_company_intelligence.generation.errors import (
     GenerationResponseError,
 )
 from ma_company_intelligence.generation.openai_provider import OpenAIGenerator
+from ma_company_intelligence.generation.research import (
+    GeneratedFinancialMetric,
+    GeneratedResearchItem,
+    GeneratedResearchSection,
+    ResearchGenerationOutput,
+    ResearchGenerator,
+)
 
 __all__ = [
     "GenerationConfigurationError",
@@ -23,6 +30,11 @@ __all__ = [
     "GenerationResponseError",
     "GenerationSettings",
     "Generator",
+    "GeneratedFinancialMetric",
+    "GeneratedResearchItem",
+    "GeneratedResearchSection",
     "OpenAIGenerator",
+    "ResearchGenerationOutput",
+    "ResearchGenerator",
     "ReasoningEffort",
 ]

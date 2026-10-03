@@ -101,14 +101,20 @@ M5 implements the first answering layer with a provider-neutral `Generator`, det
 instead of reaching into storage. It preserves rank order, includes stable source/chunk/page
 identifiers, and admits only complete evidence blocks under explicit chunk and character
 limits. The OpenAI adapter uses the Responses API and a schema-validated answer containing an
-answer string and an insufficient-evidence flag.
+answer string, an insufficient-evidence flag, and selected evidence IDs.
 
 No retrieval result causes deterministic abstention without an API call. If evidence is
 present but weak, the prompt requires abstention and the structured flag lets application
 code normalize the response to a stable insufficiency statement. The returned `RAGAnswer`
-retains only the retrieval results actually placed in context. M6 will convert that preserved
-evidence into polished citations and validate evidence references. Structured company
-research remains deferred to M7.
+retains only the retrieval results actually placed in context.
+
+M6/7 adds deterministic citation mapping and structured company research. Model-visible
+evidence IDs are resolved only against the exact supplied context; unknown IDs fail and only
+selected supporting chunks become citations. A fixed `ResearchEvidenceCollector` runs one
+targeted query for each of 11 research categories, deduplicates chunks into a bounded evidence
+catalog, and makes one schema-validated synthesis request. Application-owned models separate
+source facts from analytical M&A observations, preserve financial period, unit, currency, and
+basis, and require section-local citations or an explicit insufficient-evidence state.
 
 ### Evaluation
 

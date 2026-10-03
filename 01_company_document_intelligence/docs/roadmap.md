@@ -43,19 +43,16 @@ reranker.
 Build token-bounded evidence context, a generation adapter, grounded prompts, and explicit
 abstention behavior. Keep retrieval independently callable.
 
-**Status:** Implemented and locally validated on the M5 feature branch; review pending.
+**Status:** Complete and merged into `main`.
 
-## M6 — Citation and provenance validation
+## M6/7 — Citations, provenance, and structured company research
 
-Render user-facing citations and validate that cited claims map to retrieved chunks and source
-locations. This milestone is separate because citation correctness needs its own contracts and
-tests, although provenance is preserved from M1 onward.
+Render user-facing citations, validate model evidence references, and add schema-validated
+company/M&A research with section-local evidence, financial qualifiers, fact/analysis
+separation, and explicit unsupported sections. M6 and M7 are intentionally combined without
+removing either scope.
 
-## M7 — Structured company and M&A research
-
-Add schema-validated outputs for a focused research brief: company overview, segments,
-geographies/end markets, products/services, key metrics, disclosed risks, and strategic
-developments. Require evidence per material field and allow unknown values.
+**Status:** Implemented and locally validated on the combined feature branch; review pending.
 
 ## M8 — Evaluation harness and curated dataset
 

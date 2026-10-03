@@ -282,9 +282,59 @@ choice has meaningful alternatives or downstream effects.
 - **Tradeoff:** M5 answers are inspectable through attached evidence but do not yet contain
   production-quality inline citations.
 
+## D-025 — Model-selected evidence IDs with deterministic citation validation
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Label supplied evidence `E1`, `E2`, and so on; require structured generation to
+  return only directly supporting IDs; validate them against the exact context; deduplicate by
+  chunk ID; and assign user-facing citation numbers in first-reference order.
+- **Why:** This avoids listing every retrieved chunk as support and makes fabricated references
+  fail deterministically. Stable application numbering remains independent of provider output.
+- **Tradeoff:** The baseline maps an answer or structured item to supporting chunks. It does not
+  prove clause-level entailment or isolate the exact sentence within a chunk.
+
+## D-026 — Canonical pages drive citation display
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Display trusted document title or source filename plus one-based canonical page
+  numbers. Keep physical PDF indexes and printed labels in the citation object but never use
+  them as substitutes when canonical provenance is missing.
+- **Why:** M1 defines canonical pages reliably, while printed labels remain unknown unless a
+  future adapter extracts them. Explicit `page unavailable` output is safer than fabrication.
+- **Tradeoff:** A PDF's printed page label may differ from the displayed canonical page number.
+
+## D-027 — Fixed targeted retrieval followed by one structured synthesis
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Run one stable semantic query for each of 11 company-research categories,
+  deduplicate results into a bounded catalog, then make one schema-validated synthesis call.
+- **Why:** Targeted queries give each category a chance to retrieve evidence without sending the
+  complete corpus. One synthesis call controls cost and keeps terminology consistent.
+- **Alternatives:** One generation call per section increases cost and can create inconsistent
+  profiles. Sending the full corpus ignores retrieval. An agent or LangGraph adds planning even
+  though the workflow and categories are known in advance.
+- **Tradeoff:** Weak category queries can miss evidence, and one large response can still omit or
+  misclassify facts. M8 will measure category retrieval and structured-field accuracy.
+
+## D-028 — Separate facts, analysis, and qualified financial strings
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Store direct facts and M&A observations in different types. Preserve each
+  financial metric's displayed value as text with optional fiscal period, unit, currency, and
+  basis, and require citations for every populated item.
+- **Why:** Analysts must distinguish disclosure from interpretation, and premature numeric
+  normalization can confuse reported and adjusted measures, periods, signs, currencies, or
+  scale.
+- **Tradeoff:** Values are not yet calculation-ready. A future deterministic normalization
+  layer would need explicit source-aware rules and separate validation.
+
 ## Open decisions
 
 - Need for hybrid retrieval or reranking, based on evaluation (M4/M8)
-- Citation representation and claim-to-source validation (M6)
+- Need for clause-level entailment or claim-specific excerpt selection, based on M8 evaluation
 - Thin interface type: CLI, API, or minimal UI (M9)
 

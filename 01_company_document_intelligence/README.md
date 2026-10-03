@@ -15,10 +15,11 @@ page, section, and chunk identifier.
 
 ## Current status
 
-Milestone 5 completes the first grounded RAG loop. It retrieves M4 evidence, builds a bounded
-and provenance-rich context, calls a provider-neutral generation boundary, and returns a typed
-answer with the exact supporting results. Empty or inadequate evidence produces an explicit
-insufficient-evidence result. Polished citations remain an M6 responsibility.
+The combined M6/7 milestone adds validated user-facing citations and structured M&A-oriented
+company research. Free-form answers cite only model-selected evidence IDs that application code
+maps to real retrieved chunks. Structured research uses targeted category queries and returns
+typed sections with facts, separately labeled analysis, financial qualifiers, section-local
+citations, and explicit insufficient-evidence states.
 
 See:
 
@@ -31,6 +32,7 @@ See:
 - [Embeddings and vector indexing](docs/embeddings-indexing.md)
 - [Semantic retrieval](docs/semantic-retrieval.md)
 - [Grounded RAG generation](docs/grounded-rag.md)
+- [Citations and structured company research](docs/citations-structured-research.md)
 
 ## V1 scope
 
@@ -146,11 +148,27 @@ madi-answer "data/raw/example-annual-report.pdf" `
 ```
 
 This command requires `OPENAI_API_KEY` for both embedding and generation. It displays one
-answer plus bounded evidence previews and does not print vectors, prompts, or credentials.
+answer, selected citations, and bounded evidence previews; it does not print vectors, prompts,
+or credentials.
 Generation defaults to OpenAI `gpt-6-luna` with low reasoning effort, an 800-token output cap,
 at most five evidence chunks, and a 12,000-character evidence budget. See
 [grounded RAG generation](docs/grounded-rag.md) for configuration, grounding rules, and
 limitations.
+
+Generate the complete cited structured research profile:
+
+```powershell
+madi-research "data/raw/example-annual-report.pdf" `
+  --company "Example plc" `
+  --document-title "Annual Report FY2025" `
+  --document-type "annual_report" `
+  --fiscal-year 2025
+```
+
+The command runs fixed category-specific retrieval, one schema-validated synthesis, and
+deterministic citation mapping. Unsupported sections remain explicitly insufficient. See
+[citations and structured company research](docs/citations-structured-research.md) for the
+schema, evidence strategy, financial safeguards, examples, and limitations.
 
 ## Working principles
 

@@ -20,10 +20,12 @@ Rules:
 - Resolve no conflicts silently. If supplied passages conflict, state the conflict and avoid
   choosing an unsupported value.
 - Keep the answer concise and useful to a research analyst.
-- Do not create polished citations. The application retains the evidence separately for the
-  citation stage.
+- Return only the evidence IDs that directly support the answer in cited_evidence_ids.
+- Use evidence IDs exactly as shown, such as E1. Do not invent or alter an evidence ID.
+- Do not cite every supplied chunk automatically. Exclude chunks that do not support the answer.
 
-Return the required structured answer with answer and insufficient_evidence fields."""
+Return the required structured answer with answer, insufficient_evidence, and
+cited_evidence_ids fields."""
 
 
 def build_generation_input(*, question: str, context: str) -> str:

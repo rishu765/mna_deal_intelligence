@@ -2,7 +2,8 @@
 
 ## Current milestone
 
-**M5 — Grounded RAG generation: implemented and locally validated (2026-10-03)**
+**M6/7 — Citations, provenance, and structured company research: implemented and locally
+validated (2026-10-03)**
 
 ## Milestone log
 
@@ -88,7 +89,25 @@
 - Passed Ruff linting, Ruff formatting across 60 files, strict mypy across 50 source files, and
   all 75 tests locally. No live paid API call was run.
 
+### 2026-10-03 — Combined M6/7 implementation
+
+- Added typed citations retaining stable chunk/document IDs, trusted source names, canonical
+  pages, physical indexes, printed-label status, metadata, and bounded excerpts.
+- Added model-selected evidence IDs with deterministic validation, deduplication, numbering,
+  missing-page handling, and analyst-facing citation formatting.
+- Extended free-form RAG answers and the `madi-answer` command with selected citations rather
+  than treating every retrieved chunk as support.
+- Added application-owned structured research schemas covering 11 company/M&A categories,
+  explicit facts and analysis, qualified financial metrics, section citations, and abstention.
+- Added fixed category-specific retrieval with a bounded deduplicated evidence catalog and one
+  schema-validated research synthesis call.
+- Added `madi-research` for bounded PDF-to-profile validation without a frontend.
+- Added offline tests for citation safety, provenance, targeted retrieval, schema conversion,
+  unsupported sections, financial qualifiers, malformed output, and full CLI pipelines.
+- Passed Ruff linting, Ruff formatting across 76 files, strict mypy across 64 source files, and
+  all 88 tests locally. No live paid API call was run.
+
 ## Next review gate
 
-Review and merge the M5 pull request before beginning M6.
+Review and merge the combined M6/7 pull request before beginning M8 evaluation.
 
