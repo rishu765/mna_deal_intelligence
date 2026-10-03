@@ -7,6 +7,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from ma_company_intelligence import __version__
 from ma_company_intelligence.application import IndexDocumentResult
 from ma_company_intelligence.chunking import ChunkingConfig
 from ma_company_intelligence.domain import (
@@ -29,7 +30,7 @@ class APIModel(BaseModel):
 class HealthResponse(APIModel):
     status: Literal["ok"] = "ok"
     service: Literal["ma-company-intelligence"] = "ma-company-intelligence"
-    version: str = "0.1.0"
+    version: str = __version__
 
 
 class MetadataRequest(APIModel):

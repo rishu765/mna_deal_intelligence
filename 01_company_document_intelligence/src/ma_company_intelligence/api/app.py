@@ -11,6 +11,7 @@ from uuid import uuid4
 from fastapi import Depends, FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
+from ma_company_intelligence import __version__
 from ma_company_intelligence.api.errors import install_exception_handlers
 from ma_company_intelligence.api.schemas import (
     AnswerResponse,
@@ -60,7 +61,7 @@ def create_app(
     )
     application = FastAPI(
         title="M&A Company Research & Document Intelligence API",
-        version="0.1.0",
+        version=__version__,
         description=(
             "Evidence-backed local document indexing, grounded Q&A, and structured company "
             "research. Provider credentials are required only for provider-dependent operations."
