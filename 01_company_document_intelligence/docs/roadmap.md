@@ -52,13 +52,15 @@ company/M&A research with section-local evidence, financial qualifiers, fact/ana
 separation, and explicit unsupported sections. M6 and M7 are intentionally combined without
 removing either scope.
 
-**Status:** Implemented and locally validated on the combined feature branch; review pending.
+**Status:** Complete and merged into `main`.
 
 ## M8 — Evaluation harness and curated dataset
 
 Version a compact evaluation set and report retrieval quality, answer correctness,
 faithfulness, citation correctness, and absent-evidence behavior. Evaluation contracts and
 sample cases begin earlier; this milestone turns them into an end-to-end harness.
+
+**Status:** Implemented and locally validated on the M8 feature branch; review pending.
 
 ## M9 — API or interface
 

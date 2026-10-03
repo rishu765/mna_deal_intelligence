@@ -118,11 +118,17 @@ basis, and require section-local citations or an explicit insufficient-evidence 
 
 ### Evaluation
 
-Evaluation will use a small versioned dataset of questions, expected evidence, expected
-answers or key facts, and deliberately unanswerable questions. Retrieval and generation will
-be callable independently so failures can be localized. Machine metrics will be combined
-with inspectable per-example results; LLM-as-judge may supplement but will not replace
-deterministic checks and human review.
+M8 implements evaluation as a separate package over versioned cases and recorded observations.
+It computes retrieval hit/recall at configurable ranks, MRR, expected-fact correctness,
+claim-to-context faithfulness, citation validity/support/coverage, and structured-field quality
+without introducing gold data into production code. Retrieved-context and gold-context answers
+are scored separately so an observed gap can identify retrieval/context contribution.
+
+The runner emits machine-readable JSON plus a compact Markdown report containing separate
+component metrics, per-category summaries, per-case evidence and failures, and a stable failure
+taxonomy. Its default synthetic benchmark and normal tests require no network or paid API. An
+optional provider-isolated structured LLM judge can supplement deterministic measures when
+credentials are deliberately supplied; its score is never merged into a composite metric.
 
 ## Proposed V1 stack
 

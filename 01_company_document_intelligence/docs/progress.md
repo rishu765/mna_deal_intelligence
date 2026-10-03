@@ -107,7 +107,26 @@ validated (2026-10-03)**
 - Passed Ruff linting, Ruff formatting across 76 files, strict mypy across 64 source files, and
   all 88 tests locally. No live paid API call was run.
 
+### 2026-10-03 — M8 implementation
+
+- Added application-owned schemas for versioned evaluation datasets, recorded observations,
+  component metrics, per-case failures, and reports.
+- Added a copyright-safe synthetic company corpus with 14 diverse Q&A cases, two structured
+  research cases, multiple-evidence questions, and an unanswerable case.
+- Added deterministic retrieval hit/recall at 1, 3, and 5, MRR, correctness, abstention,
+  faithfulness, citation, and structured-research metrics.
+- Added gold-context versus retrieved-context scoring and a stable failure taxonomy to localize
+  retrieval, context, generation, citation, and structured-output failures.
+- Added an optional schema-validated OpenAI judge that is skipped without credentials and never
+  runs in the normal test suite.
+- Added JSON and Markdown reporting, a `madi-evaluate` command, and a committed offline baseline
+  containing intentionally visible weaknesses rather than an artificial perfect score.
+- Added evaluation-framework tests for metric arithmetic, duplicate retrievals, malformed data,
+  fabricated citations, structured mismatches, reporter/CLI behavior, and judge failure.
+- Passed Ruff linting and formatting, strict mypy across 74 source files, and all 103 tests
+  locally. No live paid API call was run.
+
 ## Next review gate
 
-Review and merge the combined M6/7 pull request before beginning M8 evaluation.
+Review and merge the M8 pull request before beginning the M9 API/interface milestone.
 

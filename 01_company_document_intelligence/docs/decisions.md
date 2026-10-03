@@ -332,6 +332,41 @@ choice has meaningful alternatives or downstream effects.
 - **Tradeoff:** Values are not yet calculation-ready. A future deterministic normalization
   layer would need explicit source-aware rules and separate validation.
 
+## D-029 — Versioned synthetic cases and recorded observations
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Commit a copyright-safe fictional-company dataset containing gold facts,
+  evidence targets, recorded retrieval/context/generation observations, and deliberately flawed
+  outputs. Keep generated local reports ignored while committing one reproducible baseline.
+- **Why:** The benchmark can run without network access, API spend, or redistribution of annual
+  reports, and failures remain directly inspectable.
+- **Tradeoff:** Recorded observations measure the evaluator and diagnostic method rather than
+  live provider quality. Later representative-document runs must supplement this baseline.
+
+## D-030 — Separate component metrics without a composite score
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Report retrieval, correctness, faithfulness, citations, structured output, and
+  abstention independently, with explicit definitions and per-case failure categories.
+- **Why:** A single average hides whether the index, context, generator, or citation mapping
+  failed and can conceal unsafe financial behavior behind strong unrelated scores.
+- **Tradeoff:** Reviewers must interpret several metrics and their denominators.
+
+## D-031 — Gold-context decomposition and deterministic-first evaluation
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Score recorded answers against retrieved context and known correct context, and
+  provide normalized fact/support checks as the default. Offer a schema-validated OpenAI judge
+  only as an optional supplement.
+- **Why:** The correctness gap helps attribute retrieval/context failures, while deterministic
+  checks keep CI reproducible and auditable. Judge output can help with paraphrases but is not
+  ground truth.
+- **Tradeoff:** Substring-style checks do not establish semantic entailment; the optional judge
+  adds cost, nondeterminism, and model drift.
+
 ## Open decisions
 
 - Need for hybrid retrieval or reranking, based on evaluation (M4/M8)
