@@ -226,9 +226,65 @@ choice has meaningful alternatives or downstream effects.
 - **Why:** Baseline retrieval must be measurable so later improvements can demonstrate value
   and retrieval failures remain distinguishable from generation failures.
 
+## D-021 — OpenAI Luna baseline behind a structured generator boundary
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Define a provider-neutral `Generator` protocol and use OpenAI `gpt-6-luna`
+  through the Responses API with low reasoning effort, an 800-token output cap, and no tools.
+  Validate the provider response with a Pydantic Structured Output before converting it to a
+  provider-neutral `GenerationOutput`.
+- **Why:** Grounded Q&A over retrieved passages is focused evidence synthesis. Luna is the
+  current cost-conscious OpenAI baseline for focused, high-volume work, while the interface
+  permits later model comparison. Structured output gives downstream code a reliable boolean
+  abstention signal instead of parsing prose.
+- **Alternatives:** `gpt-6.1-sol` may improve difficult synthesis at higher cost and should be
+  tested during evaluation. Plain JSON or free text requires fragile parsing. Multiple
+  providers would add unmeasured complexity in M5.
+- **Tradeoff:** Hosted generation needs credentials, network access, and API spend. A model
+  alias can change over time; production should consider a tested snapshot.
+
+## D-022 — Whole-block character-bounded context
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Preserve retrieval order and include at most five complete evidence blocks
+  under a 12,000-character default budget. Stop at the first block that does not fit; never
+  truncate chunk text or its provenance header.
+- **Why:** Complete blocks keep financial values and source lineage together. Character counts
+  are deterministic and consistent with M2 without coupling the application layer to a model
+  tokenizer. The limits bound cost and prompt size while remaining easy to inspect.
+- **Tradeoff:** Characters only approximate tokens, and a large high-ranked chunk can prevent
+  smaller lower-ranked chunks from entering context. Evaluation may justify token accounting,
+  deduplication, or evidence packing later.
+
+## D-023 — Explicit abstention with no arbitrary retrieval threshold
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Skip generation and return a canonical insufficiency statement when retrieval
+  returns nothing or no complete chunk fits. When context exists, require a structured
+  insufficient-evidence decision and normalize true outcomes to the same safe statement.
+- **Why:** Absence of evidence must be a supported result, especially for financial metrics.
+  M4 cosine scores are not calibrated probabilities, so an unevaluated score threshold would
+  create false confidence or suppress useful evidence.
+- **Tradeoff:** Prompt-based support judgment can still fail. M8 must measure faithfulness and
+  abstention, and later safeguards may add deterministic claim checks.
+
+## D-024 — Preserve evidence now and render citations in M6
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Return the exact context-included `RetrievalResult` objects on `RAGAnswer`, but
+  defer polished citation labels and claim-to-source validation to M6.
+- **Why:** M1–M4 already preserve complete source/page/chunk lineage. Citation rendering and
+  correctness need their own contracts and tests and should not be hidden inside the prompt.
+- **Tradeoff:** M5 answers are inspectable through attached evidence but do not yet contain
+  production-quality inline citations.
+
 ## Open decisions
 
 - Need for hybrid retrieval or reranking, based on evaluation (M4/M8)
-- Generation provider and citation representation (M5–M6)
+- Citation representation and claim-to-source validation (M6)
 - Thin interface type: CLI, API, or minimal UI (M9)
 

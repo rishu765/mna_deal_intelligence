@@ -36,12 +36,14 @@ Implement top-k semantic retrieval, metadata filters where supported, query/resu
 and diagnostic output. Establish retrieval metrics before considering hybrid search or a
 reranker.
 
-**Status:** Implemented and validated on the M4 feature branch; review pending.
+**Status:** Complete and merged into `main`.
 
 ## M5 — Grounded answer generation
 
 Build token-bounded evidence context, a generation adapter, grounded prompts, and explicit
 abstention behavior. Keep retrieval independently callable.
+
+**Status:** Implemented and locally validated on the M5 feature branch; review pending.
 
 ## M6 — Citation and provenance validation
 

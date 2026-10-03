@@ -12,6 +12,7 @@ license = { text = "Proprietary" }
 authors = [{ name = "Project Maintainer" }]
 dependencies = [
   "openai>=2.0,<3",
+  "pydantic>=2.9,<3",
   "pymupdf>=1.24,<2",
 ]
 
@@ -20,6 +21,7 @@ madi-inspect-pdf = "ma_company_intelligence.cli:main"
 madi-inspect-chunks = "ma_company_intelligence.chunk_cli:main"
 madi-build-index = "ma_company_intelligence.index_cli:main"
 madi-retrieve = "ma_company_intelligence.retrieval_cli:main"
+madi-answer = "ma_company_intelligence.rag_cli:main"
 
 [project.optional-dependencies]
 dev = [

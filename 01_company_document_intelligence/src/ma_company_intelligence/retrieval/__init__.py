@@ -1,5 +1,6 @@
 """Public semantic retrieval interface."""
 
+from ma_company_intelligence.retrieval.base import Retriever
 from ma_company_intelligence.retrieval.errors import (
     InvalidQueryError,
     QueryVectorError,
@@ -12,6 +13,7 @@ __all__ = [
     "InvalidQueryError",
     "QueryVectorError",
     "RetrievalError",
+    "Retriever",
     "SemanticRetriever",
     "StoredVectorError",
 ]

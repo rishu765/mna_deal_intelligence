@@ -15,9 +15,10 @@ page, section, and chunk identifier.
 
 ## Current status
 
-Milestone 4 adds validated query embedding, deterministic exact cosine-similarity retrieval,
-typed ranked results, complete provenance, and explicit exact metadata filters over the M3
-SQLite records. Answer generation and user-facing interfaces are not implemented yet.
+Milestone 5 completes the first grounded RAG loop. It retrieves M4 evidence, builds a bounded
+and provenance-rich context, calls a provider-neutral generation boundary, and returns a typed
+answer with the exact supporting results. Empty or inadequate evidence produces an explicit
+insufficient-evidence result. Polished citations remain an M6 responsibility.
 
 See:
 
@@ -29,6 +30,7 @@ See:
 - [Metadata and chunking](docs/chunking.md)
 - [Embeddings and vector indexing](docs/embeddings-indexing.md)
 - [Semantic retrieval](docs/semantic-retrieval.md)
+- [Grounded RAG generation](docs/grounded-rag.md)
 
 ## V1 scope
 
@@ -134,6 +136,21 @@ madi-retrieve "data/raw/example-annual-report.pdf" `
 Results include cosine score, stable IDs, source document, page provenance, trusted metadata,
 and a bounded text preview. See [semantic retrieval](docs/semantic-retrieval.md) for score
 semantics, filters, deterministic ordering, quality checks, and limitations.
+
+Run the complete local PDF-to-answer pipeline:
+
+```powershell
+madi-answer "data/raw/example-annual-report.pdf" `
+  "What were the main revenue growth drivers?" `
+  --top-k 5 --company "Example plc" --fiscal-year 2025
+```
+
+This command requires `OPENAI_API_KEY` for both embedding and generation. It displays one
+answer plus bounded evidence previews and does not print vectors, prompts, or credentials.
+Generation defaults to OpenAI `gpt-6-luna` with low reasoning effort, an 800-token output cap,
+at most five evidence chunks, and a 12,000-character evidence budget. See
+[grounded RAG generation](docs/grounded-rag.md) for configuration, grounding rules, and
+limitations.
 
 ## Working principles
 
