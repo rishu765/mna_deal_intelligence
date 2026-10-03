@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ma-company-intelligence"
-version = "0.1.0"
+version = "1.0.0"
 description = "Evidence-backed company research and document intelligence for M&A workflows."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -27,6 +27,7 @@ madi-answer = "ma_company_intelligence.rag_cli:main"
 madi-research = "ma_company_intelligence.research_cli:main"
 madi-evaluate = "ma_company_intelligence.evaluation_cli:main"
 madi-api = "ma_company_intelligence.api_cli:main"
+madi-create-demo-pdf = "ma_company_intelligence.demo_document:main"
 
 [project.optional-dependencies]
 dev = [

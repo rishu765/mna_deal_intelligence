@@ -174,7 +174,8 @@ performed for M5 validation because it is optional and incurs external cost.
 - No lexical retrieval, reranking, conflict resolver, or financial calculation engine exists.
 - PDF table, column, OCR, and layout limitations from M1/M2 still affect the evidence.
 - Generated answers are nondeterministic even with fixed reasoning settings; tests validate
-  application behavior with fakes, while M8 will evaluate real model outputs.
+  application behavior with fakes. M8 evaluates recorded synthetic outputs; representative
+  live-model evaluation remains separate because it carries cost and nondeterminism.
 - M6/7 now validates model-selected evidence IDs and renders deterministic citations. It does
   not yet perform clause-level entailment; see `citations-structured-research.md`.
 

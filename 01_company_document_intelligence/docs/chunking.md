@@ -144,6 +144,6 @@ Use supplied metadata only when its source is trustworthy.
 - Character lengths do not guarantee a fixed embedding-model token count.
 - Printed page labels and sections remain unknown.
 
-Semantic chunking is deferred until a simple baseline can be evaluated. M3 will consume these
-chunks through provider-neutral embedding and index interfaces; it will not change provenance
-semantics merely to match a vector-store schema.
+Semantic chunking remains deferred until evaluation demonstrates a clear gain. M3 consumes
+these chunks through provider-neutral embedding and index interfaces without changing
+provenance semantics merely to match a vector-store schema.

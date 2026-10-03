@@ -147,8 +147,31 @@ validated (2026-10-03)**
   130 tests locally. Manually started Uvicorn and verified health, OpenAPI paths, request IDs,
   and safe missing-provider behavior. No live paid API call was run.
 
+### 2026-10-04 — M11 finalization
+
+- Released the project package and API contract as version 1.0.0 without changing the stable
+  M1–M10 RAG architecture.
+- Replaced milestone-oriented setup notes with a reviewer-first README covering business value,
+  architecture, implemented capabilities, examples, evaluation, API usage, setup, deployment,
+  and limitations.
+- Added a deterministic command that generates a five-page fictional company PDF locally, plus
+  a complete API demo from indexing through cited Q&A, structured research, and evaluation.
+- Added a minimal Python 3.11 Docker image that installs runtime dependencies, runs as a
+  non-root user, exposes a health check, and keeps documents, indexes, and secrets outside the
+  image through mounted paths and environment injection.
+- Added final Mermaid architecture diagrams, a deployment guide, portfolio/resume material,
+  an interview walkthrough, and an explicit Project 2 reuse assessment.
+- Reran the deterministic M8 benchmark and confirmed exact aggregate and per-case equality with
+  the committed baseline. No scores were tuned during finalization.
+- Reviewed tracked files, ignored artifacts, input boundaries, logging, configuration, provider
+  timeouts, dependencies, CI, and known limitations for portfolio-level security hygiene.
+- Passed Ruff linting/formatting across 106 files, strict mypy across 87 source files, and all
+  133 tests locally. Editable installation, `pip check`, console-command smoke tests, and the
+  synthetic PDF parse/chunk workflow also passed. Docker was unavailable locally, so the image
+  definition is CI/reviewer inspectable but was not locally built.
+
 ## Next review gate
 
-Review and merge the combined M9/10 pull request before beginning M11 portfolio polish and
-deployment/readiness work.
+Review and merge the M11 finalization pull request. After merge, Project 1 is complete and the
+next approved portfolio effort is Project 2 — M&A Target Screening & Deal Sourcing Agent.
 

@@ -174,6 +174,18 @@ evidence; a multi-evidence answer omits adjusted EBITDA; and the market-share ca
 it should abstain. These show why correctness, grounding, citation quality, and abstention must
 remain separate.
 
+## M11 final rerun
+
+The finalization milestone reran the same dataset, top-k values, runner, and deterministic
+configuration. The generated JSON was exactly equal to the committed M8 baseline, including
+aggregate metrics and every per-case result. Finalization intentionally did not change runtime
+prompts, recorded retrieval observations, metric definitions, or gold cases merely to improve
+the displayed scores.
+
+Therefore the table above is both the M8 baseline and the final Project 1 deterministic result.
+The comparison shows zero change for every metric. This is regression evidence for the
+evaluation framework, not a new live-provider quality measurement.
+
 ## Unit tests versus quality benchmarks
 
 Unit tests verify metric arithmetic, validation, reporting, duplicate handling, safe judge
@@ -195,5 +207,6 @@ brittle and encourage overfitting.
 - The optional judge adds cost and nondeterminism and remains subject to model drift.
 - Human review remains necessary for material financial and M&A conclusions.
 
-M9 can expose the evaluated services through a thin API or interface. It should consume the
-existing production boundaries and must not put benchmark gold data into runtime requests.
+M9/10 exposes the evaluated services through a thin API without putting benchmark gold data
+into runtime requests. Future evaluation should add representative, legally distributable
+document layouts and separately recorded live-provider runs.

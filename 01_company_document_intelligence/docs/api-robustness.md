@@ -6,6 +6,8 @@ service wiring. The API is a transport layer: parsing, chunking, indexing, retri
 answering, citations, and structured research remain in their existing application/domain
 services.
 
+For the finalized reviewer workflow and container boundary, see `demo.md` and `deployment.md`.
+
 ## Architecture
 
 ```text

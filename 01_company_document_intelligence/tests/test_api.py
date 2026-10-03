@@ -175,7 +175,7 @@ def test_health_does_not_require_provider_configuration(client: TestClient) -> N
     assert response.json() == {
         "status": "ok",
         "service": "ma-company-intelligence",
-        "version": "0.1.0",
+        "version": "1.0.0",
     }
     assert response.headers["x-request-id"]
 
