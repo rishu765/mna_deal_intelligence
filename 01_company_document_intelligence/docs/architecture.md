@@ -96,10 +96,19 @@ scan suitable for the current local corpus; reranking and answer generation rema
 
 ### Answering and structured research
 
-The answering layer will consume an explicit evidence bundle rather than reaching directly
-into storage. Prompts will require evidence-grounded answers and abstention when support is
-missing. Structured research outputs will use validated schemas and retain citations at the
-field or claim level where practical.
+M5 implements the first answering layer with a provider-neutral `Generator`, deterministic
+`ContextBuilder`, and `GroundedRAGService`. The service consumes M4 `RetrievalResult` objects
+instead of reaching into storage. It preserves rank order, includes stable source/chunk/page
+identifiers, and admits only complete evidence blocks under explicit chunk and character
+limits. The OpenAI adapter uses the Responses API and a schema-validated answer containing an
+answer string and an insufficient-evidence flag.
+
+No retrieval result causes deterministic abstention without an API call. If evidence is
+present but weak, the prompt requires abstention and the structured flag lets application
+code normalize the response to a stable insufficiency statement. The returned `RAGAnswer`
+retains only the retrieval results actually placed in context. M6 will convert that preserved
+evidence into polished citations and validate evidence references. Structured company
+research remains deferred to M7.
 
 ### Evaluation
 
@@ -123,6 +132,11 @@ deterministic checks and human review.
   be measured later.
 - **SQLite vector-record persistence** for V1. It is transactional, inspectable, and requires
   no service. M4 evaluation will determine whether a native vector engine is warranted.
+- **OpenAI `gpt-6-luna`** with low reasoning effort behind a provider-neutral generator. It is
+  a cost-conscious baseline for focused evidence synthesis; later evaluation must compare it
+  with stronger models before production use.
+- **Pydantic** only at the OpenAI adapter boundary for Structured Outputs response validation.
+  Provider-neutral domain objects remain frozen standard-library dataclasses.
 
 LangChain or LlamaIndex may be used later for a narrow capability if they reduce maintenance
 without obscuring provenance or evaluation. The core domain models and pipeline boundaries

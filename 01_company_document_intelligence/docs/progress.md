@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-**M4 — Semantic retrieval: complete (2026-10-03)**
+**M5 — Grounded RAG generation: implemented and locally validated (2026-10-03)**
 
 ## Milestone log
 
@@ -68,7 +68,27 @@
 - Passed Ruff linting, Ruff formatting across 44 files, strict mypy across 35 source files, and
   all 55 tests in GitHub Actions.
 
+### 2026-10-03 — M5 implementation
+
+- Added a provider-neutral retrieval protocol and generation request/output interface.
+- Added environment-driven OpenAI generation configuration and a Responses API adapter using
+  schema-validated structured output.
+- Selected `gpt-6-luna` with low reasoning effort and a bounded 800-token default response as
+  the cost-conscious focused-synthesis baseline.
+- Added deterministic evidence blocks containing retrieval rank, score, stable IDs, source,
+  physical and canonical pages, printed-label status, trusted metadata, and unchanged text.
+- Added configurable five-chunk and 12,000-character context limits that admit only complete
+  ranked evidence blocks.
+- Added a grounded company-research prompt with explicit financial safeguards and no external
+  knowledge or web fallback.
+- Added deterministic abstention when evidence is absent or cannot fit, plus structured
+  insufficient-evidence handling when context is weak.
+- Added typed `RAGAnswer` objects retaining exactly the evidence used for generation.
+- Added a bounded PDF-to-answer CLI and offline full-pipeline validation using fake providers.
+- Passed Ruff linting, Ruff formatting across 60 files, strict mypy across 50 source files, and
+  all 75 tests locally. No live paid API call was run.
+
 ## Next review gate
 
-Review and merge the M4 pull request before beginning M5.
+Review and merge the M5 pull request before beginning M6.
 
