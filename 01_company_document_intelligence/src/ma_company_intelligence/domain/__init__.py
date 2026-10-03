@@ -1,5 +1,6 @@
 """Provider-neutral document and chunk models."""
 
+from ma_company_intelligence.domain.answers import RAGAnswer
 from ma_company_intelligence.domain.chunks import (
     ChunkedDocument,
     ChunkPageReference,
@@ -34,6 +35,7 @@ __all__ = [
     "ParsingWarningCode",
     "RetrievalFilters",
     "RetrievalResult",
+    "RAGAnswer",
     "SourceProvenance",
     "VectorRecord",
     "VectorSearchMatch",
