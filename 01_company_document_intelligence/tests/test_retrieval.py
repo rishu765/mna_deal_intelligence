@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from pathlib import Path
 
 import pymupdf
@@ -32,7 +33,7 @@ class _MappedEmbedder:
 
     def __init__(
         self,
-        vectors: dict[str, tuple[float, ...]],
+        vectors: Mapping[str, tuple[float, ...]],
         *,
         fail_query: str | None = None,
     ) -> None:
