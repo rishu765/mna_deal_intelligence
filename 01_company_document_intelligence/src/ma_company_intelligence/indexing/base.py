@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from ma_company_intelligence.domain import VectorRecord
+from ma_company_intelligence.domain import (
+    EmbeddingVector,
+    RetrievalFilters,
+    VectorRecord,
+    VectorSearchMatch,
+)
 
 
 class VectorStore(Protocol):
@@ -24,3 +29,11 @@ class VectorStore(Protocol):
     def count(self) -> int: ...
 
     def get(self, record_id: str) -> VectorRecord | None: ...
+
+    def similarity_search(
+        self,
+        query_vector: EmbeddingVector,
+        *,
+        top_k: int,
+        filters: RetrievalFilters | None = None,
+    ) -> tuple[VectorSearchMatch, ...]: ...
