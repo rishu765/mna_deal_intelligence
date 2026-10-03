@@ -28,13 +28,15 @@ headings, page boundaries, and financial tables.
 Define embedding and index ports, select one baseline embedding model and local store, persist
 index metadata/configuration, and support reproducible index builds.
 
-**Status:** Implemented and validated on the M3 feature branch; review pending.
+**Status:** Complete and merged into `main`.
 
 ## M4 — Retrieval baseline
 
 Implement top-k semantic retrieval, metadata filters where supported, query/result models,
 and diagnostic output. Establish retrieval metrics before considering hybrid search or a
 reranker.
+
+**Status:** Implemented and validated on the M4 feature branch; review pending.
 
 ## M5 — Grounded answer generation
 

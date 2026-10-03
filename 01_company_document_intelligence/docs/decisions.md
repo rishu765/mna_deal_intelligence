@@ -183,9 +183,52 @@ choice has meaningful alternatives or downstream effects.
 - **Why:** Storage integrity and retrieval quality need separate contracts and tests. M4 can
   evaluate an exact baseline before selecting more infrastructure.
 
+## D-017 — Exact cosine retrieval with stable ordering
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Extend the existing `VectorStore` boundary with exact cosine-similarity search.
+  Sort descending by score and break equal-score ties with ascending stable chunk ID. Default
+  to `top_k=5` with no minimum score threshold.
+- **Why:** Exact scoring is transparent, deterministic, and sufficient for the current local
+  corpus. An arbitrary threshold would hide evidence before evaluation establishes calibrated
+  behavior.
+- **Tradeoff:** Search deserializes and scores every candidate, so latency grows linearly with
+  corpus size. A vector-native ANN engine remains replaceable behind the interface.
+
+## D-018 — Retrieval results retain complete chunks
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Return provider-neutral `RetrievalResult` values containing rank, cosine score,
+  and the complete M2 `DocumentChunk`.
+- **Why:** M5/M6 require text, stable IDs, source metadata, and every contributing page for
+  grounded evidence and citations. Keeping the original chunk avoids incomplete search shapes
+  and provider-specific result objects.
+
+## D-019 — Limited exact metadata filters
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Support AND-combined exact filters for document ID, source filename, company,
+  document type, and fiscal year. Apply filters before similarity scoring.
+- **Why:** These fields already exist in M2/M3 and are useful for company-document research.
+  Optional fields only match when trusted metadata was supplied; retrieval never infers them.
+- **Tradeoff:** Initial filtering occurs in Python and is case-sensitive. Larger corpora should
+  push indexed filtering into storage without changing the public filter contract.
+
+## D-020 — Defer reranking and answer generation
+
+- **Date:** 2026-10-03
+- **Status:** Accepted
+- **Decision:** Establish and test vector retrieval before adding reranking, context assembly,
+  prompts, or an answer model.
+- **Why:** Baseline retrieval must be measurable so later improvements can demonstrate value
+  and retrieval failures remain distinguishable from generation failures.
+
 ## Open decisions
 
-- Need for hybrid retrieval or reranking, based on evaluation (M4)
+- Need for hybrid retrieval or reranking, based on evaluation (M4/M8)
 - Generation provider and citation representation (M5–M6)
 - Thin interface type: CLI, API, or minimal UI (M9)
 

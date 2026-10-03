@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-**M3 — Embeddings and vector indexing: complete (2026-10-03)**
+**M4 — Semantic retrieval: complete (2026-10-03)**
 
 ## Milestone log
 
@@ -53,7 +53,22 @@
   provider failures, malformed inputs, dimensions, and partial-write prevention.
 - Passed Ruff linting, Ruff formatting, strict mypy, and all automated tests in GitHub Actions.
 
+### 2026-10-03 — M4 implementation
+
+- Added typed retrieval filters, vector matches, and ranked retrieval results.
+- Added validated query embedding through the existing M3 provider interface.
+- Extended the existing SQLite store with exact cosine similarity and stable tie-breaking.
+- Added exact filters for document ID, source filename, company, document type, and fiscal year.
+- Preserved complete M2 chunk text, source metadata, page spans, and trusted metadata in every
+  result.
+- Added a bounded PDF-to-ranked-evidence CLI without answer generation.
+- Added a deterministic company-research quality corpus and tests for ranking, scores, top-k,
+  filters, empty indexes, invalid queries/vectors, provider failures, provenance, and the full
+  pipeline.
+- Passed Ruff linting, Ruff formatting across 44 files, strict mypy across 35 source files, and
+  all 55 tests in GitHub Actions.
+
 ## Next review gate
 
-Review and merge the M3 pull request before beginning M4.
+Review and merge the M4 pull request before beginning M5.
 
