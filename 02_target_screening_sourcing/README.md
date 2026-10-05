@@ -51,7 +51,7 @@ See [architecture.md](docs/architecture.md) for component ownership and data bou
 | --- | --- | --- |
 | M0 | Architecture + Project 1 integration plan | Complete |
 | M1 | Acquisition thesis / screening criteria model | **Complete** |
-| M2 | Company discovery / candidate sourcing | Not started |
+| M2 | Company discovery / candidate sourcing | **Complete** |
 | M3 | Candidate enrichment using Project 1 research capabilities | Not started |
 | M4 | Screening engine + deterministic filters | Not started |
 | M5 | Strategic-fit reasoning + ranking | Not started |
@@ -71,6 +71,22 @@ period and reject incompatible bounds.
 The model supports incomplete theses without inventing missing constraints. See
 [acquisition-thesis.md](docs/acquisition-thesis.md) and the validated examples under
 [`examples/`](examples/).
+
+## Candidate Discovery
+
+M2 provides deterministic thesis-to-query generation, a provider-neutral discovery contract,
+a bundled fictional dataset provider, a user-supplied longlist provider, conservative identity
+normalization/deduplication, and evidence-preserving results. The output is an unranked candidate
+universe, not a screened shortlist.
+
+Run the credential-free demo from this directory:
+
+```powershell
+python -m ma_target_screening.demo_discovery
+```
+
+See [candidate-discovery.md](docs/candidate-discovery.md) for provider contracts, provenance,
+limits, failure semantics, and known limitations.
 
 ## Project 1 Reuse Strategy
 
@@ -116,7 +132,8 @@ python -m pytest
 
 ## Current Status
 
-**M1 complete — acquisition thesis and screening-criteria model.** M0 architecture and the M1
-versioned schema, validation, serialization, examples, and tests are implemented. Natural-
-language parsing, discovery, enrichment, candidate screening, strategic-fit assessment,
-ranking, LangGraph, human review, APIs, UI, and deployment are not implemented.
+**M2 complete — candidate discovery/sourcing.** M0 architecture, the M1 thesis schema, and M2
+offline/user-supplied discovery, query generation, normalization, deduplication, provenance,
+limits, demo, and tests are implemented. Live web search, candidate enrichment, screening,
+strategic-fit assessment, ranking, LangGraph, human review, APIs, UI, and deployment are not
+implemented.
