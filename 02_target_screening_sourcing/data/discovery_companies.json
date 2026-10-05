@@ -1,0 +1,80 @@
+[
+  {
+    "id": "synthetic-payflow-1",
+    "name": "PayFlow Labs Private Limited",
+    "aliases": ["PayFlow Labs"],
+    "website": "https://www.payflow.example/products?utm_source=dataset",
+    "country": "India",
+    "industry_tags": ["Fintech", "Payments infrastructure"],
+    "capabilities": ["Enterprise payment APIs", "Merchant acquiring"],
+    "customer_types": ["Enterprise", "B2B"],
+    "description": "Synthetic B2B payments infrastructure company serving Indian enterprises.",
+    "source_uri": "https://directory.example/companies/payflow-labs",
+    "source_title": "Synthetic company directory - PayFlow Labs"
+  },
+  {
+    "id": "synthetic-payflow-duplicate",
+    "name": "PayFlow Labs Pvt. Ltd.",
+    "aliases": [],
+    "website": "payflow.example",
+    "country": "India",
+    "industry_tags": ["Payments infrastructure"],
+    "capabilities": ["API infrastructure"],
+    "customer_types": ["Enterprise"],
+    "description": "Second synthetic source observation for the same PayFlow Labs company.",
+    "source_uri": "https://catalog.example/payflow",
+    "source_title": "Synthetic fintech catalog - PayFlow"
+  },
+  {
+    "id": "synthetic-cashgrid",
+    "name": "CashGrid Systems",
+    "aliases": ["CashGrid"],
+    "website": "https://cashgrid.example",
+    "country": "India",
+    "industry_tags": ["Fintech", "Treasury technology"],
+    "capabilities": ["Cash-management APIs", "Enterprise reconciliation"],
+    "customer_types": ["Enterprise", "B2B"],
+    "description": "Synthetic enterprise treasury and reconciliation software provider.",
+    "source_uri": "https://directory.example/companies/cashgrid",
+    "source_title": "Synthetic company directory - CashGrid"
+  },
+  {
+    "id": "synthetic-ledgerbridge",
+    "name": "LedgerBridge Technologies",
+    "aliases": ["LedgerBridge"],
+    "website": "https://ledgerbridge.example",
+    "country": "India",
+    "industry_tags": ["B2B fintech", "Payments infrastructure"],
+    "capabilities": ["Ledger APIs", "Payment orchestration"],
+    "customer_types": ["Enterprise"],
+    "description": "Synthetic B2B fintech offering ledger and payment-orchestration APIs.",
+    "source_uri": "https://directory.example/companies/ledgerbridge",
+    "source_title": "Synthetic company directory - LedgerBridge"
+  },
+  {
+    "id": "synthetic-consumercredit",
+    "name": "ConsumerCredit Hub",
+    "aliases": [],
+    "website": "https://consumercredit.example",
+    "country": "India",
+    "industry_tags": ["Consumer lending"],
+    "capabilities": ["Consumer credit marketplace"],
+    "customer_types": ["Consumer"],
+    "description": "Synthetic consumer-lending marketplace included to show that discovery is not screening.",
+    "source_uri": "https://directory.example/companies/consumercredit",
+    "source_title": "Synthetic company directory - ConsumerCredit Hub"
+  },
+  {
+    "id": "synthetic-datamesh",
+    "name": "DataMesh AI",
+    "aliases": [],
+    "website": "https://datamesh.example",
+    "country": "United States",
+    "industry_tags": ["Applied AI", "Data infrastructure"],
+    "capabilities": ["Enterprise data platform", "AI governance"],
+    "customer_types": ["Regulated enterprise"],
+    "description": "Synthetic enterprise AI and governed-data platform company.",
+    "source_uri": "https://directory.example/companies/datamesh-ai",
+    "source_title": "Synthetic company directory - DataMesh AI"
+  }
+]

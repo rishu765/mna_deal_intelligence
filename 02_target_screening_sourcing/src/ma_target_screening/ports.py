@@ -2,19 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from ma_target_screening.domain import CandidateCompany, CandidateProfile
-from ma_target_screening.thesis import AcquisitionThesis
+
+if TYPE_CHECKING:
+    from ma_target_screening.discovery.models import DiscoveryRequest, ProviderDiscoveryResult
 
 
 class DiscoveryProvider(Protocol):
-    """Discover candidates without exposing a search or data vendor to the core."""
+    """Discover provider-neutral candidate records for a bounded request."""
 
     @property
     def provider_name(self) -> str: ...
 
-    def discover(self, thesis: AcquisitionThesis) -> tuple[CandidateCompany, ...]: ...
+    def discover(self, request: DiscoveryRequest) -> ProviderDiscoveryResult: ...
 
 
 class CompanyResearchProvider(Protocol):

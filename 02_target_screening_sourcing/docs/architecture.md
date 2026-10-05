@@ -43,8 +43,9 @@ Human thesis
        Output: approval/rejection/request-for-research state
 ```
 
-M1 adds the complete acquisition-thesis and typed screening-criterion boundary. Named
-downstream candidate-processing concepts remain planned contracts, not implemented behavior.
+M2 implements deterministic query generation, provider-neutral sourcing, lightweight identity
+normalization, conservative deduplication, and provenance-preserving candidate results. Named
+downstream enrichment and screening concepts remain planned contracts.
 
 ## Planned domain concepts
 
@@ -52,8 +53,8 @@ downstream candidate-processing concepts remain planned contracts, not implement
 | --- | --- | --- |
 | `AcquisitionThesis` | Canonical strategic intent and constraints | Implemented M1 |
 | `ScreeningCriterion` | Typed hard/soft/exclusion criterion, operator, value, and importance | Implemented M1 |
-| `CandidateCompany` | Normalized identity, aliases, domain, country, IDs, discovery evidence | Skeleton M0; evolve M2 |
-| `DiscoveryEvidence` | Where and when a candidate was observed | Skeleton M0 |
+| `CandidateCompany` | Normalized observed identity, aliases, domain, country, tags, source evidence | Implemented M2 |
+| `DiscoveryEvidence` | Provider, source, query, timestamp, excerpt, and source identifier | Implemented M2 |
 | `CandidateProfile` | Evidence-backed facts and explicit unknowns needed by screening | Boundary skeleton M0; evolve M3 |
 | `ScreeningResult` | Deterministic pass/fail/unknown result per hard criterion | M4 |
 | `StrategicFitAssessment` | Evidence-backed semantic fit and rationale | M5 |
@@ -79,11 +80,11 @@ must cite supplied evidence, expose uncertainty, and remain subordinate to hard 
 
 ## Discovery abstraction
 
-`DiscoveryProvider.discover(thesis)` is the initial provider-neutral port. Future adapters may
-use search APIs, company databases, filings, public web sources, internal datasets, or
-user-supplied lists. Adapters return canonical Project 2 objects and preserve source evidence;
-provider response types never cross the port. M2 will refine pagination, query planning,
-timeouts, and partial-failure semantics only when real sources are selected.
+`DiscoveryProvider.discover(request)` is the provider-neutral port. M2 implements a bounded
+local JSON dataset adapter and user-supplied candidate adapter. Provider response types become
+`DiscoveredCompanyRecord` values before normalization; providers cannot leak their native
+models into the core. Future search/company-database adapters use the same request/result
+contract and must translate timeout and malformed-response failures.
 
 ## Identity and normalization strategy
 
@@ -97,7 +98,8 @@ companies. The initial identity hierarchy planned for M2 is:
 
 Canonical name, aliases, domain, country, available identifiers, and every contributing source
 remain attached. Fuzzy matching may propose merges but should not erase source observations.
-M0 does not implement entity resolution.
+M2 implements only these conservative exact rules. Fuzzy and corporate-family resolution remain
+deferred.
 
 ## Project 1 integration
 

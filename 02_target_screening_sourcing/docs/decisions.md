@@ -72,3 +72,27 @@
   under schema version 1.
 - **Why:** This is precise, inspectable, dependency-free, and suitable for later API adapters
   without making transport schemas the domain source of truth.
+
+## P2-010 — Ship credential-free providers before a live search adapter
+
+- **Status:** Accepted in M2
+- **Decision:** Implement a deterministic local JSON provider and typed user-supplied longlist
+  provider behind the same discovery protocol; do not claim a live provider.
+- **Why:** They provide practical sourcing paths, reproducible CI, and a stable adapter contract
+  without choosing a paid API or introducing network-dependent tests prematurely.
+
+## P2-011 — Generate transparent bounded queries without an LLM
+
+- **Status:** Accepted in M2
+- **Decision:** Combine discovery-relevant thesis industries, capabilities, geographies, and
+  customer types deterministically under explicit limits.
+- **Why:** Query intent stays inspectable, tests remain reproducible, and M2 does not need an
+  autonomous or model-backed search loop.
+
+## P2-012 — Deduplicate only on strong identity signals
+
+- **Status:** Accepted in M2
+- **Decision:** Merge exact provider IDs, exact normalized domains, or exact normalized
+  name/alias keys without conflicting countries. Preserve all evidence.
+- **Why:** Conservative merging reduces obvious duplicates without collapsing vaguely similar
+  companies or pretending to solve entity resolution.
