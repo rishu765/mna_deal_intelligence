@@ -1,39 +1,22 @@
-from ma_target_screening import (
-    AcquirerIdentity,
-    AcquisitionThesis,
-    CandidateCompany,
-    CandidateProfile,
-)
-from ma_target_screening.ports import CompanyResearchProvider, DiscoveryProvider
+from pathlib import Path
 
-
-class StubDiscoveryProvider:
-    @property
-    def provider_name(self) -> str:
-        return "stub"
-
-    def discover(self, thesis: AcquisitionThesis) -> tuple[CandidateCompany, ...]:
-        return (CandidateCompany(canonical_name=f"{thesis.acquirer.name} Target"),)
-
-
-class StubResearchProvider:
-    def research(self, candidate: CandidateCompany) -> CandidateProfile:
-        return CandidateProfile(candidate=candidate, summary=None, evidence=())
+from ma_target_screening.discovery import DiscoveryQuery, DiscoveryRequest
+from ma_target_screening.discovery.providers import LocalDatasetDiscoveryProvider
+from ma_target_screening.ports import DiscoveryProvider
 
 
 def test_discovery_provider_contract_is_structural() -> None:
-    provider: DiscoveryProvider = StubDiscoveryProvider()
-    thesis = AcquisitionThesis(
+    provider: DiscoveryProvider = LocalDatasetDiscoveryProvider(
+        Path("data/discovery_companies.json")
+    )
+    request = DiscoveryRequest(
         thesis_id="test-thesis",
-        acquirer=AcquirerIdentity(name="Acquirer"),
-        objective="Acquire capability",
+        queries=(DiscoveryQuery("q1", "fintech companies India", ("industry", "geography")),),
+        max_candidates_per_query=2,
+        overall_candidate_limit=2,
     )
 
-    assert provider.discover(thesis)[0].canonical_name == "Acquirer Target"
+    result = provider.discover(request)
 
-
-def test_company_research_provider_contract_is_structural() -> None:
-    provider: CompanyResearchProvider = StubResearchProvider()
-    candidate = CandidateCompany(canonical_name="Target")
-
-    assert provider.research(candidate).candidate == candidate
+    assert result.provider_name == "local_dataset"
+    assert len(result.candidates) == 2

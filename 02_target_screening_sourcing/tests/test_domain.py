@@ -9,6 +9,7 @@ def test_candidate_keeps_discovery_provenance() -> None:
     evidence = DiscoveryEvidence(
         source_type="user_list",
         source_name="Initial target list",
+        provider_name="user_supplied",
         source_uri="https://example.com/targets",
         observed_at=datetime(2026, 1, 1, tzinfo=UTC),
         excerpt="Example Target",
