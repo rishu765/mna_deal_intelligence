@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "thesis_id": "india-b2b-fintech-2026",
+  "acquirer": {
+    "name": "Example Payments India",
+    "country": "India",
+    "industry": "Payments"
+  },
+  "objective": "Acquire a profitable B2B fintech platform serving enterprise customers in India.",
+  "strategic_rationale": "Add enterprise API capabilities and deepen merchant relationships.",
+  "criteria": [
+    {
+      "criterion_id": "industry-fintech",
+      "category": "industry",
+      "requirement": "hard",
+      "value_type": "categorical",
+      "operator": "in",
+      "value": { "items": ["Fintech", "Payments infrastructure"] },
+      "evaluation_method": "deterministic",
+      "description": "Target operates primarily in B2B fintech or payments infrastructure.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "india-enterprise-customers",
+      "category": "geography",
+      "requirement": "hard",
+      "value_type": "geographic",
+      "operator": "in",
+      "value": { "items": ["India"] },
+      "evaluation_method": "deterministic",
+      "description": "Target has enterprise customers or material operations in India.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "fy2025-revenue",
+      "category": "revenue",
+      "requirement": "hard",
+      "value_type": "financial",
+      "operator": "between",
+      "value": {
+        "money_range": {
+          "minimum": { "amount": "100", "currency": "INR", "unit": "crore", "fiscal_period": "FY2025" },
+          "maximum": { "amount": "500", "currency": "INR", "unit": "crore", "fiscal_period": "FY2025" }
+        }
+      },
+      "evaluation_method": "deterministic",
+      "description": "FY2025 revenue is between INR 100 crore and INR 500 crore.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "profitable",
+      "category": "profitability",
+      "requirement": "hard",
+      "value_type": "boolean",
+      "operator": "is_true",
+      "value": { "boolean": true },
+      "evaluation_method": "deterministic",
+      "description": "Target is profitable on the defined diligence basis.",
+      "priority": "high",
+      "weight": null
+    },
+    {
+      "criterion_id": "api-strength",
+      "category": "technology",
+      "requirement": "soft",
+      "value_type": "semantic",
+      "operator": "semantic_match",
+      "value": { "text": "Strong, enterprise-grade API infrastructure and developer experience" },
+      "evaluation_method": "semantic",
+      "description": "Assess API sophistication using evidence rather than keyword presence alone.",
+      "priority": "high",
+      "weight": "0.35"
+    },
+    {
+      "criterion_id": "consumer-lending-heavy",
+      "category": "other",
+      "requirement": "exclusion",
+      "value_type": "numeric",
+      "operator": "greater_than",
+      "value": { "number": "50" },
+      "evaluation_method": "deterministic",
+      "description": "Exclude companies where consumer lending exceeds 50 percent of business.",
+      "priority": "critical",
+      "weight": null
+    }
+  ],
+  "source_text": "A large Indian payments company wants to acquire a profitable B2B fintech company with strong API infrastructure, enterprise customers in India, revenue between INR 100 crore and INR 500 crore, and no consumer-lending-heavy businesses.",
+  "notes": "Profitability basis must be defined before M4 screening."
+}

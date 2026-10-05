@@ -47,3 +47,28 @@
   from importing Project 1 storage, prompts, provider adapters, or transport schemas. The exact
   in-process/API mechanism remains an M3 decision because Project 1 lacks a dedicated
   cross-project enrichment contract today.
+
+## P2-007 — Model criterion consequence and evaluation method independently
+
+- **Status:** Accepted in M1
+- **Decision:** Give each criterion a hard/soft/exclusion requirement, a typed value and
+  operator, and a separate deterministic/semantic evaluation method.
+- **Why:** A qualitative criterion is commonly a soft preference but those concepts are not
+  synonyms. Separate axes let M4 enforce measurable constraints while M5 evaluates qualitative
+  fit without a class hierarchy or untyped strings.
+
+## P2-008 — Preserve financial comparison basis; defer conversions
+
+- **Status:** Accepted in M1
+- **Decision:** Retain decimal amount, currency, display unit, and period on every financial
+  bound and require both range bounds to share that basis.
+- **Why:** Silent currency or period comparisons are unsafe. FX, unit, and period normalization
+  require explicit market-data and accounting policies outside M1.
+
+## P2-009 — Use versioned explicit JSON serialization
+
+- **Status:** Accepted in M1
+- **Decision:** Serialize decimals as strings and criterion values as typed payload objects
+  under schema version 1.
+- **Why:** This is precise, inspectable, dependency-free, and suitable for later API adapters
+  without making transport schemas the domain source of truth.

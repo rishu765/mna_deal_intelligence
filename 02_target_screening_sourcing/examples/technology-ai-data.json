@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "thesis_id": "enterprise-ai-data-capability",
+  "acquirer": {
+    "name": "Example Enterprise Software",
+    "country": "United States",
+    "industry": "Enterprise software"
+  },
+  "objective": "Acquire an AI and data platform capability for regulated enterprise customers.",
+  "strategic_rationale": "Accelerate the product roadmap and add proprietary data infrastructure expertise.",
+  "criteria": [
+    {
+      "criterion_id": "enterprise-software",
+      "category": "industry",
+      "requirement": "hard",
+      "value_type": "categorical",
+      "operator": "in",
+      "value": { "items": ["Enterprise software", "Data infrastructure", "Applied AI"] },
+      "evaluation_method": "deterministic",
+      "description": null,
+      "priority": "high",
+      "weight": null
+    },
+    {
+      "criterion_id": "proprietary-ai-data-tech",
+      "category": "technology",
+      "requirement": "soft",
+      "value_type": "semantic",
+      "operator": "semantic_match",
+      "value": { "text": "Proprietary AI or data technology with defensible enterprise use cases" },
+      "evaluation_method": "semantic",
+      "description": null,
+      "priority": "critical",
+      "weight": "0.5"
+    },
+    {
+      "criterion_id": "portfolio-complementarity",
+      "category": "strategic_fit",
+      "requirement": "soft",
+      "value_type": "semantic",
+      "operator": "semantic_match",
+      "value": { "text": "Complements the acquirer's workflow software and increases enterprise penetration" },
+      "evaluation_method": "semantic",
+      "description": null,
+      "priority": "high",
+      "weight": "0.3"
+    }
+  ],
+  "source_text": null,
+  "notes": null
+}

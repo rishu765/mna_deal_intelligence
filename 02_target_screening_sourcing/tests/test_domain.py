@@ -2,28 +2,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from ma_target_screening import AcquisitionThesis, CandidateCompany, DiscoveryEvidence
-
-
-def test_acquisition_thesis_requires_human_authored_core() -> None:
-    thesis = AcquisitionThesis(
-        acquirer_name="Example Acquirer",
-        strategic_objective="Add workflow automation capabilities",
-        industries=("Software",),
-        geographies=("India",),
-    )
-
-    assert thesis.acquirer_name == "Example Acquirer"
-    assert thesis.industries == ("Software",)
-
-
-def test_acquisition_thesis_rejects_duplicate_dimensions() -> None:
-    with pytest.raises(ValueError, match="industries must not contain duplicates"):
-        AcquisitionThesis(
-            acquirer_name="Example Acquirer",
-            strategic_objective="Expand vertically",
-            industries=("Software", "software"),
-        )
+from ma_target_screening import CandidateCompany, DiscoveryEvidence
 
 
 def test_candidate_keeps_discovery_provenance() -> None:

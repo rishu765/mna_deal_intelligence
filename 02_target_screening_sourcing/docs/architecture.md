@@ -43,15 +43,15 @@ Human thesis
        Output: approval/rejection/request-for-research state
 ```
 
-M0 defines only four small domain objects plus two ports. Named downstream concepts are planned
-contracts, not implemented behavior.
+M1 adds the complete acquisition-thesis and typed screening-criterion boundary. Named
+downstream candidate-processing concepts remain planned contracts, not implemented behavior.
 
 ## Planned domain concepts
 
 | Concept | Responsibility | Planned milestone |
 | --- | --- | --- |
-| `AcquisitionThesis` | Canonical strategic intent and constraints | Skeleton M0; full model M1 |
-| `ScreeningCriterion` | One typed hard/soft criterion, operator, value, and weight | M1 |
+| `AcquisitionThesis` | Canonical strategic intent and constraints | Implemented M1 |
+| `ScreeningCriterion` | Typed hard/soft/exclusion criterion, operator, value, and importance | Implemented M1 |
 | `CandidateCompany` | Normalized identity, aliases, domain, country, IDs, discovery evidence | Skeleton M0; evolve M2 |
 | `DiscoveryEvidence` | Where and when a candidate was observed | Skeleton M0 |
 | `CandidateProfile` | Evidence-backed facts and explicit unknowns needed by screening | Boundary skeleton M0; evolve M3 |
@@ -60,10 +60,11 @@ contracts, not implemented behavior.
 | `RankedCandidate` / `Shortlist` | Stable ranking, explanations, and cited candidate set | M5 |
 | Human review state | Reviewer decision and workflow transitions | M6 |
 
-The eventual thesis can cover acquirer, strategic objective, industry/sub-industry, sought
-products or capabilities, geography, revenue range, company size, ownership, growth,
-technology, exclusions, qualitative fit, and optional weights. M1 will decide exact types,
-operators, currencies/units, and validation. M0 deliberately does not parse prose into it.
+The thesis covers acquirer context and criteria for industry/sub-industry, products or
+capabilities, geography, revenue, profitability, company size, employee count, founded year,
+growth, ownership, customer type, technology, strategic fit, and extensions. Each criterion
+separates hard/soft/exclusion consequence from typed value and deterministic/semantic
+evaluation. M1 deliberately does not parse prose into the model.
 
 ## Deterministic and semantic separation
 

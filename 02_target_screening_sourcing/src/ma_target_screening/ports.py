@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from ma_target_screening.domain import AcquisitionThesis, CandidateCompany, CandidateProfile
+from ma_target_screening.domain import CandidateCompany, CandidateProfile
+from ma_target_screening.thesis import AcquisitionThesis
 
 
 class DiscoveryProvider(Protocol):

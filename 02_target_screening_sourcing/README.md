@@ -49,8 +49,8 @@ See [architecture.md](docs/architecture.md) for component ownership and data bou
 
 | Milestone | Responsibility | Status |
 | --- | --- | --- |
-| M0 | Architecture + Project 1 integration plan | **Current: foundation only** |
-| M1 | Acquisition thesis / screening criteria model | Not started |
+| M0 | Architecture + Project 1 integration plan | Complete |
+| M1 | Acquisition thesis / screening criteria model | **Complete** |
 | M2 | Company discovery / candidate sourcing | Not started |
 | M3 | Candidate enrichment using Project 1 research capabilities | Not started |
 | M4 | Screening engine + deterministic filters | Not started |
@@ -59,6 +59,18 @@ See [architecture.md](docs/architecture.md) for component ownership and data bou
 | M7 | Evaluation + API/demo + final V1 polish | Not started |
 
 The detailed ownership map is in [milestones.md](docs/milestones.md).
+
+## Acquisition Thesis Model
+
+M1 provides a versioned, JSON-compatible `AcquisitionThesis` with acquirer context and typed
+screening criteria. Criteria separately express their business category, hard/soft/exclusion
+consequence, value type, operator, deterministic/semantic evaluation boundary, and optional
+priority or normalized weight. Financial ranges retain decimal values, currency, unit, and
+period and reject incompatible bounds.
+
+The model supports incomplete theses without inventing missing constraints. See
+[acquisition-thesis.md](docs/acquisition-thesis.md) and the validated examples under
+[`examples/`](examples/).
 
 ## Project 1 Reuse Strategy
 
@@ -80,8 +92,8 @@ transitions. Model-backed semantic reasoning may help interpret ambiguous thesis
 assess strategic adjacency or capability complementarity, and produce qualitative rationales.
 
 LLM output consumed by code must be schema-validated and evidence-linked. It must not silently
-override hard constraints or manufacture missing facts. M0 implements neither category of
-screening behavior; it records the boundary for later milestones.
+override hard constraints or manufacture missing facts. M1 classifies criteria for later
+evaluation but implements no candidate screening or semantic assessment.
 
 ## Configuration
 
@@ -104,7 +116,7 @@ python -m pytest
 
 ## Current Status
 
-**M0 only — architecture/foundation.** The repository contains domain-boundary skeletons,
-provider protocols, architecture and decision documentation, configuration conventions, and
-foundation tests. It does not implement thesis parsing, discovery, enrichment, screening,
-strategic-fit reasoning, ranking, LangGraph, human review, APIs, UI, or deployment.
+**M1 complete — acquisition thesis and screening-criteria model.** M0 architecture and the M1
+versioned schema, validation, serialization, examples, and tests are implemented. Natural-
+language parsing, discovery, enrichment, candidate screening, strategic-fit assessment,
+ranking, LangGraph, human review, APIs, UI, and deployment are not implemented.
