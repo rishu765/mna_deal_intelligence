@@ -33,17 +33,23 @@ class ExternalIdentifier:
 
 @dataclass(frozen=True, slots=True)
 class DiscoveryEvidence:
-    """Traceable source observation supporting a discovered candidate."""
+    """Traceable, discovery-grade source observation supporting a candidate."""
 
     source_type: str
     source_name: str
+    provider_name: str
     source_uri: str | None = None
+    source_title: str | None = None
+    source_identifier: str | None = None
+    discovery_query: str | None = None
     observed_at: datetime | None = None
     excerpt: str | None = None
+    raw_metadata: tuple[tuple[str, str], ...] = ()
 
     def __post_init__(self) -> None:
         _require_text(self.source_type, "source_type")
         _require_text(self.source_name, "source_name")
+        _require_text(self.provider_name, "provider_name")
         if self.source_uri is not None:
             _require_text(self.source_uri, "source_uri")
             parsed = urlparse(self.source_uri)
@@ -56,16 +62,27 @@ class DiscoveryEvidence:
                 raise ValueError("observed_at must not be in the future")
         if self.excerpt is not None:
             _require_text(self.excerpt, "excerpt")
+        for field_name in ("source_title", "source_identifier", "discovery_query"):
+            value = getattr(self, field_name)
+            if value is not None:
+                _require_text(value, field_name)
+        metadata_keys = [key.casefold() for key, _ in self.raw_metadata]
+        if any(not key.strip() or not value.strip() for key, value in self.raw_metadata):
+            raise ValueError("raw_metadata keys and values must not be blank")
+        if len(set(metadata_keys)) != len(metadata_keys):
+            raise ValueError("raw_metadata keys must be unique")
 
 
 @dataclass(frozen=True, slots=True)
 class CandidateCompany:
-    """Normalized candidate identity with discovery provenance, not an enriched profile."""
+    """Normalized discovery identity; fields are observed, not verified facts."""
 
     canonical_name: str
     aliases: tuple[str, ...] = ()
     website_domain: str | None = None
     country: str | None = None
+    industry_tags: tuple[str, ...] = ()
+    description: str | None = None
     identifiers: tuple[ExternalIdentifier, ...] = ()
     discovery_evidence: tuple[DiscoveryEvidence, ...] = ()
 
@@ -78,6 +95,9 @@ class CandidateCompany:
                 raise ValueError("website_domain must be a bare domain")
         if self.country is not None:
             _require_text(self.country, "country")
+        _require_unique_nonblank(self.industry_tags, "industry_tags")
+        if self.description is not None:
+            _require_text(self.description, "description")
         identifier_keys = {
             (item.scheme.casefold(), item.value.casefold()) for item in self.identifiers
         }

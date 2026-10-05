@@ -9,5 +9,13 @@ class DiscoveryError(TargetScreeningError):
     """Raised when a discovery provider cannot complete a request."""
 
 
+class DiscoveryUnavailableError(DiscoveryError):
+    """Raised when every configured discovery provider fails."""
+
+
+class MalformedDiscoverySourceError(DiscoveryError):
+    """Raised when a discovery source cannot be parsed into valid records."""
+
+
 class EnrichmentError(TargetScreeningError):
     """Raised when candidate research cannot complete reliably."""
