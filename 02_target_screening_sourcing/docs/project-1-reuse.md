@@ -47,4 +47,3 @@ Project 1's PDF parser, text normalizer, character chunker, SQLite vector-store 
 CLI commands, FastAPI transport schemas, demo PDF generator, and container packaging are not
 Project 2 core responsibilities. Project 2 may benefit from their outputs through the research
 boundary but should not reuse their implementations directly.
-

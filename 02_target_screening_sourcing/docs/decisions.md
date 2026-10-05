@@ -47,4 +47,3 @@
   from importing Project 1 storage, prompts, provider adapters, or transport schemas. The exact
   in-process/API mechanism remains an M3 decision because Project 1 lacks a dedicated
   cross-project enrichment contract today.
-

@@ -128,4 +128,3 @@ Credentials may use provider-standard names shared by separately composed projec
 LangGraph is reserved for M6, after M1–M5 provide independently tested services. A graph may
 then coordinate retries, conditional enrichment, review checkpoints, and resumable state. It
 must not contain screening mathematics or provider-specific business logic.
-

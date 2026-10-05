@@ -108,4 +108,3 @@ python -m pytest
 provider protocols, architecture and decision documentation, configuration conventions, and
 foundation tests. It does not implement thesis parsing, discovery, enrichment, screening,
 strategic-fit reasoning, ranking, LangGraph, human review, APIs, UI, or deployment.
-

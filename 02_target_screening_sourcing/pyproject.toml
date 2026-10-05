@@ -47,4 +47,3 @@ files = ["src", "tests"]
 [tool.coverage.run]
 branch = true
 source = ["ma_target_screening"]
-

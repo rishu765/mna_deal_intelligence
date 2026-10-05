@@ -13,4 +13,3 @@
 
 Milestone names and order are locked. Finishing one milestone does not authorize starting the
 next.
-

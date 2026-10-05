@@ -11,4 +11,3 @@
   protocols at external boundaries.
 - Keep secrets, caches, datasets, and generated outputs out of Git.
 - Run Ruff, mypy, and pytest before reporting a milestone complete.
-
