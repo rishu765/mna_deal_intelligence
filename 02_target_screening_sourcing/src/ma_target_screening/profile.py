@@ -24,6 +24,7 @@ class ProfileField(StrEnum):
     GROWTH = "growth"
     EMPLOYEE_COUNT = "employee_count"
     COMPANY_SIZE = "company_size"
+    FOUNDED_YEAR = "founded_year"
     OWNERSHIP = "ownership"
     TECHNOLOGY = "technology"
     STRATEGIC_DEVELOPMENTS = "strategic_developments"

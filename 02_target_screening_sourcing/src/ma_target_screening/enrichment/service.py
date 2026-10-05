@@ -40,6 +40,7 @@ _CRITERION_FIELDS = {
     CriterionCategory.PROFITABILITY: ProfileField.PROFITABILITY,
     CriterionCategory.COMPANY_SIZE: ProfileField.COMPANY_SIZE,
     CriterionCategory.EMPLOYEE_COUNT: ProfileField.EMPLOYEE_COUNT,
+    CriterionCategory.FOUNDED_YEAR: ProfileField.FOUNDED_YEAR,
     CriterionCategory.GROWTH: ProfileField.GROWTH,
     CriterionCategory.OWNERSHIP: ProfileField.OWNERSHIP,
     CriterionCategory.CUSTOMER_TYPE: ProfileField.CUSTOMER_SEGMENTS,
