@@ -4,13 +4,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ma-target-screening"
-version = "0.1.0"
-description = "Typed acquisition-thesis foundation for M&A target screening and sourcing."
+version = "0.2.0"
+description = "Evidence-preserving candidate discovery for M&A target screening and sourcing."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Proprietary" }
 authors = [{ name = "Project Maintainer" }]
 dependencies = []
+
+[project.scripts]
+mats-discovery-demo = "ma_target_screening.demo_discovery:main"
 
 [project.optional-dependencies]
 dev = [
