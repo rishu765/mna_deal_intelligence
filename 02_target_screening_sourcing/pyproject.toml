@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ma-target-screening"
-version = "0.3.0"
-description = "Evidence-backed candidate discovery and enrichment for M&A target sourcing."
+version = "0.5.0"
+description = "Evidence-backed discovery, screening, and ranking for M&A target sourcing."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Proprietary" }
@@ -15,6 +15,7 @@ dependencies = []
 [project.scripts]
 mats-discovery-demo = "ma_target_screening.demo_discovery:main"
 mats-enrichment-demo = "ma_target_screening.demo_enrichment:main"
+mats-screening-demo = "ma_target_screening.demo_screening:main"
 
 [project.optional-dependencies]
 dev = [

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "thesis_id": "india-payments-screening-demo",
+  "acquirer": {
+    "name": "Example Payments India",
+    "country": "India",
+    "industry": "Payments"
+  },
+  "objective": "Acquire a profitable B2B fintech platform serving enterprises in India.",
+  "strategic_rationale": "Add API capabilities and deepen enterprise merchant relationships.",
+  "criteria": [
+    {
+      "criterion_id": "industry-fit",
+      "category": "industry",
+      "requirement": "hard",
+      "value_type": "categorical",
+      "operator": "in",
+      "value": { "items": ["Fintech", "Payments infrastructure"] },
+      "evaluation_method": "deterministic",
+      "description": "Target operates in fintech or payments infrastructure.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "india-presence",
+      "category": "geography",
+      "requirement": "hard",
+      "value_type": "geographic",
+      "operator": "in",
+      "value": { "items": ["India"] },
+      "evaluation_method": "deterministic",
+      "description": "Target has evidence-backed operations in India.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "fy2025-revenue",
+      "category": "revenue",
+      "requirement": "hard",
+      "value_type": "financial",
+      "operator": "between",
+      "value": {
+        "money_range": {
+          "minimum": { "amount": "100", "currency": "INR", "unit": "crore", "fiscal_period": "FY2025" },
+          "maximum": { "amount": "500", "currency": "INR", "unit": "crore", "fiscal_period": "FY2025" }
+        }
+      },
+      "evaluation_method": "deterministic",
+      "description": "FY2025 revenue is INR 100–500 crore.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "profitable",
+      "category": "profitability",
+      "requirement": "hard",
+      "value_type": "boolean",
+      "operator": "is_true",
+      "value": { "boolean": true },
+      "evaluation_method": "deterministic",
+      "description": "Target is profitable on the reported basis.",
+      "priority": "high",
+      "weight": null
+    },
+    {
+      "criterion_id": "exclude-consumer-lending",
+      "category": "product_capability",
+      "requirement": "exclusion",
+      "value_type": "categorical",
+      "operator": "contains",
+      "value": { "text": "Consumer lending" },
+      "evaluation_method": "deterministic",
+      "description": "Exclude targets whose documented product is consumer lending.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "enterprise-customers",
+      "category": "customer_type",
+      "requirement": "soft",
+      "value_type": "categorical",
+      "operator": "contains",
+      "value": { "text": "Enterprise" },
+      "evaluation_method": "deterministic",
+      "description": "Prefer targets serving enterprise customers.",
+      "priority": "high",
+      "weight": "0.20"
+    },
+    {
+      "criterion_id": "api-complementarity",
+      "category": "technology",
+      "requirement": "soft",
+      "value_type": "semantic",
+      "operator": "semantic_match",
+      "value": { "text": "Enterprise-grade APIs that complement a payment stack" },
+      "evaluation_method": "semantic",
+      "description": "Assess API and platform complementarity from profile evidence.",
+      "priority": "high",
+      "weight": "0.50"
+    },
+    {
+      "criterion_id": "enterprise-expansion",
+      "category": "strategic_fit",
+      "requirement": "soft",
+      "value_type": "semantic",
+      "operator": "semantic_match",
+      "value": { "text": "Strengthens enterprise payments penetration" },
+      "evaluation_method": "semantic",
+      "description": "Assess contribution to enterprise payments expansion.",
+      "priority": "medium",
+      "weight": "0.30"
+    }
+  ],
+  "source_text": "Acquire a profitable Indian B2B payments or fintech target with INR 100–500 crore FY2025 revenue, enterprise customers, strong APIs, and no consumer-lending product.",
+  "notes": "Synthetic fixture thesis for the offline M4/5 demo."
+}

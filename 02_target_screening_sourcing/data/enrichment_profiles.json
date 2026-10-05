@@ -146,5 +146,94 @@
       }
     ],
     "warnings": ["CashGrid has only partial fixture coverage."]
+  },
+  {
+    "canonical_name": "LedgerBridge Technologies",
+    "website_domain": "ledgerbridge.example",
+    "evidence": [
+      {
+        "evidence_id": "ledgerbridge-profile-1",
+        "source_type": "synthetic_company_profile",
+        "source_title": "LedgerBridge synthetic company profile",
+        "source_reference": "data/enrichment_profiles.json#ledgerbridge",
+        "excerpt": "LedgerBridge provides ledger and payment-orchestration software to enterprise platforms in India.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      },
+      {
+        "evidence_id": "ledgerbridge-financials-1",
+        "source_type": "synthetic_financial_statement",
+        "source_title": "LedgerBridge synthetic FY2025 financial summary",
+        "source_reference": "data/enrichment_profiles.json#ledgerbridge-financials",
+        "excerpt": "FY2025 revenue was INR 180 crore and EBITDA was positive.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      },
+      {
+        "evidence_id": "ledgerbridge-tech-1",
+        "source_type": "synthetic_product_documentation",
+        "source_title": "LedgerBridge synthetic technical overview",
+        "source_reference": "data/enrichment_profiles.json#ledgerbridge-tech",
+        "excerpt": "The product exposes ledger and payment-orchestration APIs.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      }
+    ],
+    "facts": [
+      { "field": "industry", "value": "B2B fintech", "evidence_ids": ["ledgerbridge-profile-1"] },
+      { "field": "business_description", "value": "Ledger and payment-orchestration software provider.", "evidence_ids": ["ledgerbridge-profile-1"] },
+      { "field": "products_services", "value": "Ledger and payment-orchestration APIs", "evidence_ids": ["ledgerbridge-tech-1"] },
+      { "field": "capabilities", "value": "Ledger APIs", "evidence_ids": ["ledgerbridge-tech-1"] },
+      { "field": "geographies", "value": "India", "evidence_ids": ["ledgerbridge-profile-1"] },
+      { "field": "customer_segments", "value": "Enterprise software platforms", "evidence_ids": ["ledgerbridge-profile-1"] },
+      { "field": "profitability", "value": "Positive EBITDA in FY2025", "evidence_ids": ["ledgerbridge-financials-1"] },
+      { "field": "technology", "value": "Ledger and orchestration APIs", "evidence_ids": ["ledgerbridge-tech-1"] }
+    ],
+    "inferences": [],
+    "financial_metrics": [
+      { "metric_name": "Revenue", "value": "180", "currency": "INR", "unit": "crore", "fiscal_period": "FY2025", "basis": "reported revenue", "evidence_ids": ["ledgerbridge-financials-1"] }
+    ],
+    "unknown_fields": [],
+    "warnings": ["Fixture data is synthetic and demonstrates schema behavior only."]
+  },
+  {
+    "canonical_name": "ConsumerCredit Hub",
+    "website_domain": "consumercredit.example",
+    "evidence": [
+      {
+        "evidence_id": "consumercredit-profile-1",
+        "source_type": "synthetic_company_profile",
+        "source_title": "ConsumerCredit synthetic company profile",
+        "source_reference": "data/enrichment_profiles.json#consumercredit",
+        "excerpt": "ConsumerCredit operates a consumer lending marketplace in India.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      },
+      {
+        "evidence_id": "consumercredit-financials-1",
+        "source_type": "synthetic_financial_statement",
+        "source_title": "ConsumerCredit synthetic FY2025 financial summary",
+        "source_reference": "data/enrichment_profiles.json#consumercredit-financials",
+        "excerpt": "FY2025 revenue was INR 240 crore and net income was positive.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      }
+    ],
+    "facts": [
+      { "field": "industry", "value": "Consumer lending", "evidence_ids": ["consumercredit-profile-1"] },
+      { "field": "business_description", "value": "Consumer credit marketplace.", "evidence_ids": ["consumercredit-profile-1"] },
+      { "field": "products_services", "value": "Consumer lending marketplace", "evidence_ids": ["consumercredit-profile-1"] },
+      { "field": "capabilities", "value": "Consumer lending", "evidence_ids": ["consumercredit-profile-1"] },
+      { "field": "geographies", "value": "India", "evidence_ids": ["consumercredit-profile-1"] },
+      { "field": "customer_segments", "value": "Consumers", "evidence_ids": ["consumercredit-profile-1"] },
+      { "field": "profitability", "value": "Positive net income in FY2025", "evidence_ids": ["consumercredit-financials-1"] },
+      { "field": "technology", "value": "Consumer credit marketplace", "evidence_ids": ["consumercredit-profile-1"] }
+    ],
+    "inferences": [],
+    "financial_metrics": [
+      { "metric_name": "Revenue", "value": "240", "currency": "INR", "unit": "crore", "fiscal_period": "FY2025", "basis": "reported revenue", "evidence_ids": ["consumercredit-financials-1"] }
+    ],
+    "unknown_fields": [],
+    "warnings": ["Fixture data is synthetic and demonstrates schema behavior only."]
   }
 ]

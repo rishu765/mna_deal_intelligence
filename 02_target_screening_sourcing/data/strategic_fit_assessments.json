@@ -1,0 +1,79 @@
+[
+  {
+    "website_domain": "payflow.example",
+    "assessments": [
+      {
+        "criterion_id": "api-complementarity",
+        "outcome": "pass",
+        "score": "0.90",
+        "reason": "Versioned payment and reconciliation APIs directly complement a payments platform.",
+        "evidence_ids": ["payflow-tech-1"]
+      },
+      {
+        "criterion_id": "enterprise-expansion",
+        "outcome": "pass",
+        "score": "0.85",
+        "reason": "The documented enterprise merchant base supports enterprise payments expansion.",
+        "evidence_ids": ["payflow-profile-1"]
+      }
+    ]
+  },
+  {
+    "website_domain": "ledgerbridge.example",
+    "assessments": [
+      {
+        "criterion_id": "api-complementarity",
+        "outcome": "partial",
+        "score": "0.55",
+        "reason": "Ledger APIs are adjacent to payments, but product evidence shows less merchant-stack breadth.",
+        "evidence_ids": ["ledgerbridge-tech-1"]
+      },
+      {
+        "criterion_id": "enterprise-expansion",
+        "outcome": "partial",
+        "score": "0.50",
+        "reason": "Enterprise platforms are served, although direct merchant penetration is less clear.",
+        "evidence_ids": ["ledgerbridge-profile-1"]
+      }
+    ]
+  },
+  {
+    "website_domain": "consumercredit.example",
+    "assessments": [
+      {
+        "criterion_id": "api-complementarity",
+        "outcome": "fail",
+        "score": "0.20",
+        "reason": "The documented consumer credit marketplace is not complementary payment infrastructure.",
+        "evidence_ids": ["consumercredit-profile-1"]
+      },
+      {
+        "criterion_id": "enterprise-expansion",
+        "outcome": "fail",
+        "score": "0.10",
+        "reason": "The documented customer base is consumer rather than enterprise oriented.",
+        "evidence_ids": ["consumercredit-profile-1"]
+      }
+    ]
+  },
+  {
+    "website_domain": "cashgrid.example",
+    "assessments": [
+      {
+        "criterion_id": "api-complementarity",
+        "outcome": "unknown",
+        "score": null,
+        "reason": "The partial profile does not contain sufficient API evidence.",
+        "evidence_ids": [],
+        "uncertainty": "Technology documentation is missing."
+      },
+      {
+        "criterion_id": "enterprise-expansion",
+        "outcome": "partial",
+        "score": "0.45",
+        "reason": "Enterprise treasury positioning is adjacent, but payments penetration is not established.",
+        "evidence_ids": ["cashgrid-profile-1"]
+      }
+    ]
+  }
+]

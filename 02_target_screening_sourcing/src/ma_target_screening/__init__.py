@@ -2,6 +2,12 @@
 
 from ma_target_screening.domain import CandidateCompany, DiscoveryEvidence, ExternalIdentifier
 from ma_target_screening.profile import CandidateProfile
+from ma_target_screening.screening import (
+    EligibilityStatus,
+    ScreeningRankingService,
+    ScreeningResult,
+    Shortlist,
+)
 from ma_target_screening.thesis import (
     AcquirerIdentity,
     AcquisitionThesis,
@@ -30,12 +36,16 @@ __all__ = [
     "CriterionValueType",
     "DiscoveryEvidence",
     "EvaluationMethod",
+    "EligibilityStatus",
     "ExternalIdentifier",
     "FinancialUnit",
     "MoneyAmount",
     "MoneyRange",
     "NumericRange",
     "ScreeningCriterion",
+    "ScreeningRankingService",
+    "ScreeningResult",
+    "Shortlist",
 ]
 
-__version__ = "0.3.0"
+__version__ = "0.5.0"
