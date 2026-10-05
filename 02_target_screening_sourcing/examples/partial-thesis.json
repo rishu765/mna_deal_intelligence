@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "thesis_id": "partial-industrial-tech-thesis",
+  "acquirer": {
+    "name": "Example Industrial Group",
+    "country": null,
+    "industry": null
+  },
+  "objective": "Explore technology acquisitions that improve industrial operations.",
+  "strategic_rationale": null,
+  "criteria": [],
+  "source_text": null,
+  "notes": "Geography, budget, size, ownership, and exact capabilities remain intentionally unspecified."
+}
