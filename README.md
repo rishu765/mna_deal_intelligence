@@ -12,8 +12,8 @@ investment advice or autonomous deal decisions.
 
 | Project | Planned path | Status |
 | --- | --- | --- |
-| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete; finalization PR pending review |
-| Target Screening & Sourcing | `02_target_screening_sourcing/` | Planned |
+| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
+| Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | M0 architecture/foundation; implementation not started |
 | Comparable Companies & Valuation | `03_comparable_companies_valuation/` | Planned |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |
 | Due Diligence | `05_due_diligence/` | Planned |
@@ -21,6 +21,10 @@ investment advice or autonomous deal decisions.
 
 Future project directories will be added when work on those projects begins. A `shared/`
 package will be introduced only after genuinely reusable components emerge.
+
+Project 2 currently contains architecture, integration planning, minimal domain boundaries,
+and foundation checks only. Target discovery, screening, ranking, and orchestration remain
+future milestones.
 
 ## Current project
 
