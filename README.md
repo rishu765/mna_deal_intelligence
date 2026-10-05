@@ -13,7 +13,7 @@ investment advice or autonomous deal decisions.
 | Project | Planned path | Status |
 | --- | --- | --- |
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
-| Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | M3 evidence-backed candidate enrichment complete |
+| Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | M4/5 screening, strategic fit, and ranking complete |
 | Comparable Companies & Valuation | `03_comparable_companies_valuation/` | Planned |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |
 | Due Diligence | `05_due_diligence/` | Planned |
@@ -22,10 +22,10 @@ investment advice or autonomous deal decisions.
 Future project directories will be added when work on those projects begins. A `shared/`
 package will be introduced only after genuinely reusable components emerge.
 
-Project 2 currently contains architecture, a typed acquisition-thesis model, credential-free
-candidate discovery, evidence-backed candidate profiles, conservative multi-source enrichment,
-and a Project 1 research-output adapter. Screening, ranking, and orchestration remain future
-milestones.
+Project 2 currently contains a typed acquisition thesis, credential-free discovery,
+evidence-backed enrichment, deterministic screening, evidence-grounded strategic-fit
+assessment, transparent scoring, and stable shortlist ranking. LangGraph orchestration,
+human review, final evaluation, and API/demo polish remain future milestones.
 
 ## Current project
 

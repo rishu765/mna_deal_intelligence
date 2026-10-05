@@ -7,8 +7,8 @@ transparent queries, invokes one or more provider-neutral discovery sources, nor
 identities, conservatively merges obvious duplicates, and retains every discovery observation.
 
 Discovery is not enrichment or screening. A directory description or search-like snippet is a
-lead, not a verified fact. M3 will research candidates; M4 will apply deterministic criteria;
-M5 will assess strategic fit and ranking.
+lead, not a verified fact. M3 researches candidates; M4/5 applies deterministic criteria,
+assesses strategic fit, and ranks the resulting profiles.
 
 ## Architecture
 

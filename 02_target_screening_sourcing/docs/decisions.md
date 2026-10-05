@@ -121,3 +121,34 @@
   same-period financial values, and degrade profile completeness instead of resolving truth.
 - **Why:** Source reconciliation needs policies and domain context beyond M3. Preserving the
   alternatives is safer than overwriting stronger evidence or inventing consensus.
+
+## P2-016 — Unknown hard data requires review
+
+- **Status:** Accepted in M4/5
+- **Decision:** A failed hard criterion or triggered exclusion makes a candidate ineligible; an
+  unknown or partial gate produces `review_required`.
+- **Why:** Missing evidence is neither proof of compliance nor proof of failure. Retaining a
+  separate review state prevents silent false positives and false negatives.
+
+## P2-017 — Score only soft criteria and disclose coverage
+
+- **Status:** Accepted in M4/5
+- **Decision:** Hard criteria gate eligibility. Known soft outcomes form a weighted raw score;
+  unknown soft criteria are excluded from the numerator and denominator but reduce a separately
+  reported coverage factor and therefore the final score.
+- **Why:** This avoids treating unknown as zero while preventing a scarcely researched candidate
+  from receiving an artificially confident top score.
+
+## P2-018 — Reject ungrounded semantic output
+
+- **Status:** Accepted in M4/5
+- **Decision:** Semantic providers return structured criterion outcomes and evidence IDs. Any
+  claimed evidence outside the candidate profile invalidates the assessment and yields unknown.
+- **Why:** Strategic-fit reasoning must remain auditable and cannot manufacture company facts.
+
+## P2-019 — Retain failed candidates outside the shortlist
+
+- **Status:** Accepted in M4/5
+- **Decision:** Ineligible candidates are omitted from ranked shortlist entries but remain in
+  `Shortlist.screening_results` with failed criteria and explanations.
+- **Why:** Analysts need an audit trail and must be able to diagnose criteria or data errors.
