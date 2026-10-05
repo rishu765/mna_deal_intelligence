@@ -1,11 +1,7 @@
 """M&A target screening and sourcing domain foundation."""
 
-from ma_target_screening.domain import (
-    CandidateCompany,
-    CandidateProfile,
-    DiscoveryEvidence,
-    ExternalIdentifier,
-)
+from ma_target_screening.domain import CandidateCompany, DiscoveryEvidence, ExternalIdentifier
+from ma_target_screening.profile import CandidateProfile
 from ma_target_screening.thesis import (
     AcquirerIdentity,
     AcquisitionThesis,
@@ -42,4 +38,4 @@ __all__ = [
     "ScreeningCriterion",
 ]
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

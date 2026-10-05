@@ -19,3 +19,7 @@ class MalformedDiscoverySourceError(DiscoveryError):
 
 class EnrichmentError(TargetScreeningError):
     """Raised when candidate research cannot complete reliably."""
+
+
+class MalformedEnrichmentSourceError(EnrichmentError):
+    """Raised when provider enrichment cannot be validated."""
