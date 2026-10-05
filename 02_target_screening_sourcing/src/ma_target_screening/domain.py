@@ -103,18 +103,3 @@ class CandidateCompany:
         }
         if len(identifier_keys) != len(self.identifiers):
             raise ValueError("identifiers must not contain duplicates")
-
-
-@dataclass(frozen=True, slots=True)
-class CandidateProfile:
-    """Boundary result for later evidence-backed enrichment; M3 will evolve its fields."""
-
-    candidate: CandidateCompany
-    summary: str | None
-    evidence: tuple[DiscoveryEvidence, ...]
-    warnings: tuple[str, ...] = ()
-
-    def __post_init__(self) -> None:
-        if self.summary is not None:
-            _require_text(self.summary, "summary")
-        _require_unique_nonblank(self.warnings, "warnings")

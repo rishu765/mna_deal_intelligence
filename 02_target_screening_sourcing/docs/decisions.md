@@ -96,3 +96,28 @@
   name/alias keys without conflicting countries. Preserve all evidence.
 - **Why:** Conservative merging reduces obvious duplicates without collapsing vaguely similar
   companies or pretending to solve entity resolution.
+
+## P2-013 — Adapt Project 1 output without a runtime package dependency
+
+- **Status:** Accepted in M3
+- **Decision:** Define structural protocols for Project 1's public research output and map that
+  output into Project 2 claims. Do not import Project 1's internal retrieval or provider code.
+- **Why:** Project 1 remains independently configured and already exposes a stable composition
+  facade and structured result. The structural boundary supports in-process composition and
+  isolated tests without a monorepo-wide refactor.
+
+## P2-014 — Keep facts, inferences, unknowns, and conflicts distinct
+
+- **Status:** Accepted in M3
+- **Decision:** Store observed claims, analytical interpretations, explicit gaps, and competing
+  evidence-backed values as separate profile objects.
+- **Why:** Later filters must not treat an inference as a fact or silently select one side of a
+  source conflict. This preserves auditability and makes missing-data behavior explicit.
+
+## P2-015 — Merge enrichment conservatively
+
+- **Status:** Accepted in M3
+- **Decision:** Deduplicate identical claims, retain all evidence, flag conflicting scalar or
+  same-period financial values, and degrade profile completeness instead of resolving truth.
+- **Why:** Source reconciliation needs policies and domain context beyond M3. Preserving the
+  alternatives is safer than overwriting stronger evidence or inventing consensus.

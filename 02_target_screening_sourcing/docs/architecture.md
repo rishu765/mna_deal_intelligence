@@ -29,8 +29,8 @@ Human thesis
        Keys: domain, trusted identifiers, normalized name + country
        Output: canonical candidates + merge/audit record
   -> Enrichment service
-       Port: CompanyResearchProvider
-       Output: CandidateProfile with evidence and explicit unknowns
+       Port: EnrichmentProvider
+       Output: CandidateProfile with facts, inferences, evidence, unknowns, and conflicts
   -> Deterministic screening engine
        Output: ScreeningResult per criterion, including missing-data state
   -> Strategic-fit assessor
@@ -43,9 +43,9 @@ Human thesis
        Output: approval/rejection/request-for-research state
 ```
 
-M2 implements deterministic query generation, provider-neutral sourcing, lightweight identity
-normalization, conservative deduplication, and provenance-preserving candidate results. Named
-downstream enrichment and screening concepts remain planned contracts.
+M3 adds provider-neutral enrichment, a reproducible fixture provider, conservative result
+merging, completeness status, and an adapter for Project 1's public structured research output.
+Screening and ranking remain downstream planned capabilities.
 
 ## Planned domain concepts
 
@@ -55,7 +55,7 @@ downstream enrichment and screening concepts remain planned contracts.
 | `ScreeningCriterion` | Typed hard/soft/exclusion criterion, operator, value, and importance | Implemented M1 |
 | `CandidateCompany` | Normalized observed identity, aliases, domain, country, tags, source evidence | Implemented M2 |
 | `DiscoveryEvidence` | Provider, source, query, timestamp, excerpt, and source identifier | Implemented M2 |
-| `CandidateProfile` | Evidence-backed facts and explicit unknowns needed by screening | Boundary skeleton M0; evolve M3 |
+| `CandidateProfile` | Facts, inferences, financials, unknowns, conflicts, evidence and status | Implemented M3 |
 | `ScreeningResult` | Deterministic pass/fail/unknown result per hard criterion | M4 |
 | `StrategicFitAssessment` | Evidence-backed semantic fit and rationale | M5 |
 | `RankedCandidate` / `Shortlist` | Stable ranking, explanations, and cited candidate set | M5 |
@@ -113,11 +113,11 @@ CandidateCompany
   -> Project 2 CandidateProfile
 ```
 
-The adapter owns configuration translation, request construction, exception mapping, and model
-translation. Project 2 should not import Project 1 retrieval, prompt, store, generator, or API
-schema internals. If in-process reuse proves awkward in M3, Project 1 should expose one stable
-public facade or Project 2 should use its API; that decision should be based on deployment and
-testing needs then, not anticipated in M0.
+The M3 adapter accepts any structurally compatible client exposing Project 1's public
+`research(company_name=...)` behavior and maps its structured profile, facts, observations,
+financial metrics, and citations. This avoids a package dependency or deep imports. The caller
+is responsible for configuring Project 1 and indexing explicitly supplied candidate documents;
+the adapter does not fetch filings or web pages.
 
 ## Configuration and errors
 
