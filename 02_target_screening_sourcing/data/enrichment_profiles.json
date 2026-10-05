@@ -1,0 +1,150 @@
+[
+  {
+    "canonical_name": "PayFlow Labs Private Limited",
+    "website_domain": "payflow.example",
+    "evidence": [
+      {
+        "evidence_id": "payflow-profile-1",
+        "source_type": "synthetic_company_profile",
+        "source_title": "PayFlow Labs synthetic company profile",
+        "source_reference": "data/enrichment_profiles.json#payflow",
+        "page_numbers": [1],
+        "excerpt": "PayFlow Labs provides payment orchestration APIs to enterprise merchants in India.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      },
+      {
+        "evidence_id": "payflow-financials-1",
+        "source_type": "synthetic_financial_statement",
+        "source_title": "PayFlow Labs synthetic FY2025 financial summary",
+        "source_reference": "data/enrichment_profiles.json#payflow-financials",
+        "page_numbers": [2],
+        "excerpt": "FY2025 revenue was INR 320 crore and the company reported positive EBITDA.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      },
+      {
+        "evidence_id": "payflow-tech-1",
+        "source_type": "synthetic_product_documentation",
+        "source_title": "PayFlow Labs synthetic API documentation overview",
+        "source_reference": "data/enrichment_profiles.json#payflow-api",
+        "page_numbers": [3],
+        "excerpt": "The platform exposes versioned payment, reconciliation, and merchant APIs.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      }
+    ],
+    "facts": [
+      {
+        "field": "business_description",
+        "value": "B2B payment orchestration and merchant infrastructure provider.",
+        "evidence_ids": ["payflow-profile-1"]
+      },
+      {
+        "field": "industry",
+        "value": "B2B fintech and payments infrastructure",
+        "evidence_ids": ["payflow-profile-1"]
+      },
+      {
+        "field": "products_services",
+        "value": "Payment orchestration, reconciliation, and merchant APIs",
+        "evidence_ids": ["payflow-profile-1", "payflow-tech-1"]
+      },
+      {
+        "field": "capabilities",
+        "value": "Enterprise payment API infrastructure",
+        "evidence_ids": ["payflow-tech-1"]
+      },
+      {
+        "field": "geographies",
+        "value": "India",
+        "evidence_ids": ["payflow-profile-1"]
+      },
+      {
+        "field": "customer_segments",
+        "value": "Enterprise merchants and B2B platforms",
+        "evidence_ids": ["payflow-profile-1"]
+      },
+      {
+        "field": "profitability",
+        "value": "Positive EBITDA reported for FY2025",
+        "evidence_ids": ["payflow-financials-1"]
+      },
+      {
+        "field": "technology",
+        "value": "Versioned payment and reconciliation APIs",
+        "evidence_ids": ["payflow-tech-1"]
+      }
+    ],
+    "inferences": [
+      {
+        "field": "ma_observations",
+        "statement": "The API product may complement a payments acquirer's enterprise merchant platform.",
+        "rationale": "This is a strategic inference grounded in the documented API and customer facts.",
+        "evidence_ids": ["payflow-profile-1", "payflow-tech-1"]
+      }
+    ],
+    "financial_metrics": [
+      {
+        "metric_name": "Revenue",
+        "value": "320",
+        "currency": "INR",
+        "unit": "crore",
+        "fiscal_period": "FY2025",
+        "basis": "reported revenue",
+        "evidence_ids": ["payflow-financials-1"]
+      }
+    ],
+    "unknown_fields": [
+      {
+        "field": "employee_count",
+        "reason": "The synthetic source does not report employee count."
+      },
+      {
+        "field": "ownership",
+        "reason": "The synthetic source does not identify ownership type."
+      }
+    ],
+    "warnings": ["Fixture data is synthetic and demonstrates schema behavior only."]
+  },
+  {
+    "canonical_name": "CashGrid Systems",
+    "website_domain": "cashgrid.example",
+    "evidence": [
+      {
+        "evidence_id": "cashgrid-profile-1",
+        "source_type": "synthetic_company_profile",
+        "source_title": "CashGrid synthetic company profile",
+        "source_reference": "data/enrichment_profiles.json#cashgrid",
+        "excerpt": "CashGrid provides enterprise treasury and reconciliation software in India.",
+        "extraction_method": "curated_fixture",
+        "quality": "supplied"
+      }
+    ],
+    "facts": [
+      {
+        "field": "business_description",
+        "value": "Enterprise treasury and reconciliation software provider.",
+        "evidence_ids": ["cashgrid-profile-1"]
+      },
+      {
+        "field": "geographies",
+        "value": "India",
+        "evidence_ids": ["cashgrid-profile-1"]
+      }
+    ],
+    "inferences": [],
+    "financial_metrics": [],
+    "unknown_fields": [
+      {
+        "field": "financials",
+        "reason": "No financial information is present in the fixture."
+      },
+      {
+        "field": "profitability",
+        "reason": "Profitability is not disclosed in the fixture."
+      }
+    ],
+    "warnings": ["CashGrid has only partial fixture coverage."]
+  }
+]
