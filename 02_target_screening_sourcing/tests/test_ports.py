@@ -1,4 +1,9 @@
-from ma_target_screening import AcquisitionThesis, CandidateCompany, CandidateProfile
+from ma_target_screening import (
+    AcquirerIdentity,
+    AcquisitionThesis,
+    CandidateCompany,
+    CandidateProfile,
+)
 from ma_target_screening.ports import CompanyResearchProvider, DiscoveryProvider
 
 
@@ -8,7 +13,7 @@ class StubDiscoveryProvider:
         return "stub"
 
     def discover(self, thesis: AcquisitionThesis) -> tuple[CandidateCompany, ...]:
-        return (CandidateCompany(canonical_name=f"{thesis.acquirer_name} Target"),)
+        return (CandidateCompany(canonical_name=f"{thesis.acquirer.name} Target"),)
 
 
 class StubResearchProvider:
@@ -18,7 +23,11 @@ class StubResearchProvider:
 
 def test_discovery_provider_contract_is_structural() -> None:
     provider: DiscoveryProvider = StubDiscoveryProvider()
-    thesis = AcquisitionThesis(acquirer_name="Acquirer", strategic_objective="Acquire capability")
+    thesis = AcquisitionThesis(
+        thesis_id="test-thesis",
+        acquirer=AcquirerIdentity(name="Acquirer"),
+        objective="Acquire capability",
+    )
 
     assert provider.discover(thesis)[0].canonical_name == "Acquirer Target"
 

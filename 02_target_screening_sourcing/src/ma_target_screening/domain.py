@@ -20,24 +20,6 @@ def _require_unique_nonblank(values: tuple[str, ...], field_name: str) -> None:
 
 
 @dataclass(frozen=True, slots=True)
-class AcquisitionThesis:
-    """Human-authored M0 thesis envelope; parsing and full criteria belong to M1."""
-
-    acquirer_name: str
-    strategic_objective: str
-    industries: tuple[str, ...] = ()
-    capabilities_sought: tuple[str, ...] = ()
-    geographies: tuple[str, ...] = ()
-    exclusions: tuple[str, ...] = ()
-
-    def __post_init__(self) -> None:
-        _require_text(self.acquirer_name, "acquirer_name")
-        _require_text(self.strategic_objective, "strategic_objective")
-        for name in ("industries", "capabilities_sought", "geographies", "exclusions"):
-            _require_unique_nonblank(getattr(self, name), name)
-
-
-@dataclass(frozen=True, slots=True)
 class ExternalIdentifier:
     """Identifier assigned by a registry, database, or source system."""
 
