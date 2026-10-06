@@ -53,7 +53,7 @@ See [architecture.md](docs/architecture.md) for component ownership and data bou
 | M2 | Company discovery / candidate sourcing | **Complete** |
 | M3 | Candidate enrichment using Project 1 research capabilities | **Complete** |
 | M4/5 | Screening + strategic-fit reasoning + ranking | **Complete** |
-| M6 | LangGraph agentic orchestration + human-in-the-loop | Not started |
+| M6 | LangGraph agentic orchestration + human-in-the-loop | **Complete** |
 | M7 | Evaluation + API/demo + final V1 polish | Not started |
 
 The detailed ownership map is in [milestones.md](docs/milestones.md).
@@ -121,6 +121,24 @@ python -m ma_target_screening.demo_screening
 See [screening-ranking.md](docs/screening-ranking.md) for the exact scoring formula, financial
 comparability safeguards, ranking order, LLM boundary, and missing-data behavior.
 
+## LangGraph Workflow and Human Review
+
+M6 composes the existing discovery, enrichment, and screening/ranking services into a typed,
+checkpointed graph. Deterministic routes handle validation, empty discovery, partial
+enrichment, bounded transient retries, terminal failures, and reviewer-requested reruns. The
+workflow always pauses after ranking so a person can inspect eligibility, evidence, unknowns,
+warnings, and the provisional shortlist before approving or rejecting it.
+
+Run the credential-free pause/resume demo from this directory:
+
+```powershell
+python -m ma_target_screening.demo_workflow
+```
+
+The demo pauses at the real LangGraph interrupt and then supplies a programmatic approval. See
+[langgraph-workflow.md](docs/langgraph-workflow.md) for the graph, state, retry matrix,
+checkpoint assumptions, and integration API.
+
 ## Project 1 Reuse Strategy
 
 M3 reuses Project 1's supported application output through a narrow structural adapter. The
@@ -163,8 +181,8 @@ python -m pytest
 
 ## Current Status
 
-**M4/5 complete — screening, strategic fit, and ranking.** M0–M3 architecture, thesis,
-discovery, and enrichment are joined by criterion-level deterministic screening, evidence-
-grounded semantic assessment, transparent scoring, stable ranking, and an auditable shortlist.
-Live search/research providers, LangGraph, human review, evaluation benchmarks, APIs, UI, and
-deployment are not implemented.
+**M6 complete — LangGraph orchestration and human review.** M0–M5 services are now composed by
+a typed, checkpointed, bounded workflow with conditional routing, explicit retry state, a real
+pause/resume review checkpoint, terminal approval/rejection states, and a final audited result.
+Live search/research providers, durable/distributed checkpoints, evaluation benchmarks, APIs,
+UI, and deployment remain unimplemented. Those concerns belong to M7 or later work.

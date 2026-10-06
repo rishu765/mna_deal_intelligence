@@ -152,3 +152,33 @@
 - **Decision:** Ineligible candidates are omitted from ranked shortlist entries but remain in
   `Shortlist.screening_results` with failed criteria and explanations.
 - **Why:** Analysts need an audit trail and must be able to diagnose criteria or data errors.
+
+## P2-020 — Orchestrate services; do not relocate business logic into the graph
+
+- **Status:** Accepted in M6
+- **Decision:** LangGraph nodes call the M2 discovery, M3 enrichment, and M4/5 screening/ranking
+  service contracts. Routing, retry state, review interrupts, and finalization live in M6;
+  business rules remain in their original services.
+- **Why:** The graph stays inspectable and replaceable, while each capability remains directly
+  testable without LangGraph.
+
+## P2-021 — Require review after every ranking outcome
+
+- **Status:** Accepted in M6
+- **Decision:** Successful screening routes to a checkpointed human interrupt even when the
+  shortlist is empty or all candidates failed hard constraints. Reviewers can approve, reject,
+  or request one bounded enrichment/screening rerun.
+- **Why:** Empty and hard-fail outcomes are business-relevant results, not infrastructure
+  errors. A person should see the evidence gaps and exclusions before the workflow closes.
+
+## P2-022 — Default to trusted in-process checkpoints
+
+- **Status:** Accepted in M6
+- **Decision:** The default `InMemorySaver` uses a local serializer that exactly preserves the
+  immutable tuple-backed domain models. It may only deserialize bytes written by the trusted
+  application process. Production callers must inject a secured durable checkpointer suited to
+  their deployment.
+- **Why:** LangGraph's default MessagePack reconstruction does not preserve all validated domain
+  model tuple semantics. The local default enables correct M6 pause/resume without introducing
+  a database or weakening M1–M5 validation; durable storage remains an explicit deployment
+  decision.

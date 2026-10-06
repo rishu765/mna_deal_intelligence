@@ -60,7 +60,7 @@ all candidate results for audit. Agentic orchestration remains downstream.
 | `ScreeningResult` | Eligibility, per-criterion outcomes, score components and rationale | Implemented M4/5 |
 | `StrategicFitAssessment` | Structured evidence-backed semantic fit and uncertainty | Implemented M4/5 |
 | `RankedCandidate` / `Shortlist` | Stable ranking, explanations, and cited candidate set | Implemented M4/5 |
-| Human review state | Reviewer decision and workflow transitions | M6 |
+| Human review state | Reviewer decision and workflow transitions | Implemented M6 |
 
 The thesis covers acquirer context and criteria for industry/sub-industry, products or
 capabilities, geography, revenue, profitability, company size, employee count, founded year,
@@ -131,8 +131,11 @@ environment variables, uses the `MATS_` prefix for Project 2 settings, validates
 never logs secrets. Provider errors are translated into stable Project 2 exception families.
 Credentials may use provider-standard names shared by separately composed projects.
 
-## Future orchestration
+## Orchestration boundary
 
-LangGraph is reserved for M6, after M1–M5 provide independently tested services. A graph may
-then coordinate retries, conditional enrichment, review checkpoints, and resumable state. It
-must not contain screening mathematics or provider-specific business logic.
+M6 implements LangGraph as a thin application layer after M1–M5 established independently
+tested services. Nodes call the provider-neutral discovery, enrichment, and screening/ranking
+ports; they do not contain query generation, profile merging, criterion comparison, semantic
+reasoning, scoring, or ranking logic. The graph owns explicit state transitions, bounded retry
+routing, checkpointed pause/resume, human decisions, warnings/errors, and the terminal workflow
+result. See [langgraph-workflow.md](langgraph-workflow.md).
