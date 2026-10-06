@@ -23,6 +23,15 @@ from ma_target_screening.thesis import (
     NumericRange,
     ScreeningCriterion,
 )
+from ma_target_screening.workflow import (
+    HumanReviewDecision,
+    RetryPolicy,
+    ReviewDecision,
+    WorkflowApplication,
+    WorkflowResult,
+    WorkflowStatus,
+    build_workflow,
+)
 
 __all__ = [
     "AcquisitionThesis",
@@ -46,6 +55,13 @@ __all__ = [
     "ScreeningRankingService",
     "ScreeningResult",
     "Shortlist",
+    "HumanReviewDecision",
+    "ReviewDecision",
+    "RetryPolicy",
+    "WorkflowApplication",
+    "WorkflowResult",
+    "WorkflowStatus",
+    "build_workflow",
 ]
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
