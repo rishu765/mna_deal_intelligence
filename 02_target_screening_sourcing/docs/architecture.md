@@ -139,3 +139,15 @@ ports; they do not contain query generation, profile merging, criterion comparis
 reasoning, scoring, or ranking logic. The graph owns explicit state transitions, bounded retry
 routing, checkpointed pause/resume, human decisions, warnings/errors, and the terminal workflow
 result. See [langgraph-workflow.md](langgraph-workflow.md).
+
+## V1 application surfaces
+
+M7 adds two adapters over the same composition root:
+
+- the evaluation runner executes the fixture providers and graph against a versioned five-case
+  dataset, then reports subsystem metrics without changing domain behavior; and
+- FastAPI validates transport schemas, converts them into domain objects, invokes the existing
+  services/workflow, and returns bounded JSON summaries.
+
+Neither surface owns screening rules or provider logic. The default API and workflow store remain
+local and process-bound.

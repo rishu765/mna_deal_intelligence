@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "thesis_id": "india-fintech-exclusion-heavy",
+  "acquirer": {
+    "name": "Example Regulated Payments Group",
+    "country": "India",
+    "industry": "Payments"
+  },
+  "objective": "Identify Indian B2B fintech targets while excluding consumer-credit exposure.",
+  "strategic_rationale": "Expand enterprise payments without adding consumer lending risk.",
+  "criteria": [
+    {
+      "criterion_id": "india-required",
+      "category": "geography",
+      "requirement": "hard",
+      "value_type": "geographic",
+      "operator": "in",
+      "value": { "items": ["India"] },
+      "evaluation_method": "deterministic",
+      "description": "Target operates in India.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "exclude-consumer-credit",
+      "category": "product_capability",
+      "requirement": "exclusion",
+      "value_type": "categorical",
+      "operator": "contains",
+      "value": { "text": "Consumer lending" },
+      "evaluation_method": "deterministic",
+      "description": "Exclude consumer-lending products.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "b2b-preference",
+      "category": "customer_type",
+      "requirement": "soft",
+      "value_type": "categorical",
+      "operator": "contains",
+      "value": { "text": "Enterprise" },
+      "evaluation_method": "deterministic",
+      "description": "Prefer enterprise-oriented businesses.",
+      "priority": "high",
+      "weight": "0.5"
+    }
+  ],
+  "source_text": null,
+  "notes": "Synthetic exclusion-heavy evaluation case."
+}
