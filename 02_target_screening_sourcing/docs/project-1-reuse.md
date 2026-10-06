@@ -25,7 +25,7 @@ in M0.
 | `CompanyResearchService` internals | Project 2 consumes the public result shape instead of assembling Project 1's service pipeline. |
 | Citation model implementation | M3 preserves its public page/chunk semantics through mapping; shared extraction is still unnecessary. |
 | `Retriever`, `Generator`, and `Embedder` protocols | Useful internal patterns; Project 2 should consume research output, not assemble Project 1's pipeline. |
-| Structured-output validation | Reuse the approach when M1/M5 add model-backed parsing/reasoning. |
+| Structured-output validation | M4/5 applies the approach to evidence-grounded semantic provider output. |
 | Evaluation runner, metrics, reports, and failure taxonomy | Adopt compatible ideas in M7 after Project 2 tasks and gold cases exist. |
 | Logging and bounded provider behavior | Apply when executable providers/application layers arrive. |
 

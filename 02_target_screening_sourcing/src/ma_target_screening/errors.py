@@ -23,3 +23,15 @@ class EnrichmentError(TargetScreeningError):
 
 class MalformedEnrichmentSourceError(EnrichmentError):
     """Raised when provider enrichment cannot be validated."""
+
+
+class ScreeningError(TargetScreeningError):
+    """Raised when deterministic screening cannot be evaluated safely."""
+
+
+class StrategicFitError(TargetScreeningError):
+    """Raised when a semantic assessment provider cannot return grounded output."""
+
+
+class MalformedStrategicFitOutputError(StrategicFitError):
+    """Raised when semantic provider output violates the structured contract."""

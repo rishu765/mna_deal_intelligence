@@ -32,20 +32,21 @@ Human thesis
        Port: EnrichmentProvider
        Output: CandidateProfile with facts, inferences, evidence, unknowns, and conflicts
   -> Deterministic screening engine
-       Output: ScreeningResult per criterion, including missing-data state
+       Output: criterion evaluations + eligible/review-required/ineligible state
   -> Strategic-fit assessor
-       Output: StrategicFitAssessment with evidence-backed rationale
+       Port: StrategicFitProvider
+       Output: structured, evidence-grounded semantic evaluations
   -> Ranking service
-       Output: RankedCandidate[] and score explanation
+       Output: weighted score components, RankedCandidate[] and score explanation
   -> Shortlist
        Output: evidence-backed, reviewable candidate set
   -> Human review workflow
        Output: approval/rejection/request-for-research state
 ```
 
-M3 adds provider-neutral enrichment, a reproducible fixture provider, conservative result
-merging, completeness status, and an adapter for Project 1's public structured research output.
-Screening and ranking remain downstream planned capabilities.
+M4/5 adds criterion-level screening, hard/exclusion gates, a structured semantic provider
+boundary, transparent score aggregation, deterministic ordering, and a shortlist that retains
+all candidate results for audit. Agentic orchestration remains downstream.
 
 ## Planned domain concepts
 
@@ -56,9 +57,9 @@ Screening and ranking remain downstream planned capabilities.
 | `CandidateCompany` | Normalized observed identity, aliases, domain, country, tags, source evidence | Implemented M2 |
 | `DiscoveryEvidence` | Provider, source, query, timestamp, excerpt, and source identifier | Implemented M2 |
 | `CandidateProfile` | Facts, inferences, financials, unknowns, conflicts, evidence and status | Implemented M3 |
-| `ScreeningResult` | Deterministic pass/fail/unknown result per hard criterion | M4 |
-| `StrategicFitAssessment` | Evidence-backed semantic fit and rationale | M5 |
-| `RankedCandidate` / `Shortlist` | Stable ranking, explanations, and cited candidate set | M5 |
+| `ScreeningResult` | Eligibility, per-criterion outcomes, score components and rationale | Implemented M4/5 |
+| `StrategicFitAssessment` | Structured evidence-backed semantic fit and uncertainty | Implemented M4/5 |
+| `RankedCandidate` / `Shortlist` | Stable ranking, explanations, and cited candidate set | Implemented M4/5 |
 | Human review state | Reviewer decision and workflow transitions | M6 |
 
 The thesis covers acquirer context and criteria for industry/sub-industry, products or
@@ -77,6 +78,10 @@ than ask a model to guess.
 Semantic components may interpret ambiguous thesis text, assess product or capability fit,
 reason about strategic adjacency, and draft qualitative rationale. Their structured outputs
 must cite supplied evidence, expose uncertainty, and remain subordinate to hard criteria.
+
+M4/5 implements this boundary with a credential-free fixture provider and a generic structured-
+generation client adapter. Deterministic rules never call that provider. Semantic output citing
+unknown evidence IDs is rejected and converted to an explicit unknown assessment.
 
 ## Discovery abstraction
 

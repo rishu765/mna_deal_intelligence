@@ -33,10 +33,9 @@ Acquisition thesis
     -> candidate discovery (M2)
     -> deduplication and identity resolution (M2)
     -> evidence-backed candidate enrichment (M3)
-    -> deterministic screening (M4)
-    -> strategic-fit reasoning (M5)
-    -> ranking (M5)
-    -> evidence-backed shortlist (M5)
+    -> deterministic screening (M4/5)
+    -> strategic-fit reasoning (M4/5)
+    -> ranking and evidence-backed shortlist (M4/5)
     -> LangGraph orchestration and human review (M6)
 ```
 
@@ -53,8 +52,7 @@ See [architecture.md](docs/architecture.md) for component ownership and data bou
 | M1 | Acquisition thesis / screening criteria model | **Complete** |
 | M2 | Company discovery / candidate sourcing | **Complete** |
 | M3 | Candidate enrichment using Project 1 research capabilities | **Complete** |
-| M4 | Screening engine + deterministic filters | Not started |
-| M5 | Strategic-fit reasoning + ranking | Not started |
+| M4/5 | Screening + strategic-fit reasoning + ranking | **Complete** |
 | M6 | LangGraph agentic orchestration + human-in-the-loop | Not started |
 | M7 | Evaluation + API/demo + final V1 polish | Not started |
 
@@ -106,6 +104,23 @@ python -m ma_target_screening.demo_enrichment
 See [candidate-enrichment.md](docs/candidate-enrichment.md) for the provider contract, merge
 semantics, Project 1 adapter boundary, evidence model, and limitations.
 
+## Screening, Strategic Fit, and Ranking
+
+M4/5 evaluates every thesis criterion explicitly, gates eligibility on hard constraints and
+exclusions, assesses qualitative fit through an evidence-grounded provider boundary, and builds
+a deterministic shortlist. Failed candidates remain in the audit results; unknown hard data
+produces `review_required`, not an automatic pass or fail.
+
+The offline demo exercises M1 thesis loading, M2 discovery, M3 enrichment, deterministic
+screening, fixture semantic assessment, scoring, ranking, and shortlist construction:
+
+```powershell
+python -m ma_target_screening.demo_screening
+```
+
+See [screening-ranking.md](docs/screening-ranking.md) for the exact scoring formula, financial
+comparability safeguards, ranking order, LLM boundary, and missing-data behavior.
+
 ## Project 1 Reuse Strategy
 
 M3 reuses Project 1's supported application output through a narrow structural adapter. The
@@ -117,22 +132,22 @@ retrieval, storage, prompt, or provider modules. See
 
 ## Deterministic vs LLM Responsibilities
 
-Deterministic code will own typed validation, identity keys, exact filters, numeric thresholds,
+Deterministic code owns typed validation, identity keys, exact filters, numeric thresholds,
 defined scoring formulae, stable sorting/tie-breaking, citation validation, and workflow state
-transitions. Model-backed semantic reasoning may help interpret ambiguous thesis language,
+transitions. Model-backed semantic reasoning may interpret ambiguous thesis language,
 assess strategic adjacency or capability complementarity, and produce qualitative rationales.
 
 LLM output consumed by code must be schema-validated and evidence-linked. It must not silently
-override hard constraints or manufacture missing facts. M1 classifies criteria for later
-evaluation but implements no candidate screening or semantic assessment.
+override hard constraints or manufacture missing facts. M4/5 evaluates M1 criteria through
+separate deterministic and semantic services; the bundled semantic path remains offline.
 
 ## Configuration
 
 Each project remains independently installable. Project 2 uses environment variables with a
 `MATS_` prefix for its settings and may rely on provider-standard credentials such as
 `OPENAI_API_KEY` only when a separately configured Project 1 client uses them. `.env.example`
-documents names only; the application will not auto-load secrets. The bundled discovery and
-enrichment demos require no credentials or network access.
+documents names only; the application will not auto-load secrets. All bundled discovery,
+enrichment, and screening/ranking demos require no credentials or network access.
 
 ## Development
 
@@ -148,8 +163,8 @@ python -m pytest
 
 ## Current Status
 
-**M3 complete — evidence-backed candidate enrichment.** M0 architecture, M1 thesis schema, M2
-candidate discovery, and M3 profile models, offline enrichment, conservative multi-provider
-merge, conflict/unknown handling, Project 1 output adapter, demo, and tests are implemented.
-Live web research, document acquisition, candidate screening, strategic-fit assessment,
-ranking, LangGraph, human review, APIs, UI, and deployment are not implemented.
+**M4/5 complete — screening, strategic fit, and ranking.** M0–M3 architecture, thesis,
+discovery, and enrichment are joined by criterion-level deterministic screening, evidence-
+grounded semantic assessment, transparent scoring, stable ranking, and an auditable shortlist.
+Live search/research providers, LangGraph, human review, evaluation benchmarks, APIs, UI, and
+deployment are not implemented.
