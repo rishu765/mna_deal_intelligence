@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "thesis_id": "india-enterprise-fintech-expansion",
+  "acquirer": {
+    "name": "Example Global Software Group",
+    "country": "United States",
+    "industry": "Enterprise software"
+  },
+  "objective": "Acquire an India-based enterprise fintech platform to establish local distribution.",
+  "strategic_rationale": "Enter India through an established B2B customer base and local product capability.",
+  "criteria": [
+    {
+      "criterion_id": "india-operations",
+      "category": "geography",
+      "requirement": "hard",
+      "value_type": "geographic",
+      "operator": "in",
+      "value": { "items": ["India"] },
+      "evaluation_method": "deterministic",
+      "description": "Target has evidence-backed operations in India.",
+      "priority": "critical",
+      "weight": null
+    },
+    {
+      "criterion_id": "fintech-sector",
+      "category": "industry",
+      "requirement": "hard",
+      "value_type": "categorical",
+      "operator": "in",
+      "value": { "items": ["Fintech", "B2B fintech", "Payments infrastructure"] },
+      "evaluation_method": "deterministic",
+      "description": "Target participates in enterprise fintech or payment infrastructure.",
+      "priority": "high",
+      "weight": null
+    },
+    {
+      "criterion_id": "enterprise-distribution",
+      "category": "customer_type",
+      "requirement": "soft",
+      "value_type": "categorical",
+      "operator": "contains",
+      "value": { "text": "Enterprise" },
+      "evaluation_method": "deterministic",
+      "description": "Prefer an established enterprise customer base.",
+      "priority": "high",
+      "weight": "0.5"
+    }
+  ],
+  "source_text": null,
+  "notes": "Synthetic geographic-expansion evaluation case."
+}

@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "case_id": "payments-end-to-end",
+      "description": "Indian B2B payments thesis with financial, exclusion, and semantic criteria.",
+      "thesis_file": "examples/screening-ranking-demo.json",
+      "expected_requirements": {
+        "industry-fit": "hard",
+        "india-presence": "hard",
+        "fy2025-revenue": "hard",
+        "profitable": "hard",
+        "exclude-consumer-lending": "exclusion",
+        "enterprise-customers": "soft",
+        "api-complementarity": "soft",
+        "enterprise-expansion": "soft"
+      },
+      "relevant_domains": ["payflow.example", "ledgerbridge.example", "cashgrid.example"],
+      "profile_expectations": {
+        "payflow.example": {
+          "facts": {"geographies": "India", "profitability": "Positive EBITDA"},
+          "unknown_fields": ["employee_count", "ownership"],
+          "financial_metrics": [{"metric_name": "Revenue", "currency": "INR", "unit": "crore", "fiscal_period": "FY2025"}]
+        },
+        "cashgrid.example": {
+          "facts": {"geographies": "India"},
+          "unknown_fields": ["financials", "profitability"],
+          "financial_metrics": []
+        }
+      },
+      "screening_expectations": {
+        "payflow.example": {"industry-fit": "pass", "india-presence": "pass", "fy2025-revenue": "pass", "profitable": "pass", "exclude-consumer-lending": "pass"},
+        "cashgrid.example": {"fy2025-revenue": "unknown", "profitable": "unknown"},
+        "consumercredit.example": {"industry-fit": "fail", "exclude-consumer-lending": "fail"}
+      },
+      "strategic_fit_expectations": {
+        "payflow.example": {"api-complementarity": "pass", "enterprise-expansion": "pass"},
+        "ledgerbridge.example": {"api-complementarity": "partial", "enterprise-expansion": "partial"},
+        "cashgrid.example": {"api-complementarity": "unknown", "enterprise-expansion": "partial"}
+      },
+      "expected_top_domains": ["payflow.example", "ledgerbridge.example", "cashgrid.example"],
+      "expected_pairs": [["payflow.example", "ledgerbridge.example"], ["ledgerbridge.example", "cashgrid.example"]]
+    },
+    {
+      "case_id": "enterprise-ai-discovery",
+      "description": "Enterprise software acquirer seeking AI and governed-data capability.",
+      "thesis_file": "examples/technology-ai-data.json",
+      "expected_requirements": {"enterprise-software": "hard", "proprietary-ai-data-tech": "soft", "portfolio-complementarity": "soft"},
+      "relevant_domains": ["datamesh.example"],
+      "profile_expectations": {},
+      "screening_expectations": {},
+      "strategic_fit_expectations": {},
+      "expected_top_domains": [],
+      "expected_pairs": []
+    },
+    {
+      "case_id": "geographic-expansion",
+      "description": "US software acquirer seeking Indian enterprise fintech distribution.",
+      "thesis_file": "examples/geographic-expansion.json",
+      "expected_requirements": {"india-operations": "hard", "fintech-sector": "hard", "enterprise-distribution": "soft"},
+      "relevant_domains": ["payflow.example", "ledgerbridge.example", "cashgrid.example"],
+      "profile_expectations": {},
+      "screening_expectations": {},
+      "strategic_fit_expectations": {},
+      "expected_top_domains": [],
+      "expected_pairs": []
+    },
+    {
+      "case_id": "incomplete-thesis",
+      "description": "Intentionally incomplete industrial technology thesis.",
+      "thesis_file": "examples/partial-thesis.json",
+      "expected_requirements": {},
+      "relevant_domains": [],
+      "profile_expectations": {},
+      "screening_expectations": {},
+      "strategic_fit_expectations": {},
+      "expected_top_domains": [],
+      "expected_pairs": []
+    },
+    {
+      "case_id": "exclusion-heavy",
+      "description": "Indian fintech thesis dominated by a consumer-lending exclusion.",
+      "thesis_file": "examples/exclusion-heavy.json",
+      "expected_requirements": {"india-required": "hard", "exclude-consumer-credit": "exclusion", "b2b-preference": "soft"},
+      "relevant_domains": ["payflow.example", "ledgerbridge.example", "cashgrid.example"],
+      "profile_expectations": {},
+      "screening_expectations": {"consumercredit.example": {"exclude-consumer-credit": "fail"}},
+      "strategic_fit_expectations": {},
+      "expected_top_domains": [],
+      "expected_pairs": []
+    }
+  ]
+}
