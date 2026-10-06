@@ -182,3 +182,21 @@
   model tuple semantics. The local default enables correct M6 pause/resume without introducing
   a database or weakening M1–M5 validation; durable storage remains an explicit deployment
   decision.
+
+## P2-023 — Report subsystem metrics, not one composite quality score
+
+- **Status:** Accepted in M7
+- **Decision:** Evaluate thesis, discovery, enrichment, screening, strategic fit, ranking, and
+  workflow separately against a small versioned synthetic dataset.
+- **Why:** A composite score would hide whether errors came from low-recall sourcing, missing
+  evidence, incorrect rules, unsupported reasoning, or orchestration. The tiny corpus cannot
+  justify claims of general M&A accuracy.
+
+## P2-024 — Keep the V1 API offline-first and process-local
+
+- **Status:** Accepted in M7
+- **Decision:** FastAPI composes existing fixture services and an in-memory workflow application.
+  It exposes validation, pipeline steps, workflow start/state/review, and safe error mappings but
+  adds no auth, live provider, or durable store.
+- **Why:** This creates a callable, testable portfolio interface without disguising a local V1 as
+  production infrastructure or introducing new business capabilities.
