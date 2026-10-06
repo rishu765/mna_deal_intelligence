@@ -1,4 +1,4 @@
-"""Offline M1-to-M6 workflow demo with a real interrupt and programmatic approval."""
+"""Offline Project 2 V1 demo with a real interrupt and programmatic approval."""
 
 from __future__ import annotations
 
@@ -7,23 +7,9 @@ import json
 from collections.abc import Sequence
 from pathlib import Path
 
-from ma_target_screening.discovery import CandidateDiscoveryService, LocalDatasetDiscoveryProvider
-from ma_target_screening.enrichment import (
-    CandidateEnrichmentService,
-    StructuredFixtureEnrichmentProvider,
-)
-from ma_target_screening.screening import (
-    FixtureStrategicFitProvider,
-    ScreeningRankingService,
-    StrategicFitService,
-)
+from ma_target_screening.composition import OfflinePaths, build_offline_services
 from ma_target_screening.thesis import AcquisitionThesis
-from ma_target_screening.workflow import (
-    HumanReviewDecision,
-    ReviewDecision,
-    WorkflowApplication,
-    build_workflow,
-)
+from ma_target_screening.workflow import HumanReviewDecision, ReviewDecision
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -40,31 +26,41 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=Path("data/strategic_fit_assessments.json"),
     )
-    parser.add_argument("--thread-id", default="m6-offline-demo")
+    parser.add_argument("--thread-id", default="project2-v1-offline-demo")
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     thesis = AcquisitionThesis.from_json(args.thesis.read_text(encoding="utf-8"))
-    graph = build_workflow(
-        discovery=CandidateDiscoveryService(
-            providers=(LocalDatasetDiscoveryProvider(args.discovery_data),)
-        ),
-        enrichment=CandidateEnrichmentService(
-            providers=(StructuredFixtureEnrichmentProvider(args.enrichment_data),)
-        ),
-        screening=ScreeningRankingService(
-            strategic_fit_service=StrategicFitService(
-                FixtureStrategicFitProvider(args.strategic_fit_data)
-            )
-        ),
+    services = build_offline_services(
+        OfflinePaths(
+            discovery_data=args.discovery_data,
+            enrichment_data=args.enrichment_data,
+            strategic_fit_data=args.strategic_fit_data,
+        )
     )
-    application = WorkflowApplication(graph)
+    application = services.workflow
 
     paused = application.start(thesis, thread_id=args.thread_id)
     review = {
+        "thesis": {
+            "thesis_id": thesis.thesis_id,
+            "acquirer": thesis.acquirer.name,
+            "objective": thesis.objective,
+            "criterion_count": len(thesis.criteria),
+        },
         "status": paused["status"].value,
+        "discovered_candidates": [item.canonical_name for item in paused.get("candidates", ())],
+        "enrichment": [
+            {
+                "candidate": item.candidate.canonical_name,
+                "status": item.status.value,
+                "evidence_count": len(item.evidence),
+                "unknown_count": len(item.unknown_fields),
+            }
+            for item in paused.get("profiles", ())
+        ],
         "ranked_candidates": [
             {
                 "rank": item.rank,
@@ -87,7 +83,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         thread_id=args.thread_id,
         decision=HumanReviewDecision(
             decision=ReviewDecision.APPROVE,
-            reviewer_notes="Approved by the offline M6 demo.",
+            reviewer_notes="Approved by the offline Project 2 V1 demo.",
+            approved_candidates=("payflow.example", "ledgerbridge.example"),
         ),
     )
     result = completed["final_result"]
