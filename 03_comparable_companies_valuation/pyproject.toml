@@ -12,6 +12,9 @@ license = { text = "Proprietary" }
 authors = [{ name = "Project Maintainer" }]
 dependencies = []
 
+[project.scripts]
+macv-profile-demo = "ma_comparable_valuation.demo_profile:main"
+
 [project.optional-dependencies]
 dev = [
   "mypy>=1.11,<2",
