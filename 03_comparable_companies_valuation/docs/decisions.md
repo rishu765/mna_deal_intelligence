@@ -79,4 +79,3 @@
   schema version.
 - **Why:** Round trips remain precise and inspectable without making API schemas the domain
   source of truth.
-

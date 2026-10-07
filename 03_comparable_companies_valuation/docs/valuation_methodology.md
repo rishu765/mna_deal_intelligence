@@ -159,4 +159,3 @@ Derived values record their input IDs and method/policy version. For example, a 
 `14.2x EV/EBITDA` must resolve to the enterprise-value snapshot, EBITDA metric, period, bases,
 underlying sources, and calculation method. Narrative cites those authoritative objects rather
 than restating uncited numbers.
-

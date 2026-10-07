@@ -11,4 +11,3 @@
   protocols at external boundaries.
 - Keep live providers, secrets, caches, and generated outputs out of deterministic tests.
 - Run Ruff, mypy, and pytest before reporting a milestone complete.
-

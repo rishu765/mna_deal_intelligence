@@ -124,4 +124,3 @@ standard library.
   designed but deliberately deferred.
 - The initial enums cover the planned V1 methods and can be extended through reviewed schema
   changes rather than untyped strings.
-

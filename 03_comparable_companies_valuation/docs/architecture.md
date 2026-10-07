@@ -135,4 +135,3 @@ will be hand-reviewed and stored separately from runtime code.
 Unit tests and the default demo must not call Yahoo Finance, Alpha Vantage, Bloomberg, Capital
 IQ, or any live source. Live-provider contract tests, if added, are isolated, opt-in, and never
 the CI correctness baseline.
-
