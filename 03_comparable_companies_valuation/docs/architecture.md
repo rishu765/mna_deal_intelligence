@@ -8,8 +8,8 @@ market snapshots, normalization policy, multiple definitions, deterministic stat
 valuation calculations, and grounded explanation of those results.
 
 It does not own document parsing/retrieval (Project 1), target sourcing (Project 2), external
-vendor systems, or other valuation methods. M0 defined the boundaries; M1 implements only the
-target-profile slice without weakening or activating later contracts.
+vendor systems, or other valuation methods. M0 defined the boundaries, M1 implemented the target
+profile, and M2/3 implements peer selection and data ingestion without activating calculations.
 
 ## Stage contracts
 
@@ -30,7 +30,8 @@ target-profile slice without weakening or activating later contracts.
 
 ## Logical package boundaries
 
-M0 implemented `domain` and `ports`; M1 adds the deterministic target-profile path:
+M0 implemented `domain` and `ports`; M1 added the target-profile path; M2/3 adds selection and
+ingestion behavior:
 
 ```text
 ma_comparable_valuation/
@@ -41,12 +42,19 @@ ma_comparable_valuation/
     project1_adapter.py   # structural Project 1 public-output adapter
     fixtures.py           # credential-free fixture provider
     demo_profile.py       # offline M1 demonstration
+    selection.py          # criteria, semantic advisory boundary, manual overrides
+    identity.py           # listing-aware peer deduplication
+    ingestion.py          # partial-safe snapshot construction and quality checks
+    peer_fixtures.py      # offline universe, financial, market, forecast fixtures
+    project1_peer_adapter.py # Project 1 research-to-peer-financial boundary
+    project2_adapter.py   # Project 2 candidate/profile identity boundary
+    demo_peers.py         # offline M2/3 selection-to-snapshot demonstration
     ports.py              # provider contracts
 ```
 
-M1 implements `TargetFinancialProfileService`. Likely later service boundaries are
-`ComparableSelectionService`,
-`FinancialNormalizationService`, `MultipleCalculationService`, `PeerStatisticsService`,
+Implemented services are `TargetFinancialProfileService`, `ComparableSelectionService`, and
+`ComparableSnapshotService`. Likely later service boundaries are `MultipleCalculationService`,
+`PeerStatisticsService`,
 `ValuationService`, and `ValuationExplanationService`. They should be introduced only with
 their milestone's behavior; M0 does not create empty service classes.
 
@@ -73,10 +81,10 @@ classDiagram
     MarketMetric "*" --> "*" EvidenceReference
 ```
 
-M1 refines the target, evidence, period, metric, capital structure, and target-profile contracts
-and adds source observations, normalization decisions, conflicts, issues, completeness, and the
-strict net-debt helper. Peer selection and valuation contracts remain inactive scaffolding; no
-M2/3 or calculation service is implemented.
+M2/3 activates peer selection and snapshot contracts. `ComparableSelectionResult` retains every
+candidate disposition and criterion result; `PeerSet` retains all decisions plus snapshots for
+included companies. Snapshot flags preserve missing, stale, conflicting, negative, and
+date-inconsistent inputs. Calculation contracts remain inactive scaffolding.
 
 ## Deterministic and AI boundary
 
@@ -111,33 +119,31 @@ recommendation never overrides a deterministic incompatibility or substitutes fo
 
 ## Provider architecture
 
-Future narrow protocols are defined for company profiles, financial data, market data,
-comparable universes, and forecasts. Adapters translate filings, user uploads, structured
-fixtures, public APIs, or commercial databases into domain models. Vendor-native types do not
-cross the boundary, and provider errors will later map into stable Project 3 exception families.
+Narrow protocols are defined for company profiles, financial data, market data, comparable
+universes, and forecasts. Fixture implementations cover universe, historical financial, market,
+and forecast capabilities. Vendor-native types do not cross the boundary, and provider failures
+become typed partial-data issues.
 
 The contracts are intentionally capability-specific: a source can supply market snapshots
-without pretending to supply audited financials or forecasts. No provider is selected in M0.
+without pretending to supply audited financials or forecasts. No live provider is selected in
+M2/3 because no reliable, licensed, keyless source meets the complete contract.
 
 ## Project integrations
 
-Project 1's public application/service output can later feed a Project 3 adapter with document
-facts and citations. Its ingestion, retrieval, structured research, and provenance patterns are
-reusable capabilities; a valuation-specific adapter is still required to map string-valued
-research metrics into Project 3 decimals, periods, bases, units, and evidence. Project 3 does
-not assume Project 1 extracts diluted shares, net debt, consensus forecasts, or every adjustment.
+Project 1's public research shape feeds `Project1PeerFinancialDataProvider`, which maps document
+metrics into Project 3 decimals, periods, bases, units, and evidence. Project 3 does not assume
+Project 1 extracts diluted shares, market prices, net debt, consensus forecasts, or every
+adjustment.
 
-Project 2 can later pass a selected `CandidateCompany` or shortlist item through an identity
-adapter. Project 3 then owns valuation research and peer analysis. Direct target construction
-remains supported, so neither Project 2 nor its workflow is a runtime prerequisite.
+Project 2 candidates and enriched profiles can pass through `Project2CandidateAdapter`. Project 3
+then owns valuation research and peer analysis. Direct construction remains supported, so
+neither upstream project is a runtime prerequisite.
 
 ## Fixture-first and offline design
 
-A later `FixtureFinancialDataProvider`, `FixtureMarketDataProvider`, and
-`FixtureComparableUniverseProvider` should use a versioned dataset such as TargetCo and
-PeerA–PeerD. Fixtures will include controlled periods, currencies, reported/adjusted bases,
-as-of times, missing values, negative earnings, and an extreme multiple. Expected calculations
-will be hand-reviewed and stored separately from runtime code.
+Implemented fixture providers use TargetCo and PeerA–PeerE with controlled periods, currencies,
+reported bases, as-of times, missing debt, negative profitability, stale pricing, forecasts, and
+provider-failure switches. They contain no expected multiple or valuation output.
 
 Unit tests and the default demo must not call Yahoo Finance, Alpha Vantage, Bloomberg, Capital
 IQ, or any live source. Live-provider contract tests, if added, are isolated, opt-in, and never

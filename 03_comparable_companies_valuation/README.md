@@ -14,14 +14,15 @@ not investment advice.
 
 - **M0 — Architecture + valuation workflow design: ✅ complete**
 - **M1 — Target financial profile + normalized metrics: ✅ complete**
-- M2/3 — Comparable selection + market/financial ingestion: **NOT IMPLEMENTED**
+- **M2/3 — Comparable selection + market/financial ingestion: ✅ complete**
 - M4/5 — Trading multiples + valuation range + AI-assisted reasoning: **NOT IMPLEMENTED**
 - M6 — Evaluation + API/demo + V1 polish: **NOT IMPLEMENTED**
 
-M0 supplies architecture and provider-neutral domain contracts. M1 adds deterministic,
-evidence-preserving target financial profiles, same-currency unit normalization, capital
-structure, conflicts, completeness, serialization, a Project 1 adapter boundary, and an offline
-fixture/demo. The project does **not** yet value a company.
+M0 supplies architecture and provider-neutral domain contracts. M1 adds the target financial
+profile. M2/3 adds an auditable peer universe, deterministic and pluggable semantic criteria,
+manual overrides, identity deduplication, market/financial/forecast provider ports, partial-safe
+snapshot ingestion, Project 1 and Project 2 adapters, and an offline five-peer demo. The project
+still does **not** calculate enterprise value, trading multiples, statistics, or valuation.
 
 ## What comparable companies analysis is
 
@@ -88,15 +89,15 @@ arithmetic, override formulas, or supply an untraceable valuation.
 
 ```mermaid
 flowchart LR
-    P1[Project 1\nCompany Document Intelligence] -->|cited financial evidence\nthrough a future adapter| P3[Project 3\nComparable Companies Valuation]
-    P2[Project 2\nTarget Screening & Sourcing] -->|selected candidate\nthrough a future adapter| P3
+    P1[Project 1\nCompany Document Intelligence] -->|cited financial evidence\nthrough a structural adapter| P3[Project 3\nComparable Companies Valuation]
+    P2[Project 2\nTarget Screening & Sourcing] -->|candidate/profile\nthrough a structural adapter| P3
     Direct[Direct user/provider input] --> P3
 ```
 
-Project 1 can support filing ingestion, retrieval, extraction, and citations, but it does not
-yet guarantee every valuation metric Project 3 requires. Project 2 can pass a selected target,
-but Project 3 remains independently usable. No Project 1 or Project 2 private modules are
-imported.
+Project 1 can support filing ingestion, retrieval, extraction, and citations through a structural
+peer-financial adapter, but it does not guarantee every valuation metric Project 3 requires.
+Project 2 candidates and profiles can be mapped through a structural identity/profile adapter.
+Project 3 remains independently usable and imports no Project 1 or Project 2 implementation type.
 
 ## Scope boundary
 
@@ -114,17 +115,25 @@ python -m ruff format --check .
 python -m mypy
 python -m pytest
 python -m ma_comparable_valuation.demo_profile
+python -m ma_comparable_valuation.demo_peers
 ```
 
-No API keys or network access are required. M0 has no runtime dependencies outside the Python
-standard library.
+No API keys or network access are required. The project has no runtime dependencies outside the
+Python standard library.
 
 ## Limitations
 
-- No live target extraction, FX conversion, peer-selection engine, market provider, multiple
-  calculator, statistics engine, valuation range, narrative generator, API, UI, or deployment.
+- No live market-data provider is bundled: unstable unauthenticated sources were deliberately not
+  made a production dependency. Provider interfaces and deterministic fixtures are implemented.
+- No FX conversion, enterprise-value calculator, multiple calculator, statistics engine,
+  valuation range, narrative generator, API, UI, or deployment.
 - Contracts prevent silent loss of key semantics; they do not prove that source data is correct.
 - Calendarization, FX conversion, capital-structure policy, and accounting adjustments are
   designed but deliberately deferred.
 - The initial enums cover the planned V1 methods and can be extended through reviewed schema
   changes rather than untyped strings.
+- `COMPLETE_ENOUGH_FOR_VALUATION` means the configured M2/3 input fields are present and pass
+  snapshot quality gates; it does not assert correctness or calculate a valuation.
+
+See [docs/comparable-selection-data.md](docs/comparable-selection-data.md) for the implemented
+selection formula, override semantics, providers, consistency checks, and failure behavior.

@@ -118,3 +118,32 @@
   observations, then use the same normalization service as fixtures.
 - **Why:** This reuses evidence-backed document research without deep imports or assuming Project
   1 emits complete valuation-ready data.
+
+## P3-017 — Keep selection scoring transparent and non-authoritative
+
+- **Status:** Accepted in M2/3
+- **Decision:** Use versioned, weighted criterion results with visible pass/fail/unknown outcomes.
+  Required deterministic failures control exclusion; semantic scores are advisory inputs.
+- **Why:** A user must be able to reconstruct why one peer was included and another was not.
+
+## P3-018 — Make analyst overrides explicit records
+
+- **Status:** Accepted in M2/3
+- **Decision:** Force-include and force-exclude actions require analyst, time, and rationale and
+  retain the underlying automated evaluation.
+- **Why:** Judgment is legitimate in comps, but an override must not erase the original evidence.
+
+## P3-019 — Prefer partial snapshots to provider-wide failure
+
+- **Status:** Accepted in M2/3
+- **Decision:** Isolate financial, forecast, and market provider failures per peer and record
+  missingness, conflicts, staleness, and period alignment as typed flags/issues.
+- **Why:** One missing source should not discard otherwise reviewable peer data.
+
+## P3-020 — Defer a live provider until a responsible source is available
+
+- **Status:** Accepted in M2/3
+- **Decision:** Ship provider ports and offline implementations, but no brittle unauthenticated
+  scraper or hidden-key dependency.
+- **Why:** Reproducibility, licensing, rate limits, and time-consistent data matter more than a
+  nominal demo integration that cannot support reliable valuation inputs.
