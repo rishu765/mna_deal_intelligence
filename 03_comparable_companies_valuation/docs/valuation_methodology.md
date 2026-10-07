@@ -9,7 +9,8 @@ generic valuation engine.
 
 ## Financial metric contract
 
-A financial metric is not a bare float. The M0 contract stores:
+A financial metric is not a bare float. The M0 contract, refined and implemented for target
+profiles in M1, stores:
 
 - stable metric ID and typed name;
 - exact decimal value;
@@ -104,10 +105,11 @@ creates the normalized value.
 
 ## Currency and unit safety
 
-No comparison or arithmetic is allowed across incompatible currency or scale. `USD million`,
-`INR crore`, and `EUR million` remain distinct. A future conversion must record source value,
-target currency/unit, FX rate, FX observation date, rate source, rounding policy, and a derived
-metric ID. The current contracts define semantics only and perform no conversion.
+No comparison or arithmetic is allowed across incompatible currencies. M1 deterministically
+normalizes supported scales within the same currency to millions and records the source unit,
+target unit, factor, policy, and source observation ID. Thus INR crore may become INR million,
+but never USD million. A future FX conversion must additionally record source value, target
+currency, FX rate, FX observation date, rate source, rounding policy, and a derived metric ID.
 
 ## Outlier and missing-data policy
 

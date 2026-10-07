@@ -12,6 +12,7 @@ from enum import StrEnum
 from typing import Self
 
 _CURRENCY_PATTERN = re.compile(r"[A-Z]{3}")
+_FISCAL_YEAR_END_PATTERN = re.compile(r"(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])")
 
 
 def _text(value: str, name: str) -> str:
@@ -78,16 +79,19 @@ class FinancialUnit(StrEnum):
 
 class FinancialMetricName(StrEnum):
     REVENUE = "revenue"
+    GROSS_PROFIT = "gross_profit"
     EBITDA = "ebitda"
     EBIT = "ebit"
     NET_INCOME = "net_income"
     EPS = "eps"
+    CAPEX = "capex"
 
 
 class MarketMetricKind(StrEnum):
     SHARE_PRICE = "share_price"
     MARKET_CAPITALIZATION = "market_capitalization"
     DILUTED_SHARES = "diluted_shares"
+    BASIC_SHARES = "basic_shares"
     DEBT = "debt"
     CASH_AND_EQUIVALENTS = "cash_and_equivalents"
     PREFERRED_STOCK = "preferred_stock"
@@ -98,11 +102,36 @@ class MarketMetricKind(StrEnum):
 
 class DataQualityFlag(StrEnum):
     VERIFIED = "verified"
+    SOURCE_BACKED = "source_backed"
     ESTIMATED = "estimated"
     STALE = "stale"
+    PARTIAL = "partial"
+    MISSING = "missing"
     INCOMPLETE = "incomplete"
     CONFLICTING = "conflicting"
     NOT_COMPARABLE = "not_comparable"
+
+
+class ShareCountBasis(StrEnum):
+    BASIC_END_OF_PERIOD = "basic_end_of_period"
+    DILUTED_END_OF_PERIOD = "diluted_end_of_period"
+    BASIC_WEIGHTED_AVERAGE = "basic_weighted_average"
+    DILUTED_WEIGHTED_AVERAGE = "diluted_weighted_average"
+
+
+class ProfileCompletenessStatus(StrEnum):
+    COMPLETE = "complete"
+    PARTIAL = "partial"
+    INSUFFICIENT = "insufficient"
+
+
+class ProfileIssueKind(StrEnum):
+    INVALID = "invalid"
+    UNSUPPORTED = "unsupported"
+    DUPLICATE = "duplicate"
+    CONFLICT = "conflict"
+    MISSING = "missing"
+    PROVIDER_FAILURE = "provider_failure"
 
 
 class SelectionDecision(StrEnum):
@@ -150,11 +179,20 @@ class EvidenceReference:
     page_numbers: tuple[int, ...] = ()
     excerpt: str | None = None
     published_at: datetime | None = None
+    section: str | None = None
+    extraction_method: str | None = None
 
     def __post_init__(self) -> None:
         for field_name in ("evidence_id", "source_type", "source_name"):
             object.__setattr__(self, field_name, _text(getattr(self, field_name), field_name))
-        for field_name in ("source_locator", "document_id", "chunk_id", "excerpt"):
+        for field_name in (
+            "source_locator",
+            "document_id",
+            "chunk_id",
+            "excerpt",
+            "section",
+            "extraction_method",
+        ):
             object.__setattr__(
                 self, field_name, _optional_text(getattr(self, field_name), field_name)
             )
@@ -179,6 +217,20 @@ class FinancialPeriod:
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "label", _text(self.label, "period label"))
+        compact_label = self.label.upper().replace(" ", "")
+        patterns = {
+            PeriodKind.FISCAL_YEAR: r"FY\d{4}[AE]?",
+            PeriodKind.CALENDAR_YEAR: r"CY\d{4}[AE]?",
+            PeriodKind.LTM: r"LTM.*",
+            PeriodKind.NTM: r"NTM.*",
+            PeriodKind.CALENDARIZED: r"CAL(?:ENDARIZED)?.+",
+        }
+        if re.fullmatch(patterns[self.kind], compact_label) is None:
+            raise ValueError(f"period label is invalid for {self.kind.value}")
+        if compact_label.endswith("E") and self.estimate_status is not EstimateStatus.ESTIMATE:
+            raise ValueError("an E-suffixed period must be an estimate")
+        if compact_label.endswith("A") and self.estimate_status is not EstimateStatus.ACTUAL:
+            raise ValueError("an A-suffixed period must be actual")
         if (self.start_date is None) != (self.end_date is None) and (
             self.kind not in {PeriodKind.LTM, PeriodKind.NTM} or self.end_date is None
         ):
@@ -224,6 +276,36 @@ class CompanyIdentity:
 @dataclass(frozen=True, slots=True)
 class TargetCompany:
     identity: CompanyIdentity
+    industry: str | None = None
+    sub_industry: str | None = None
+    fiscal_year_end: str | None = None
+    reporting_currency: str | None = None
+    business_description: str | None = None
+    customer_type: str | None = None
+    business_model: str | None = None
+    evidence: tuple[EvidenceReference, ...] = ()
+
+    def __post_init__(self) -> None:
+        for field_name in (
+            "industry",
+            "sub_industry",
+            "business_description",
+            "customer_type",
+            "business_model",
+        ):
+            object.__setattr__(
+                self, field_name, _optional_text(getattr(self, field_name), field_name)
+            )
+        if self.fiscal_year_end is not None:
+            normalized = self.fiscal_year_end.strip()
+            if _FISCAL_YEAR_END_PATTERN.fullmatch(normalized) is None:
+                raise ValueError("fiscal_year_end must use MM-DD")
+            object.__setattr__(self, "fiscal_year_end", normalized)
+        if self.reporting_currency is not None:
+            currency = self.reporting_currency.strip().upper()
+            if _CURRENCY_PATTERN.fullmatch(currency) is None:
+                raise ValueError("reporting_currency must be a three-letter ISO-style code")
+            object.__setattr__(self, "reporting_currency", currency)
 
 
 @dataclass(frozen=True, slots=True)
@@ -254,6 +336,10 @@ class FinancialMetric:
     basis: MetricBasis
     evidence: tuple[EvidenceReference, ...]
     quality_flags: tuple[DataQualityFlag, ...] = ()
+    as_of: datetime | None = None
+    adjustment_label: str | None = None
+    notes: str | None = None
+    source_observation_ids: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "metric_id", _text(self.metric_id, "metric_id"))
@@ -270,6 +356,21 @@ class FinancialMetric:
             raise ValueError("financial metrics require evidence")
         if len(set(self.quality_flags)) != len(self.quality_flags):
             raise ValueError("quality_flags must not contain duplicates")
+        if self.as_of is not None:
+            object.__setattr__(self, "as_of", _aware(self.as_of, "as_of"))
+        for field_name in ("adjustment_label", "notes"):
+            object.__setattr__(
+                self, field_name, _optional_text(getattr(self, field_name), field_name)
+            )
+        if self.basis is MetricBasis.ADJUSTED and self.adjustment_label is None:
+            raise ValueError("adjusted metrics require an adjustment_label")
+        if self.basis is MetricBasis.REPORTED and self.adjustment_label is not None:
+            raise ValueError("reported metrics must not have an adjustment_label")
+        object.__setattr__(
+            self,
+            "source_observation_ids",
+            _unique_text(self.source_observation_ids, "source_observation_ids"),
+        )
 
     def to_dict(self) -> dict[str, object]:
         """Return precise schema-versioned primitives suitable for JSON."""
@@ -295,6 +396,10 @@ class FinancialMetric:
             "basis": self.basis.value,
             "evidence": [_evidence_to_dict(item) for item in self.evidence],
             "quality_flags": [item.value for item in self.quality_flags],
+            "as_of": None if self.as_of is None else self.as_of.isoformat(),
+            "adjustment_label": self.adjustment_label,
+            "notes": self.notes,
+            "source_observation_ids": list(self.source_observation_ids),
         }
 
     @classmethod
@@ -329,6 +434,15 @@ class FinancialMetric:
                 quality_flags=tuple(
                     DataQualityFlag(_string(item, "quality flag")) for item in flags_data
                 ),
+                as_of=_optional_datetime(data.get("as_of"), "as_of"),
+                adjustment_label=_none_or_string(data.get("adjustment_label"), "adjustment_label"),
+                notes=_none_or_string(data.get("notes"), "notes"),
+                source_observation_ids=tuple(
+                    _string(item, "source_observation_id")
+                    for item in _sequence(
+                        data.get("source_observation_ids", []), "source_observation_ids"
+                    )
+                ),
             )
         except (KeyError, InvalidOperation, TypeError, ValueError) as error:
             raise ValueError(f"invalid financial metric: {error}") from error
@@ -357,6 +471,9 @@ class MarketMetric:
     evidence: tuple[EvidenceReference, ...]
     currency: str | None = None
     quality_flags: tuple[DataQualityFlag, ...] = ()
+    share_basis: ShareCountBasis | None = None
+    notes: str | None = None
+    source_observation_ids: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "metric_id", _text(self.metric_id, "metric_id"))
@@ -365,12 +482,27 @@ class MarketMetric:
             raise ValueError("market metric value must not be negative")
         object.__setattr__(self, "value", normalized_value)
         object.__setattr__(self, "as_of", _aware(self.as_of, "as_of"))
-        if self.kind is MarketMetricKind.DILUTED_SHARES:
+        if self.kind in {MarketMetricKind.DILUTED_SHARES, MarketMetricKind.BASIC_SHARES}:
             if self.currency is not None:
-                raise ValueError("diluted shares must not have a currency")
+                raise ValueError("share counts must not have a currency")
             if self.unit is FinancialUnit.PER_SHARE:
-                raise ValueError("diluted shares cannot use the per_share unit")
+                raise ValueError("share counts cannot use the per_share unit")
+            if self.share_basis is None:
+                raise ValueError("share counts require share_basis")
+            diluted_bases = {
+                ShareCountBasis.DILUTED_END_OF_PERIOD,
+                ShareCountBasis.DILUTED_WEIGHTED_AVERAGE,
+            }
+            if (
+                self.kind is MarketMetricKind.DILUTED_SHARES
+                and self.share_basis not in diluted_bases
+            ):
+                raise ValueError("diluted shares require a diluted share_basis")
+            if self.kind is MarketMetricKind.BASIC_SHARES and self.share_basis in diluted_bases:
+                raise ValueError("basic shares require a basic share_basis")
         else:
+            if self.share_basis is not None:
+                raise ValueError("only share counts may have share_basis")
             if self.currency is None:
                 raise ValueError("monetary market metrics require currency")
             currency = self.currency.strip().upper()
@@ -385,6 +517,12 @@ class MarketMetric:
             raise ValueError("market metrics require evidence")
         if len(set(self.quality_flags)) != len(self.quality_flags):
             raise ValueError("quality_flags must not contain duplicates")
+        object.__setattr__(self, "notes", _optional_text(self.notes, "notes"))
+        object.__setattr__(
+            self,
+            "source_observation_ids",
+            _unique_text(self.source_observation_ids, "source_observation_ids"),
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -402,8 +540,8 @@ class CapitalStructure:
         object.__setattr__(self, "as_of", _aware(self.as_of, "as_of"))
         if not self.components:
             raise ValueError("capital structure requires components")
-        if len({item.kind for item in self.components}) != len(self.components):
-            raise ValueError("capital structure component kinds must be unique")
+        if len({item.metric_id for item in self.components}) != len(self.components):
+            raise ValueError("capital structure component IDs must be unique")
         if any(item.as_of > self.as_of for item in self.components):
             raise ValueError("capital structure components must not post-date the snapshot")
 
@@ -447,14 +585,228 @@ class EnterpriseValueSnapshot:
 
 
 @dataclass(frozen=True, slots=True)
+class FinancialObservation:
+    """A parsed but source-aligned fact before canonical name and unit normalization."""
+
+    observation_id: str
+    raw_metric_name: str
+    value: Decimal
+    unit: str | None
+    evidence: tuple[EvidenceReference, ...]
+    currency: str | None = None
+    period: FinancialPeriod | None = None
+    as_of: datetime | None = None
+    basis: MetricBasis | None = None
+    adjustment_label: str | None = None
+    notes: str | None = None
+    quality_flags: tuple[DataQualityFlag, ...] = ()
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "observation_id", _text(self.observation_id, "observation_id"))
+        object.__setattr__(self, "raw_metric_name", _text(self.raw_metric_name, "raw_metric_name"))
+        object.__setattr__(self, "value", _decimal(self.value, "observation value"))
+        object.__setattr__(self, "unit", _optional_text(self.unit, "unit"))
+        if self.currency is not None:
+            currency = self.currency.strip().upper()
+            if _CURRENCY_PATTERN.fullmatch(currency) is None:
+                raise ValueError("currency must be a three-letter ISO-style code")
+            object.__setattr__(self, "currency", currency)
+        if self.as_of is not None:
+            object.__setattr__(self, "as_of", _aware(self.as_of, "as_of"))
+        for field_name in ("adjustment_label", "notes"):
+            object.__setattr__(
+                self, field_name, _optional_text(getattr(self, field_name), field_name)
+            )
+        if not self.evidence:
+            raise ValueError("financial observations require evidence")
+        if len(set(self.quality_flags)) != len(self.quality_flags):
+            raise ValueError("quality_flags must not contain duplicates")
+
+
+@dataclass(frozen=True, slots=True)
+class NormalizationDecision:
+    observation_id: str
+    output_metric_id: str
+    raw_metric_name: str
+    normalized_name: str
+    source_unit: str
+    target_unit: FinancialUnit
+    conversion_factor: Decimal
+    policy_id: str
+    note: str | None = None
+
+    def __post_init__(self) -> None:
+        for field_name in (
+            "observation_id",
+            "output_metric_id",
+            "raw_metric_name",
+            "normalized_name",
+            "source_unit",
+            "policy_id",
+        ):
+            object.__setattr__(self, field_name, _text(getattr(self, field_name), field_name))
+        factor = _decimal(self.conversion_factor, "conversion_factor")
+        if factor <= 0:
+            raise ValueError("conversion_factor must be positive")
+        object.__setattr__(self, "conversion_factor", factor)
+        object.__setattr__(self, "note", _optional_text(self.note, "note"))
+
+
+@dataclass(frozen=True, slots=True)
+class ProfileIssue:
+    kind: ProfileIssueKind
+    message: str
+    observation_ids: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "message", _text(self.message, "issue message"))
+        object.__setattr__(
+            self, "observation_ids", _unique_text(self.observation_ids, "observation_ids")
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class ProfileConflict:
+    conflict_id: str
+    field: str
+    observation_ids: tuple[str, ...]
+    reason: str
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "conflict_id", _text(self.conflict_id, "conflict_id"))
+        object.__setattr__(self, "field", _text(self.field, "conflict field"))
+        object.__setattr__(self, "reason", _text(self.reason, "conflict reason"))
+        object.__setattr__(
+            self, "observation_ids", _unique_text(self.observation_ids, "observation_ids")
+        )
+        if len(self.observation_ids) < 2:
+            raise ValueError("a conflict requires at least two observations")
+
+
+@dataclass(frozen=True, slots=True)
+class ProfileCompleteness:
+    present: tuple[str, ...]
+    missing: tuple[str, ...]
+    status: ProfileCompletenessStatus
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "present", _unique_text(self.present, "present fields"))
+        object.__setattr__(self, "missing", _unique_text(self.missing, "missing fields"))
+        if {item.casefold() for item in self.present} & {item.casefold() for item in self.missing}:
+            raise ValueError("a completeness field cannot be both present and missing")
+        if self.status is ProfileCompletenessStatus.COMPLETE and self.missing:
+            raise ValueError("complete status cannot contain missing fields")
+        if self.status is ProfileCompletenessStatus.INSUFFICIENT and self.present:
+            raise ValueError("insufficient status cannot contain present fields")
+
+
+@dataclass(frozen=True, slots=True)
+class DerivedFinancialValue:
+    name: str
+    value: Decimal
+    currency: str
+    unit: FinancialUnit
+    as_of: datetime
+    input_metric_ids: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "name", _text(self.name, "derived value name"))
+        object.__setattr__(self, "value", _decimal(self.value, "derived value"))
+        currency = self.currency.strip().upper()
+        if _CURRENCY_PATTERN.fullmatch(currency) is None:
+            raise ValueError("currency must be a three-letter ISO-style code")
+        object.__setattr__(self, "currency", currency)
+        object.__setattr__(self, "as_of", _aware(self.as_of, "as_of"))
+        object.__setattr__(
+            self, "input_metric_ids", _unique_text(self.input_metric_ids, "input_metric_ids")
+        )
+        if not self.input_metric_ids:
+            raise ValueError("derived values require input_metric_ids")
+
+
+@dataclass(frozen=True, slots=True)
 class TargetFinancialProfile:
     target: TargetCompany
     metrics: tuple[FinancialMetric, ...]
     capital_structure: CapitalStructure | None = None
+    observations: tuple[FinancialObservation, ...] = ()
+    normalization_decisions: tuple[NormalizationDecision, ...] = ()
+    conflicts: tuple[ProfileConflict, ...] = ()
+    completeness: ProfileCompleteness | None = None
+    issues: tuple[ProfileIssue, ...] = ()
+    warnings: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if len({item.metric_id for item in self.metrics}) != len(self.metrics):
             raise ValueError("target metric IDs must be unique")
+        if len({item.observation_id for item in self.observations}) != len(self.observations):
+            raise ValueError("target observation IDs must be unique")
+        decision_ids = [item.output_metric_id for item in self.normalization_decisions]
+        all_output_ids = {item.metric_id for item in self.metrics}
+        if self.capital_structure is not None:
+            all_output_ids.update(item.metric_id for item in self.capital_structure.components)
+        if any(item not in all_output_ids for item in decision_ids):
+            raise ValueError("normalization decisions must reference profile output metrics")
+        if any(not item.strip() for item in self.warnings):
+            raise ValueError("warnings must not contain blank values")
+
+    def net_debt(self) -> DerivedFinancialValue | None:
+        """Return debt minus cash only when one compatible, non-conflicting pair exists."""
+
+        if self.capital_structure is None:
+            return None
+        debt = tuple(
+            item
+            for item in self.capital_structure.components
+            if item.kind is MarketMetricKind.DEBT
+            and DataQualityFlag.CONFLICTING not in item.quality_flags
+        )
+        cash = tuple(
+            item
+            for item in self.capital_structure.components
+            if item.kind is MarketMetricKind.CASH_AND_EQUIVALENTS
+            and DataQualityFlag.CONFLICTING not in item.quality_flags
+        )
+        if len(debt) != 1 or len(cash) != 1:
+            return None
+        debt_item, cash_item = debt[0], cash[0]
+        if (
+            debt_item.currency != cash_item.currency
+            or debt_item.unit is not cash_item.unit
+            or debt_item.as_of != cash_item.as_of
+            or debt_item.currency is None
+        ):
+            return None
+        return DerivedFinancialValue(
+            name="net_debt",
+            value=debt_item.value - cash_item.value,
+            currency=debt_item.currency,
+            unit=debt_item.unit,
+            as_of=debt_item.as_of,
+            input_metric_ids=(debt_item.metric_id, cash_item.metric_id),
+        )
+
+    def to_dict(self) -> dict[str, object]:
+        from ma_comparable_valuation.serialization import target_profile_to_dict
+
+        return target_profile_to_dict(self)
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, object]) -> TargetFinancialProfile:
+        from ma_comparable_valuation.serialization import target_profile_from_dict
+
+        return target_profile_from_dict(data)
+
+    def to_json(self, *, indent: int | None = 2) -> str:
+        return json.dumps(self.to_dict(), indent=indent, ensure_ascii=False)
+
+    @classmethod
+    def from_json(cls, value: str) -> TargetFinancialProfile:
+        try:
+            data = json.loads(value)
+        except json.JSONDecodeError as error:
+            raise ValueError("invalid target financial profile JSON") from error
+        return cls.from_dict(_mapping(data, "target financial profile JSON"))
 
 
 @dataclass(frozen=True, slots=True)
@@ -685,6 +1037,8 @@ def _evidence_to_dict(value: EvidenceReference) -> dict[str, object]:
         "page_numbers": list(value.page_numbers),
         "excerpt": value.excerpt,
         "published_at": None if value.published_at is None else value.published_at.isoformat(),
+        "section": value.section,
+        "extraction_method": value.extraction_method,
     }
 
 
@@ -701,6 +1055,8 @@ def _evidence_from_dict(data: Mapping[str, object]) -> EvidenceReference:
         page_numbers=tuple(_positive_int(item, "page number") for item in pages),
         excerpt=_none_or_string(data.get("excerpt"), "excerpt"),
         published_at=_optional_datetime(data.get("published_at"), "published_at"),
+        section=_none_or_string(data.get("section"), "section"),
+        extraction_method=_none_or_string(data.get("extraction_method"), "extraction_method"),
     )
 
 

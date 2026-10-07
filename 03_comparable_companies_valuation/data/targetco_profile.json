@@ -1,0 +1,135 @@
+{
+  "target": {
+    "identity": {
+      "company_id": "targetco",
+      "name": "TargetCo",
+      "ticker": null,
+      "exchange": null,
+      "country": "India",
+      "identifiers": [["fixture_id", "targetco"]]
+    },
+    "industry": "Business Services",
+    "sub_industry": "Technology-enabled services",
+    "fiscal_year_end": "03-31",
+    "reporting_currency": "INR",
+    "business_description": "Fictional provider used for deterministic valuation-profile demonstrations.",
+    "customer_type": "Enterprise",
+    "business_model": "Recurring and project-based services",
+    "evidence": [
+      {
+        "evidence_id": "targetco-identity",
+        "source_type": "structured_fixture",
+        "source_name": "TargetCo profile fixture",
+        "observed_at": "2026-07-15T10:00:00+00:00",
+        "source_locator": "data/targetco_profile.json",
+        "document_id": null,
+        "chunk_id": null,
+        "page_numbers": [],
+        "excerpt": "TargetCo is an India-based technology-enabled business services provider.",
+        "published_at": null,
+        "section": "company_profile",
+        "extraction_method": "structured_fixture"
+      }
+    ]
+  },
+  "observations": [
+    {
+      "observation_id": "targetco-fy2025-revenue",
+      "raw_metric_name": "Revenue",
+      "value": "500",
+      "unit": "crore",
+      "currency": "INR",
+      "period": {"kind": "fiscal_year", "label": "FY2025A", "estimate_status": "actual", "start_date": "2024-04-01", "end_date": "2025-03-31"},
+      "as_of": "2025-03-31T00:00:00+00:00",
+      "basis": "reported",
+      "adjustment_label": null,
+      "notes": null,
+      "quality_flags": ["verified"],
+      "evidence": [{"evidence_id": "targetco-ar-p42-revenue", "source_type": "annual_report", "source_name": "TargetCo FY2025 Annual Report", "observed_at": "2026-07-15T10:00:00+00:00", "source_locator": "targetco-fy2025.pdf", "document_id": "targetco-ar-2025", "chunk_id": "targetco-ar-2025-p42", "page_numbers": [42], "excerpt": "Revenue was INR 500 crore.", "published_at": "2025-06-30T00:00:00+00:00", "section": "Statement of profit and loss", "extraction_method": "structured_fixture"}]
+    },
+    {
+      "observation_id": "targetco-fy2025-ebitda",
+      "raw_metric_name": "EBITDA",
+      "value": "75",
+      "unit": "crore",
+      "currency": "INR",
+      "period": {"kind": "fiscal_year", "label": "FY2025A", "estimate_status": "actual", "start_date": "2024-04-01", "end_date": "2025-03-31"},
+      "as_of": "2025-03-31T00:00:00+00:00",
+      "basis": "reported",
+      "adjustment_label": null,
+      "notes": null,
+      "quality_flags": ["verified"],
+      "evidence": [{"evidence_id": "targetco-ar-p45-ebitda", "source_type": "annual_report", "source_name": "TargetCo FY2025 Annual Report", "observed_at": "2026-07-15T10:00:00+00:00", "source_locator": "targetco-fy2025.pdf", "document_id": "targetco-ar-2025", "chunk_id": "targetco-ar-2025-p45", "page_numbers": [45], "excerpt": "EBITDA was INR 75 crore.", "published_at": "2025-06-30T00:00:00+00:00", "section": "Financial highlights", "extraction_method": "structured_fixture"}]
+    },
+    {
+      "observation_id": "targetco-ltm-revenue",
+      "raw_metric_name": "Net Revenue",
+      "value": "540",
+      "unit": "crore",
+      "currency": "INR",
+      "period": {"kind": "ltm", "label": "LTM Jun-2026", "estimate_status": "actual", "start_date": "2025-07-01", "end_date": "2026-06-30"},
+      "as_of": "2026-06-30T00:00:00+00:00",
+      "basis": "reported",
+      "adjustment_label": null,
+      "notes": null,
+      "quality_flags": ["source_backed"],
+      "evidence": [{"evidence_id": "targetco-ltm-revenue-source", "source_type": "management_schedule", "source_name": "TargetCo LTM financial schedule", "observed_at": "2026-07-15T10:00:00+00:00", "source_locator": "targetco-ltm-jun-2026.xlsx", "document_id": null, "chunk_id": null, "page_numbers": [], "excerpt": "LTM June 2026 revenue: INR 540 crore.", "published_at": null, "section": "LTM summary", "extraction_method": "structured_fixture"}]
+    },
+    {
+      "observation_id": "targetco-ltm-ebitda",
+      "raw_metric_name": "EBITDA",
+      "value": "82",
+      "unit": "crore",
+      "currency": "INR",
+      "period": {"kind": "ltm", "label": "LTM Jun-2026", "estimate_status": "actual", "start_date": "2025-07-01", "end_date": "2026-06-30"},
+      "as_of": "2026-06-30T00:00:00+00:00",
+      "basis": "reported",
+      "adjustment_label": null,
+      "notes": null,
+      "quality_flags": ["source_backed"],
+      "evidence": [{"evidence_id": "targetco-ltm-ebitda-source", "source_type": "management_schedule", "source_name": "TargetCo LTM financial schedule", "observed_at": "2026-07-15T10:00:00+00:00", "source_locator": "targetco-ltm-jun-2026.xlsx", "document_id": null, "chunk_id": null, "page_numbers": [], "excerpt": "LTM June 2026 EBITDA: INR 82 crore.", "published_at": null, "section": "LTM summary", "extraction_method": "structured_fixture"}]
+    },
+    {
+      "observation_id": "targetco-cash",
+      "raw_metric_name": "Cash and cash equivalents",
+      "value": "40",
+      "unit": "crore",
+      "currency": "INR",
+      "period": null,
+      "as_of": "2026-06-30T00:00:00+00:00",
+      "basis": "reported",
+      "adjustment_label": null,
+      "notes": null,
+      "quality_flags": ["source_backed"],
+      "evidence": [{"evidence_id": "targetco-cash-source", "source_type": "management_schedule", "source_name": "TargetCo capital structure schedule", "observed_at": "2026-07-15T10:00:00+00:00", "source_locator": "targetco-capital-jun-2026.xlsx", "document_id": null, "chunk_id": null, "page_numbers": [], "excerpt": "Cash and equivalents: INR 40 crore.", "published_at": null, "section": "Capital structure", "extraction_method": "structured_fixture"}]
+    },
+    {
+      "observation_id": "targetco-debt",
+      "raw_metric_name": "Total Debt",
+      "value": "100",
+      "unit": "crore",
+      "currency": "INR",
+      "period": null,
+      "as_of": "2026-06-30T00:00:00+00:00",
+      "basis": "reported",
+      "adjustment_label": null,
+      "notes": null,
+      "quality_flags": ["source_backed"],
+      "evidence": [{"evidence_id": "targetco-debt-source", "source_type": "management_schedule", "source_name": "TargetCo capital structure schedule", "observed_at": "2026-07-15T10:00:00+00:00", "source_locator": "targetco-capital-jun-2026.xlsx", "document_id": null, "chunk_id": null, "page_numbers": [], "excerpt": "Total debt: INR 100 crore.", "published_at": null, "section": "Capital structure", "extraction_method": "structured_fixture"}]
+    },
+    {
+      "observation_id": "targetco-diluted-shares",
+      "raw_metric_name": "Diluted Shares Outstanding",
+      "value": "50",
+      "unit": "million",
+      "currency": null,
+      "period": null,
+      "as_of": "2026-06-30T00:00:00+00:00",
+      "basis": "reported",
+      "adjustment_label": null,
+      "notes": "End-of-period diluted shares; not weighted-average EPS shares.",
+      "quality_flags": ["source_backed"],
+      "evidence": [{"evidence_id": "targetco-shares-source", "source_type": "management_schedule", "source_name": "TargetCo capital structure schedule", "observed_at": "2026-07-15T10:00:00+00:00", "source_locator": "targetco-capital-jun-2026.xlsx", "document_id": null, "chunk_id": null, "page_numbers": [], "excerpt": "Diluted shares outstanding: 50 million.", "published_at": null, "section": "Capital structure", "extraction_method": "structured_fixture"}]
+    }
+  ]
+}

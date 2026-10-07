@@ -79,3 +79,42 @@
   schema version.
 - **Why:** Round trips remain precise and inspectable without making API schemas the domain
   source of truth.
+
+## P3-012 — Separate source observations from normalized metrics
+
+- **Status:** Accepted in M1
+- **Decision:** Preserve each `FinancialObservation` and create a linked canonical metric plus
+  `NormalizationDecision`; never mutate the source-aligned fact.
+- **Why:** Analysts must be able to audit label mappings, scale conversion, and rejected facts.
+
+## P3-013 — Normalize scales to millions without FX
+
+- **Status:** Accepted in M1
+- **Decision:** Convert units/thousands/billions/lakh/crore deterministically into millions while
+  preserving currency. Keep EPS as per-share.
+- **Why:** One scale simplifies later deterministic calculations without fabricating an exchange
+  rate or date.
+
+## P3-014 — Preserve conflicts and partial profiles
+
+- **Status:** Accepted in M1
+- **Decision:** Keep different same-basis values, flag them, and continue processing unrelated
+  valid observations. Report named missing fields rather than filling zeros.
+- **Why:** Source disagreement and missing data are valuation risks, not parsing failures or
+  evidence for a default value.
+
+## P3-015 — Distinguish share-count bases
+
+- **Status:** Accepted in M1
+- **Decision:** Represent basic/diluted and end-of-period/weighted-average share observations
+  explicitly. Completeness requires diluted end-of-period shares by default.
+- **Why:** Weighted-average EPS shares are not automatically suitable for point-in-time equity
+  value.
+
+## P3-016 — Adapt Project 1 through structural public output
+
+- **Status:** Accepted in M1
+- **Decision:** Map Project 1 research metrics/citations through a structural protocol into M1
+  observations, then use the same normalization service as fixtures.
+- **Why:** This reuses evidence-backed document research without deep imports or assuming Project
+  1 emits complete valuation-ready data.
