@@ -5,12 +5,18 @@ from typing import cast
 
 import pytest
 
-from ma_comparable_valuation import CompanyIdentity, FinancialMetricName, TargetCompany
+from ma_comparable_valuation import (
+    CompanyIdentity,
+    ComparableCompany,
+    FinancialMetricName,
+    TargetCompany,
+)
 from ma_comparable_valuation.errors import Project1AdapterError
 from ma_comparable_valuation.project1_adapter import (
     Project1ResearchClient,
     Project1TargetProfileProvider,
 )
+from ma_comparable_valuation.project1_peer_adapter import Project1PeerFinancialDataProvider
 
 
 @dataclass(frozen=True)
@@ -129,3 +135,17 @@ def test_project1_partial_metric_becomes_profile_issue() -> None:
 
     assert profile.metrics == ()
     assert any("missing unit" in issue.message for issue in profile.issues)
+
+
+def test_project1_peer_adapter_reuses_public_research_boundary() -> None:
+    peer = ComparableCompany(CompanyIdentity("peer-targetco", "TargetCo"))
+    provider = Project1PeerFinancialDataProvider(
+        client=cast(Project1ResearchClient, FakeClient()),
+        companies=(peer,),
+        observed_at=datetime(2026, 7, 15, tzinfo=UTC),
+    )
+
+    metrics = provider.get_financial_metrics("peer-targetco")
+
+    assert metrics[0].name is FinancialMetricName.REVENUE
+    assert metrics[0].evidence[0].document_id == "doc-1"
