@@ -26,6 +26,7 @@ from ma_comparable_valuation import (
     PeerSet,
     PeriodKind,
     SelectionDecision,
+    ShareCountBasis,
     TradingMultiple,
     ValueFamily,
 )
@@ -108,6 +109,7 @@ def test_financial_metric_allows_negative_ebitda_as_an_observation() -> None:
         unit=FinancialUnit.MILLION,
         period=actual_fy2026(),
         basis=MetricBasis.ADJUSTED,
+        adjustment_label="Management-adjusted EBITDA",
         evidence=(evidence(),),
     )
 
@@ -210,6 +212,7 @@ def test_market_metric_requires_timezone_and_appropriate_currency() -> None:
         unit=FinancialUnit.MILLION,
         as_of=datetime(2026, 7, 15, tzinfo=UTC),
         evidence=(evidence(),),
+        share_basis=ShareCountBasis.DILUTED_END_OF_PERIOD,
     )
     assert shares.currency is None
 
