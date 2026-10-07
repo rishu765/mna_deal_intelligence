@@ -8,8 +8,8 @@ market snapshots, normalization policy, multiple definitions, deterministic stat
 valuation calculations, and grounded explanation of those results.
 
 It does not own document parsing/retrieval (Project 1), target sourcing (Project 2), external
-vendor systems, or other valuation methods. M0 defines boundaries only; later milestones must
-implement them without weakening the contracts.
+vendor systems, or other valuation methods. M0 defined the boundaries; M1 implements only the
+target-profile slice without weakening or activating later contracts.
 
 ## Stage contracts
 
@@ -30,15 +30,22 @@ implement them without weakening the contracts.
 
 ## Logical package boundaries
 
-M0 implements only `domain` and `ports`:
+M0 implemented `domain` and `ports`; M1 adds the deterministic target-profile path:
 
 ```text
 ma_comparable_valuation/
-    domain.py       # immutable value objects and explicit serialization
-    ports.py        # future provider contracts
+    domain.py             # immutable value objects
+    normalization.py      # exact name and same-currency unit policy
+    profile_service.py    # validate, normalize, merge, conflict, completeness
+    serialization.py      # versioned complete-profile JSON
+    project1_adapter.py   # structural Project 1 public-output adapter
+    fixtures.py           # credential-free fixture provider
+    demo_profile.py       # offline M1 demonstration
+    ports.py              # provider contracts
 ```
 
-Likely later service boundaries are `TargetProfileService`, `ComparableSelectionService`,
+M1 implements `TargetFinancialProfileService`. Likely later service boundaries are
+`ComparableSelectionService`,
 `FinancialNormalizationService`, `MultipleCalculationService`, `PeerStatisticsService`,
 `ValuationService`, and `ValuationExplanationService`. They should be introduced only with
 their milestone's behavior; M0 does not create empty service classes.
@@ -66,10 +73,10 @@ classDiagram
     MarketMetric "*" --> "*" EvidenceReference
 ```
 
-The implemented foundational contracts cover identity, evidence, periods, financial and market
-metrics, capital structure, snapshots, selection decisions, multiple definitions, and derived
-calculation lineage. Aggregate valuation result contracts remain documented until their engine
-is implemented to avoid freezing speculative shapes.
+M1 refines the target, evidence, period, metric, capital structure, and target-profile contracts
+and adds source observations, normalization decisions, conflicts, issues, completeness, and the
+strict net-debt helper. Peer selection and valuation contracts remain inactive scaffolding; no
+M2/3 or calculation service is implemented.
 
 ## Deterministic and AI boundary
 

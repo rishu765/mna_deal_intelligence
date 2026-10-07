@@ -13,13 +13,15 @@ not investment advice.
 ## Milestone status
 
 - **M0 — Architecture + valuation workflow design: ✅ complete**
-- M1 — Target financial profile + normalized metrics: **NOT IMPLEMENTED**
+- **M1 — Target financial profile + normalized metrics: ✅ complete**
 - M2/3 — Comparable selection + market/financial ingestion: **NOT IMPLEMENTED**
 - M4/5 — Trading multiples + valuation range + AI-assisted reasoning: **NOT IMPLEMENTED**
 - M6 — Evaluation + API/demo + V1 polish: **NOT IMPLEMENTED**
 
-M0 supplies architecture, provider-neutral domain contracts, provider interfaces, and contract
-tests. It does **not** value a company.
+M0 supplies architecture and provider-neutral domain contracts. M1 adds deterministic,
+evidence-preserving target financial profiles, same-currency unit normalization, capital
+structure, conflicts, completeness, serialization, a Project 1 adapter boundary, and an offline
+fixture/demo. The project does **not** yet value a company.
 
 ## What comparable companies analysis is
 
@@ -51,7 +53,8 @@ flowchart TD
 
 The complete stage contracts, responsibilities, provenance needs, and failure modes are in
 [docs/architecture.md](docs/architecture.md). The finance conventions are in
-[docs/valuation_methodology.md](docs/valuation_methodology.md).
+[docs/valuation_methodology.md](docs/valuation_methodology.md), and the implemented M1 layer is
+documented in [docs/target-financial-profile.md](docs/target-financial-profile.md).
 
 ## Deterministic finance, assisted reasoning
 
@@ -110,6 +113,7 @@ python -m ruff check .
 python -m ruff format --check .
 python -m mypy
 python -m pytest
+python -m ma_comparable_valuation.demo_profile
 ```
 
 No API keys or network access are required. M0 has no runtime dependencies outside the Python
@@ -117,7 +121,7 @@ standard library.
 
 ## Limitations
 
-- No target extraction, normalization engine, live provider, peer-selection engine, multiple
+- No live target extraction, FX conversion, peer-selection engine, market provider, multiple
   calculator, statistics engine, valuation range, narrative generator, API, UI, or deployment.
 - Contracts prevent silent loss of key semantics; they do not prove that source data is correct.
 - Calendarization, FX conversion, capital-structure policy, and accounting adjustments are

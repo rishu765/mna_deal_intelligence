@@ -14,7 +14,7 @@ investment advice or autonomous deal decisions.
 | --- | --- | --- |
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
-| Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **M0 architecture complete** |
+| Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **M1 target profile complete** |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |
 | Due Diligence | `05_due_diligence/` | Planned |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
@@ -27,9 +27,10 @@ evidence-backed enrichment, deterministic screening, grounded strategic-fit asse
 transparent ranking, checkpointed LangGraph human review, a subsystem benchmark, FastAPI, and an
 offline end-to-end demo.
 
-Project 3 M0 defines the public trading-comps workflow, deterministic-versus-AI boundary,
-valuation-safe domain contracts, provider interfaces, evidence lineage, and offline testing
-strategy. It does not yet calculate multiples or valuations.
+Project 3 M0–M1 defines the public trading-comps workflow and adds an evidence-backed target
+financial profile with deterministic name/unit normalization, period and basis safety, capital
+structure, conflicts, completeness, serialization, and an offline demo. It does not yet select
+peers or calculate multiples or valuations.
 
 ## Portfolio foundations
 
@@ -38,8 +39,9 @@ intelligence and retrieval-augmented generation foundation for company and M&A r
 It provides PDF ingestion, provenance-aware chunking, semantic retrieval, grounded answers,
 citations, structured research, component-level evaluation, and a hardened FastAPI interface.
 
-[Project 3](03_comparable_companies_valuation/) establishes the architecture for evidence-backed
-comparable-company valuation. M1 and all calculation/data-ingestion milestones remain pending.
+[Project 3](03_comparable_companies_valuation/) establishes the architecture and target financial
+profile for evidence-backed comparable-company valuation. M2/3 and all calculation milestones
+remain pending.
 
 ## Development workflow
 
