@@ -22,8 +22,8 @@ def test_demo_covers_discovery_retrieval_and_ambiguous_case() -> None:
 
     discovery = result["discovery"]
     assert isinstance(discovery, dict)
-    assert discovery["raw_candidates"] == 7
-    assert discovery["resolved_transactions"] == 6
+    assert discovery["raw_candidates"] == 8
+    assert discovery["resolved_transactions"] == 7
     relevant = result["relevant_retrieval"]
     assert isinstance(relevant, dict)
     assert relevant["results"]

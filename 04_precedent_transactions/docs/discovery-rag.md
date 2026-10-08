@@ -3,7 +3,7 @@
 ## Scope
 
 M1/2 answers whether the system can generate plausible historical deal candidates and return the
-exact passages needed for later analysis. It stops at evidence retrieval. M3 will decide how to
+exact passages needed for later analysis. It stops at evidence retrieval. M3 decides how to
 extract, normalize, reconcile, and verify facts from those passages.
 
 ## Discovery

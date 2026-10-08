@@ -159,5 +159,28 @@
     "source_title": "NovaCore acquires VaultMesh business",
     "observed_at": "2026-10-09T09:06:00+00:00",
     "excerpt": "Financial terms were not disclosed."
+  },
+  {
+    "candidate_id": "amended-official",
+    "external_deal_id": "txn-amended",
+    "acquirer_name": "SummitPay Group plc",
+    "target_name": "ClearRoute Software Ltd.",
+    "announcement_date": "2025-01-10",
+    "status": "pending",
+    "transaction_type": "stock_acquisition",
+    "buyer_type": "strategic",
+    "jurisdiction": "United Kingdom",
+    "industry": "B2B fintech infrastructure",
+    "business_description": "Payment routing and treasury connectivity software.",
+    "headline_amount": "480",
+    "headline_currency": "USD",
+    "discovery_rationale": "The amended acquisition concerns payment infrastructure software.",
+    "reference_id": "discovery-amended",
+    "source_name": "SummitPay investor relations",
+    "source_type": "official_company_announcement",
+    "source_uri": "https://fixtures.invalid/summitpay-clearroute",
+    "source_title": "SummitPay revises ClearRoute offer",
+    "observed_at": "2026-10-09T09:07:00+00:00",
+    "excerpt": "SummitPay increased its offer from USD 20 to USD 24 per share."
   }
 ]

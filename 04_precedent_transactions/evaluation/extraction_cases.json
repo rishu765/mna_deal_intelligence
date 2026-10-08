@@ -1,0 +1,9 @@
+[
+  {"transaction_id":"txn-cash","status":"completed","acquirer":"Northstar Payments plc","target":"Ledgerlane Technologies Ltd.","acquired_percent":"100","headline_value":"420","expected_missing_fields":[],"expected_conflict_fields":[]},
+  {"transaction_id":"txn-stock","status":"completed","acquirer":"Meridian Cloud Inc.","target":"BridgeMint Systems Ltd.","acquired_percent":null,"headline_value":"510","expected_missing_fields":[],"expected_conflict_fields":[]},
+  {"transaction_id":"txn-withdrawn","status":"withdrawn","acquirer":"ApexPay Corporation","target":"HarborRail Networks Ltd.","acquired_percent":null,"headline_value":"300","expected_missing_fields":["financial.ebitda"],"expected_conflict_fields":[]},
+  {"transaction_id":"txn-partial","status":"completed","acquirer":"Quasar Bank plc","target":"TokenForge Technologies Ltd.","acquired_percent":"20","headline_value":"75","expected_missing_fields":["financial.ebitda"],"expected_conflict_fields":[]},
+  {"transaction_id":"txn-conflict","status":"pending","acquirer":"Brightwire Holdings Ltd.","target":"CircuitLedger Inc.","acquired_percent":null,"headline_value":"600","expected_missing_fields":["financial.ebitda"],"expected_conflict_fields":["valuation.headline_deal_value"]},
+  {"transaction_id":"txn-undisclosed","status":"completed","acquirer":"NovaCore Financial Ltd.","target":"VaultMesh Systems Ltd.","acquired_percent":null,"headline_value":null,"expected_missing_fields":["financial.ebitda","valuation.headline_deal_value"],"expected_conflict_fields":[]},
+  {"transaction_id":"txn-amended","status":"pending","acquirer":"SummitPay Group plc","target":"ClearRoute Software Ltd.","acquired_percent":null,"headline_value":null,"expected_missing_fields":["financial.ebitda","valuation.headline_deal_value"],"expected_conflict_fields":[]}
+]

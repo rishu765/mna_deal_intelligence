@@ -1,0 +1,119 @@
+[
+  {
+    "transaction_id": "txn-cash",
+    "parties": [
+      {"observation_id":"cash-acquirer","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"Northstar Payments will acquire","role":"acquirer","legal_name":"Northstar Payments plc"},
+      {"observation_id":"cash-target","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"Ledgerlane Technologies","role":"target","legal_name":"Ledgerlane Technologies Ltd."}
+    ],
+    "dates": [
+      {"observation_id":"cash-announced","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"announced on 1 February 2024","kind":"announcement","value":"2024-02-01"},
+      {"observation_id":"cash-completed","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"completed on 3 June 2024","kind":"completion","value":"2024-06-03"}
+    ],
+    "statuses": [{"observation_id":"cash-status","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"completed on 3 June 2024","effective_date":"2024-06-03","status":"completed"}],
+    "structures": [{"observation_id":"cash-structure","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"acquire 100 percent","transaction_type":"stock_acquisition","buyer_type":"strategic","jurisdiction":"United States"}],
+    "consideration": [{"observation_id":"cash-consideration","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"USD 420 million in cash","kind":"cash","amount":{"value":"420","currency":"USD","unit":"million"}}],
+    "ownership": [{"observation_id":"cash-ownership","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"acquire 100 percent","acquired_percent":"100","post_deal_percent":"100"}],
+    "valuations": [
+      {"observation_id":"cash-headline","evidence_ids":["retrieval:sha256:98a3d2ec588114c19c43c6cb734f440b6a32e422c1f83d6b69b07d3cca42c5ce"],"source_wording":"for USD 420 million","measure":"headline_deal_value","amount":{"value":"420","currency":"USD","unit":"million"}},
+      {"observation_id":"cash-equity","evidence_ids":["retrieval:sha256:a6f96c682ee2804a0e55146a581a611caf3b0fef49edcdf7ce4153ba266bfd83"],"source_wording":"equity purchase price is USD 420 million","measure":"equity_purchase_price","amount":{"value":"420","currency":"USD","unit":"million"}},
+      {"observation_id":"cash-offer-price","evidence_ids":["retrieval:sha256:a6f96c682ee2804a0e55146a581a611caf3b0fef49edcdf7ce4153ba266bfd83"],"source_wording":"USD 10.50 in cash per share","measure":"per_share_offer_price","amount":{"value":"10.50","currency":"USD","unit":"per share"}}
+    ],
+    "financials": [
+      {"observation_id":"cash-revenue","evidence_ids":["retrieval:sha256:a6f96c682ee2804a0e55146a581a611caf3b0fef49edcdf7ce4153ba266bfd83"],"source_wording":"revenue of USD 96 million for the twelve months ended 31 December 2023","name":"revenue","value":"96","currency":"USD","unit":"million","period":"LTM Dec-2023","basis":"reported","measurement_date":"2023-12-31"},
+      {"observation_id":"cash-ebitda","evidence_ids":["retrieval:sha256:a6f96c682ee2804a0e55146a581a611caf3b0fef49edcdf7ce4153ba266bfd83"],"source_wording":"adjusted EBITDA of USD 18 million","name":"ebitda","value":"18","currency":"USD","unit":"million","period":"LTM Dec-2023","basis":"adjusted","adjustment_label":"Adjusted EBITDA","measurement_date":"2023-12-31"}
+    ],
+    "capital_structure": [
+      {"observation_id":"cash-debt","evidence_ids":["retrieval:sha256:a6f96c682ee2804a0e55146a581a611caf3b0fef49edcdf7ce4153ba266bfd83"],"source_wording":"funded debt of USD 12 million","kind":"debt","amount":{"value":"12","currency":"USD","unit":"million","measurement_date":"2023-12-31"},"as_of":"2023-12-31"},
+      {"observation_id":"cash-balance-cash","evidence_ids":["retrieval:sha256:a6f96c682ee2804a0e55146a581a611caf3b0fef49edcdf7ce4153ba266bfd83"],"source_wording":"cash of USD 7 million","kind":"cash","amount":{"value":"7","currency":"USD","unit":"million","measurement_date":"2023-12-31"},"as_of":"2023-12-31"}
+    ]
+  },
+  {
+    "transaction_id":"txn-stock",
+    "parties":[
+      {"observation_id":"stock-acquirer","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"Meridian Cloud shares","role":"acquirer","legal_name":"Meridian Cloud Inc."},
+      {"observation_id":"stock-target","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"BridgeMint shareholders","role":"target","legal_name":"BridgeMint Systems Ltd."}
+    ],
+    "dates":[
+      {"observation_id":"stock-announced","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"announcement published 12 May 2023","kind":"announcement","value":"2023-05-12"},
+      {"observation_id":"stock-completed","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"completed on 15 September 2023","kind":"completion","value":"2023-09-15"}
+    ],
+    "statuses":[{"observation_id":"stock-status","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"merger completed","effective_date":"2023-09-15","status":"completed"}],
+    "structures":[{"observation_id":"stock-structure","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"merger consideration","transaction_type":"merger","buyer_type":"strategic","jurisdiction":"United Kingdom"}],
+    "consideration":[
+      {"observation_id":"stock-shares","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"0.45 Meridian Cloud shares","kind":"shares","quantity":"0.45","quantity_unit":"acquirer shares per target share","per_share":true},
+      {"observation_id":"stock-cash","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"USD 2.00 in cash for each BridgeMint share","kind":"cash","amount":{"value":"2.00","currency":"USD","unit":"per share"},"per_share":true}
+    ],
+    "valuations":[{"observation_id":"stock-headline","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"aggregate transaction value of approximately USD 510 million","measure":"headline_deal_value","amount":{"value":"510","currency":"USD","unit":"million"},"ambiguous_basis":true}],
+    "financials":[
+      {"observation_id":"stock-reported-ebitda","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"reported EBITDA of USD 9 million","name":"ebitda","value":"9","currency":"USD","unit":"million","period":"FY2022A","basis":"reported","measurement_date":"2022-12-31"},
+      {"observation_id":"stock-adjusted-ebitda","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"adjusted EBITDA of USD 12 million","name":"ebitda","value":"12","currency":"USD","unit":"million","period":"FY2022A","basis":"adjusted","adjustment_label":"Adjusted EBITDA","measurement_date":"2022-12-31"},
+      {"observation_id":"stock-ebit","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"EBIT of USD 6 million","name":"ebit","value":"6","currency":"USD","unit":"million","period":"FY2022A","basis":"reported","measurement_date":"2022-12-31"},
+      {"observation_id":"stock-net-income","evidence_ids":["retrieval:sha256:c692a48553c647617d2e5053fb2e14851b1bb045405c7ebf40ccffe3dc1c6cc7"],"source_wording":"net income of USD 3 million","name":"net_income","value":"3","currency":"USD","unit":"million","period":"FY2022A","basis":"reported","measurement_date":"2022-12-31"}
+    ]
+  },
+  {
+    "transaction_id":"txn-withdrawn",
+    "parties":[
+      {"observation_id":"withdrawn-acquirer","evidence_ids":["retrieval:sha256:cf4cdb68068aaefca07e75638b9178e33328e37addeb7812195acce1e77b5b28"],"source_wording":"ApexPay withdrew","role":"acquirer","legal_name":"ApexPay Corporation"},
+      {"observation_id":"withdrawn-target","evidence_ids":["retrieval:sha256:cf4cdb68068aaefca07e75638b9178e33328e37addeb7812195acce1e77b5b28"],"source_wording":"HarborRail Networks","role":"target","legal_name":"HarborRail Networks Ltd."}
+    ],
+    "dates":[{"observation_id":"withdrawn-date","evidence_ids":["retrieval:sha256:cf4cdb68068aaefca07e75638b9178e33328e37addeb7812195acce1e77b5b28"],"source_wording":"on 21 October 2022","kind":"termination","value":"2022-10-21"}],
+    "statuses":[{"observation_id":"withdrawn-status","evidence_ids":["retrieval:sha256:cf4cdb68068aaefca07e75638b9178e33328e37addeb7812195acce1e77b5b28"],"source_wording":"withdrew its proposed offer","effective_date":"2022-10-21","status":"withdrawn"}],
+    "valuations":[{"observation_id":"withdrawn-headline","evidence_ids":["retrieval:sha256:cf4cdb68068aaefca07e75638b9178e33328e37addeb7812195acce1e77b5b28"],"source_wording":"proposed USD 300 million cash offer","measure":"headline_deal_value","amount":{"value":"300","currency":"USD","unit":"million"}}]
+  },
+  {
+    "transaction_id":"txn-partial",
+    "parties":[
+      {"observation_id":"partial-acquirer","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"Quasar Bank acquired","role":"acquirer","legal_name":"Quasar Bank plc"},
+      {"observation_id":"partial-target","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"TokenForge Technologies","role":"target","legal_name":"TokenForge Technologies Ltd."}
+    ],
+    "dates":[{"observation_id":"partial-completed","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"On 20 September 2021 completed","kind":"completion","value":"2021-09-20"}],
+    "statuses":[{"observation_id":"partial-status","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"completed the acquisition","effective_date":"2021-09-20","status":"completed"}],
+    "structures":[{"observation_id":"partial-structure","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"additional 20 percent interest","transaction_type":"minority_investment","buyer_type":"strategic","jurisdiction":"United States"}],
+    "consideration":[{"observation_id":"partial-cash","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"USD 75 million in cash","kind":"cash","amount":{"value":"75","currency":"USD","unit":"million"}}],
+    "ownership":[{"observation_id":"partial-ownership","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"owned 55 percent before, additional 20 percent, 75 percent after","pre_deal_percent":"55","acquired_percent":"20","post_deal_percent":"75"}],
+    "valuations":[{"observation_id":"partial-headline","evidence_ids":["retrieval:sha256:5e4ad754e51899204d93a62899a1f42efe4a47fca806a751a51c6afea173e15c"],"source_wording":"price relates only to the incremental stake","measure":"headline_deal_value","amount":{"value":"75","currency":"USD","unit":"million"},"notes":"Incremental 20 percent stake; no gross-up."}]
+  },
+  {
+    "transaction_id":"txn-conflict",
+    "parties":[
+      {"observation_id":"conflict-acquirer","evidence_ids":["retrieval:sha256:f2a4eeba24d9f6d0f2ff967b3d230c32f37201642566314e11367876bad727e9"],"source_wording":"Brightwire announced","role":"acquirer","legal_name":"Brightwire Holdings Ltd."},
+      {"observation_id":"conflict-target","evidence_ids":["retrieval:sha256:f2a4eeba24d9f6d0f2ff967b3d230c32f37201642566314e11367876bad727e9"],"source_wording":"acquire CircuitLedger","role":"target","legal_name":"CircuitLedger Inc."}
+    ],
+    "dates":[{"observation_id":"conflict-announced","evidence_ids":["retrieval:sha256:f2a4eeba24d9f6d0f2ff967b3d230c32f37201642566314e11367876bad727e9"],"source_wording":"announcement published 14 August 2024","kind":"announcement","value":"2024-08-14"}],
+    "statuses":[{"observation_id":"conflict-status","evidence_ids":["retrieval:sha256:f2a4eeba24d9f6d0f2ff967b3d230c32f37201642566314e11367876bad727e9"],"source_wording":"subject to closing conditions","effective_date":"2024-08-14","status":"pending"}],
+    "valuations":[
+      {"observation_id":"conflict-official-value","evidence_ids":["retrieval:sha256:f2a4eeba24d9f6d0f2ff967b3d230c32f37201642566314e11367876bad727e9"],"source_wording":"headline transaction value as USD 600 million","measure":"headline_deal_value","amount":{"value":"600","currency":"USD","unit":"million"}},
+      {"observation_id":"conflict-news-value","evidence_ids":["retrieval:sha256:2f55fac1ac3fab4bde43a5adab989fa92ca5978e36cfb17a36c1c7bef7151765"],"source_wording":"valued at USD 640 million","measure":"headline_deal_value","amount":{"value":"640","currency":"USD","unit":"million"},"ambiguous_basis":true}
+    ]
+  },
+  {
+    "transaction_id":"txn-undisclosed",
+    "parties":[
+      {"observation_id":"undisclosed-acquirer","evidence_ids":["retrieval:sha256:2bc1ccc1d16a03a349e3dbb422f6232e1be0ffc42f5f8d57412ab674e9f4a522"],"source_wording":"NovaCore Financial completed","role":"acquirer","legal_name":"NovaCore Financial Ltd."},
+      {"observation_id":"undisclosed-target","evidence_ids":["retrieval:sha256:2bc1ccc1d16a03a349e3dbb422f6232e1be0ffc42f5f8d57412ab674e9f4a522"],"source_wording":"VaultMesh compliance infrastructure business","role":"target","legal_name":"VaultMesh Systems Ltd."}
+    ],
+    "dates":[{"observation_id":"undisclosed-completed","evidence_ids":["retrieval:sha256:2bc1ccc1d16a03a349e3dbb422f6232e1be0ffc42f5f8d57412ab674e9f4a522"],"source_wording":"On 3 November 2020 completed","kind":"completion","value":"2020-11-03"}],
+    "statuses":[{"observation_id":"undisclosed-status","evidence_ids":["retrieval:sha256:2bc1ccc1d16a03a349e3dbb422f6232e1be0ffc42f5f8d57412ab674e9f4a522"],"source_wording":"completed the acquisition","effective_date":"2020-11-03","status":"completed"}],
+    "valuations":[{"observation_id":"undisclosed-value","evidence_ids":["retrieval:sha256:2bc1ccc1d16a03a349e3dbb422f6232e1be0ffc42f5f8d57412ab674e9f4a522"],"source_wording":"Financial terms and purchase price were not disclosed","measure":"headline_deal_value","amount":null,"disclosed":false}]
+  },
+  {
+    "transaction_id":"txn-amended",
+    "parties":[
+      {"observation_id":"amended-acquirer","evidence_ids":["retrieval:sha256:36c7f06b61839f851e6d351fc6aea2bd94a60cff5bd0f5c79f5cf6cd0212b4ef"],"source_wording":"SummitPay Group revised","role":"acquirer","legal_name":"SummitPay Group plc"},
+      {"observation_id":"amended-target","evidence_ids":["retrieval:sha256:36c7f06b61839f851e6d351fc6aea2bd94a60cff5bd0f5c79f5cf6cd0212b4ef"],"source_wording":"ClearRoute Software","role":"target","legal_name":"ClearRoute Software Ltd."}
+    ],
+    "dates":[{"observation_id":"amended-announced","evidence_ids":["retrieval:sha256:9c7740df99d4547396b95b07d69e62e6406b6378c053d059cb70c3626d35ce71"],"source_wording":"On 10 January 2025 announced","kind":"announcement","value":"2025-01-10"}],
+    "statuses":[{"observation_id":"amended-status","evidence_ids":["retrieval:sha256:36c7f06b61839f851e6d351fc6aea2bd94a60cff5bd0f5c79f5cf6cd0212b4ef"],"source_wording":"revised offer remains pending","effective_date":"2025-02-14","status":"pending"}],
+    "consideration":[
+      {"observation_id":"amended-original-cash","evidence_ids":["retrieval:sha256:9c7740df99d4547396b95b07d69e62e6406b6378c053d059cb70c3626d35ce71"],"source_wording":"USD 20.00 in cash per share","effective_date":"2025-01-10","revision":"original","kind":"cash","amount":{"value":"20","currency":"USD","unit":"per share"},"per_share":true},
+      {"observation_id":"amended-revised-cash","evidence_ids":["retrieval:sha256:36c7f06b61839f851e6d351fc6aea2bd94a60cff5bd0f5c79f5cf6cd0212b4ef"],"source_wording":"revised to USD 24.00 in cash per share","effective_date":"2025-02-14","revision":"amended","kind":"cash","amount":{"value":"24","currency":"USD","unit":"per share"},"per_share":true}
+    ],
+    "valuations":[
+      {"observation_id":"amended-original-offer","evidence_ids":["retrieval:sha256:9c7740df99d4547396b95b07d69e62e6406b6378c053d059cb70c3626d35ce71"],"source_wording":"USD 20.00 in cash per share","effective_date":"2025-01-10","revision":"original","measure":"per_share_offer_price","amount":{"value":"20","currency":"USD","unit":"per share"}},
+      {"observation_id":"amended-revised-offer","evidence_ids":["retrieval:sha256:36c7f06b61839f851e6d351fc6aea2bd94a60cff5bd0f5c79f5cf6cd0212b4ef"],"source_wording":"revised to USD 24.00 in cash per share","effective_date":"2025-02-14","revision":"amended","measure":"per_share_offer_price","amount":{"value":"24","currency":"USD","unit":"per share"}},
+      {"observation_id":"amended-original-equity","evidence_ids":["retrieval:sha256:9c7740df99d4547396b95b07d69e62e6406b6378c053d059cb70c3626d35ce71"],"source_wording":"original equity value was USD 400 million","effective_date":"2025-01-10","revision":"original","measure":"equity_purchase_price","amount":{"value":"400","currency":"USD","unit":"million"}},
+      {"observation_id":"amended-revised-equity","evidence_ids":["retrieval:sha256:36c7f06b61839f851e6d351fc6aea2bd94a60cff5bd0f5c79f5cf6cd0212b4ef"],"source_wording":"amended equity value of USD 480 million","effective_date":"2025-02-14","revision":"amended","measure":"equity_purchase_price","amount":{"value":"480","currency":"USD","unit":"million"}}
+    ]
+  }
+]

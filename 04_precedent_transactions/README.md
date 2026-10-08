@@ -10,10 +10,11 @@ deals, retrieve transaction documents, extract and verify deal facts, normalize 
 financials, select comparable acquisitions, calculate transaction multiples deterministically, and
 produce an auditable analyst explanation.
 
-This directory currently implements **M0 and M1/2**: transaction data contracts plus an offline,
-evidence-first discovery and hybrid retrieval pipeline. It does not extract final structured deal
-facts, calculate enterprise value or multiples, select precedents, run LangGraph, expose an API, or
-render a frontend.
+This directory currently implements **M0, M1/2, and M3**: transaction contracts, offline discovery
+and hybrid retrieval, plus schema-validated extraction, deterministic financial normalization,
+cross-source verification, conflict retention, and a narrow traceable EV bridge. It does not
+select precedents, calculate transaction multiples or implied valuation, run LangGraph, expose an
+API, or render a frontend.
 
 ## Roadmap
 
@@ -21,7 +22,7 @@ render a frontend.
 | --- | --- | --- |
 | M0 | Architecture and transaction data models | Complete |
 | M1/2 | Historical deal discovery and document intelligence/RAG | Complete |
-| M3 | Structured extraction, financial normalization, verification | Planned |
+| M3 | Structured extraction, financial normalization, verification | Complete |
 | M4/5 | Comparable selection, transaction multiples, implied valuation | Planned |
 | M6/7 | LangGraph, human review, evaluation, API/demo, V1 | Planned |
 
@@ -74,6 +75,64 @@ Detailed planned nodes, transitions, approvals, and failures are in
   ranking, evidence results, and quality warnings;
 - `pipeline.py`: independently testable discovery-to-index composition;
 - `evaluation.py` and `demo.py`: a six-query benchmark and reproducible offline demonstration.
+- `extraction/`: structured observation schemas, evidence-only prompts, fixture and optional
+  LangChain providers, normalization, verification, extraction context retrieval, service, and
+  field-level evaluation;
+- `demo_m3.py`: seven-case offline retrieval-to-verification demonstration.
+
+## M3 extraction and verification flow
+
+```mermaid
+flowchart LR
+    A[Transaction-filtered<br/>retrieved evidence] --> B[Structured extractor]
+    B --> C[Application schema validation]
+    C --> D[Deterministic numeric,<br/>unit and period normalization]
+    D --> E[Source-priority verification]
+    E --> F{Current observations agree?}
+    F -->|yes| G[Verified transaction record]
+    F -->|no| H[Retain every observation<br/>and conflict summary]
+    H --> G
+    D --> I[Optional explicit<br/>equity + debt - cash bridge]
+    I --> G
+    G --> J[Field -> observation -> chunk<br/>-> document -> source trace]
+```
+
+`ExtractionBatch` is the temporary provider boundary. It contains typed source observations for
+parties, distinct deal dates, lifecycle status, transaction structure, consideration, ownership,
+valuation measures, target financials, and capital structure. Every non-missing observation cites
+an evidence ID from the bounded M1/2 retrieval context. Unknown IDs, malformed numerics, unsupported
+periods or units, cross-transaction evidence, and changed transaction IDs fail validation.
+
+`LangChainStructuredExtractor` uses an injected LangChain chat model's
+`with_structured_output` runnable. The adapter supplies an evidence-only system prompt and a bounded
+transaction-filtered evidence catalog, then validates the model result again into frozen
+application dataclasses. LangChain is an optional `ai` extra; offline tests and demos use
+`FixtureStructuredExtractor` and make no model or network call.
+
+Deterministic normalization parses exact `Decimal` values, validates three-letter currencies,
+converts units through explicit factors, and recognizes `FY2025`, `FY2027E`, and `LTM Sep-2026`
+without treating them as equivalent periods. Same-currency scale conversion supports units,
+thousand, million, billion, lakh, crore, and per-share values. Negative earnings are valid;
+negative transaction consideration is not. No FX conversion occurs.
+
+Verification keeps source reliability separate from extraction confidence. Contractual and
+regulatory evidence normally ranks ahead of primary-company material, then trusted secondary
+sources, with recency only breaking ties. This is a review-candidate policy rather than a claim
+that one source class is universally correct. Matching independent documents produce `VERIFIED`;
+one document produces `SINGLE_SOURCE`; conflicting current observations produce `CONFLICTING`;
+explicitly undisclosed values produce `MISSING`; deterministic bridges produce `DERIVED`.
+
+Amended terms are chronological observations. An explicitly dated revised/current observation
+supersedes an original term for selection without erasing either source observation or treating the
+two dates as a static conflict. Unresolved same-period disagreement remains a conflict.
+
+The only derived valuation implemented in M3 is a transparent EV bridge when disclosed equity
+value, debt, and cash share a currency and have usable dated inputs. The output is marked
+`INDEPENDENTLY_CALCULATED` and `DERIVED_FROM_DISCLOSED`, carries every input's evidence, records
+assumptions, and emits the exact `EV = equity + debt - cash` trace. No other adjustment is inferred.
+
+Full M3 design and limitations are in
+[`docs/extraction-verification.md`](docs/extraction-verification.md).
 
 M1/2 adds one concrete `DealDiscoveryProvider` boundary and one document-catalog boundary. It does
 not add separate news, filing, and exchange-provider interfaces because their response contract is
@@ -100,11 +159,11 @@ flowchart LR
 transaction and buyer types, same-currency size bounds, and keywords. Discovery generates
 candidates only; it does not decide whether a deal is a valuation comparable.
 
-The deterministic fixture provider produces seven observations representing six fictitious deals.
+The deterministic fixture provider produces eight observations representing seven fictitious deals.
 The identity resolver merges only matching external IDs or exact acquirer/target/date/type
 fingerprints. Near matches such as competing bids remain separate and carry an ambiguity warning.
 
-The fixture document catalog covers official announcements, a regulatory filing, an exchange
+The fixture document catalog covers official announcements, regulatory filings, an exchange
 disclosure, and one secondary report. Text and HTML are parsed locally. PDF support is supplied by
 `Project1PdfParserAdapter`, which dynamically uses the installed Project 1 parser without making
 Project 4 depend on Project 1. Missing, malformed, unsupported, or failed documents are reported;
@@ -134,9 +193,8 @@ Quality warnings cover no results, missing semantic or lexical matches, low fuse
 unofficial-only evidence, and conflicting headline transaction values across documents. These are
 warnings for M3 or an analyst; M1/2 does not turn passages into final facts.
 
-LangChain is not a runtime dependency in M1/2. The current document wrappers, local index, BM25,
-and fusion are smaller and more auditable as typed Python. A later provider integration may use a
-LangChain loader or retriever behind the existing boundaries if it reduces real integration code.
+LangChain is not required by M1/2. M3 provides a concrete optional structured-output adapter while
+keeping domain validation, normalization, verification, and arithmetic in ordinary Python.
 
 Full design and limitations are in [`docs/discovery-rag.md`](docs/discovery-rag.md).
 
@@ -147,7 +205,7 @@ transaction, not to an article. Its identity context includes the acquirer party
 transaction type, announcement date when known, and an optional qualifier. Two sources about the
 same bid attach evidence and observations to one record.
 
-The target name is never the identity key. M1/2 resolution will need to distinguish:
+The target name is never the identity key. Preliminary M1/2 resolution preserves or flags:
 
 - competing bidders for the same target;
 - an amended offer from a separate bid;
@@ -201,7 +259,8 @@ ambiguous, or unavailable. A headline of USD 2 billion is not recast as equity v
 value. Calculated values must retain assumptions. Multiple observations of the same measure are
 allowed, which preserves amendments and source conflicts.
 
-No EV/equity bridge calculation exists in M0.
+M3 adds only the narrow, deterministic bridge described above; it never relabels a headline value
+or silently fills missing bridge inputs.
 
 ## Ownership
 
@@ -266,8 +325,8 @@ calculates a multiple.
 
 ## AI and deterministic boundary
 
-Planned AI work may interpret announcements, extract typed facts, explain comparability, and
-summarize caveats. Deterministic Python must validate numbers, normalize units, implement supported
+AI work may interpret announcements and extract typed candidate facts; future milestones may
+explain comparability and summarize caveats. Deterministic Python validates numbers, normalizes units, implements supported
 EV bridges, calculate multiples and statistics, and derive implied valuations. An LLM may propose
 or explain; it may not invent missing values, convert currencies silently, override validated
 numbers, or approve its own exceptions.
@@ -277,7 +336,7 @@ Planned capability placement:
 | Milestone | AI engineering capability |
 | --- | --- |
 | M1/2 | Deal discovery tools; ingestion; provenance-aware chunking; embeddings; vector, BM25, and hybrid retrieval; source grounding; LangChain integration where it simplifies composition |
-| M3 | Typed LLM extraction; evidence linking; verification; conflict retention; explicit extraction failures |
+| M3 | Implemented typed extraction; evidence linking; verification; conflict retention; explicit extraction failures |
 | M4/5 | Semantic comparable reasoning plus deterministic screening, multiple calculations, statistics, and grounded explanation |
 | M6/7 | LangGraph state and routing; tools; checkpointing; bounded retries; human review; evaluation; tracing; API |
 
@@ -311,9 +370,28 @@ assumptions.
 5. a completed deal with undisclosed value;
 6. a deal retaining two conflicting headline-value observations.
 
-M1/2 adds seven discovery observations and eight small deal documents for the same six scenarios.
+M1/2 and M3 use eight discovery observations and ten small deal documents covering seven scenarios.
 The duplicate cash-deal observation tests resolution; the two conflicting-value documents test
-warning behavior; the undisclosed-price document verifies that retrieval does not invent a price.
+warning behavior; the undisclosed-price document verifies that extraction does not invent a price;
+and two dated documents preserve an original and revised offer.
+
+## Extraction evaluation and demo
+
+The M3 benchmark contains seven synthetic transactions with gold parties, status, selected numeric
+fields, expected missing fields, evidence links, and expected conflicts. The committed fixture run
+reports field accuracy `1.00`, numeric accuracy `1.00`, missing-value correctness `1.00`,
+evidence-link accuracy `1.00`, and conflict-detection correctness `1.00`. These scores are regression
+checks over a tiny deterministic corpus, not a production accuracy claim.
+
+Run the M3 demo with:
+
+```powershell
+py -3.11 -m ma_precedent_transactions.demo_m3
+```
+
+It covers a completed cash deal, mixed consideration, a partial stake, a withdrawn offer, an
+amendment, conflicting headline values, undisclosed price/missing EBITDA, reported versus adjusted
+EBITDA, and a disclosed-input EV bridge. It performs no precedent selection or multiple valuation.
 
 ## Retrieval evaluation
 
@@ -331,7 +409,7 @@ It shows discovery, deduplication, document ingestion, indexing, cited retrieval
 headline values, an undisclosed-price passage, and benchmark output. It never extracts final deal
 fields.
 
-## Run M1/2 checks
+## Run M3 checks
 
 From `04_precedent_transactions/`, using Python 3.11+:
 
@@ -353,7 +431,10 @@ parsing is intentionally simple, PDF parsing requires the optional Project 1 ada
 remote download occurs. Identity resolution handles strong duplicates and flags near matches but
 does not solve complex amendments or consortium changes.
 
-M1/2 retrieves evidence; it does not establish truth. Structured extraction, financial
-normalization, value verification, FX policy, EV bridges, partial-stake treatment, comparable
-selection, calculations, LangGraph, final evaluation, API, UI, and deployment remain later
-milestones.
+M3 uses deterministic fixture responses by default; production model quality, prompt evaluation,
+and provider retry policy remain unproven. The JSON schema intentionally validates into richer
+application dataclasses rather than encoding every nested rule in provider schema alone. Source
+priority cannot resolve substantive legal ambiguity, and amendment recognition requires explicit
+date/revision context. Period parsing is intentionally narrow. No FX, automatic stake gross-up,
+comparable selection, transaction multiple, implied valuation, LangGraph runtime, human approval,
+API, UI, or deployment exists.

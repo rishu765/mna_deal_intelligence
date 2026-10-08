@@ -15,7 +15,7 @@ investment advice or autonomous deal decisions.
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
-| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **M1/2 discovery and RAG complete** |
+| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **M3 extraction and verification complete** |
 | Due Diligence | `05_due_diligence/` | Planned |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
@@ -48,7 +48,9 @@ contracts that distinguish deal identity, lifecycle, consideration, ownership, h
 value bases, point-in-time financials, and disputed source observations. Its M1/2 research layer
 adds reproducible deal discovery, document ingestion, transaction-aware chunking, semantic and BM25
 retrieval, hybrid ranking, provenance, and an offline retrieval benchmark. Structured extraction
-and valuation remain later milestones.
+in M3 adds validated evidence-linked observations, deterministic normalization, cross-source
+verification, amendment/conflict retention, and traceable derived values. Comparable selection and
+valuation remain later milestones.
 
 ## Development workflow
 
