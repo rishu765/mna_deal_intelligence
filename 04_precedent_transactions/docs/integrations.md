@@ -1,6 +1,6 @@
 # Project 1–3 reuse and compatibility assessment
 
-This assessment reflects the repository at Project 3 V1 and Project 4 M1/2. Project 4 remains
+This assessment reflects the repository at Project 3 V1 and Project 4 M3. Project 4 remains
 standalone; the optional PDF adapter resolves Project 1 dynamically only when installed.
 
 ## Reusable today through future adapters
@@ -32,7 +32,7 @@ purchases. Reuse the patterns and later adapter boundaries, not the candidate mo
 
 ### Project 3: comparable companies and valuation
 
-The following semantics are safe to reproduce behind a future adapter or promote to `shared/` only
+M3 adapts the following semantics locally; they may be promoted to `shared/` only
 after both projects consume an intentionally stable contract:
 
 - exact `Decimal` values;
@@ -70,5 +70,6 @@ headline/equity/transaction-EV ambiguity, withdrawn bids, and deal-date financia
 ## Dependency decision
 
 Project 4 has no required runtime dependency on Projects 1–3. The optional Project 1 PDF adapter is
-resolved at execution time; core models, text/HTML ingestion, discovery, retrieval, tests, and demo
-work without installing every project.
+resolved at execution time. The optional LangChain adapter accepts an injected model and adds no
+dependency to offline extraction. Core models, ingestion, retrieval, extraction, verification,
+tests, and demos work without installing every project.

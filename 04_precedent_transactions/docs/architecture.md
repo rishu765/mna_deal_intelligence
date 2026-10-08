@@ -10,9 +10,9 @@ The final system should keep the following boundaries even if implementations ch
 | `identity` | Entity and transaction resolution proposals, ambiguity | M1/2 preliminary implementation |
 | `documents` | Retrieval, parsing, chunking, source metadata | M1/2 text/HTML plus PDF adapter |
 | `retrieval` | Vector, keyword/BM25, hybrid ranking, grounded context | M1/2 implemented offline |
-| `extraction` | Typed LLM outputs linked to evidence | M3 |
-| `verification` | Conflicts, source checks, acceptance/rejection | M3 |
-| `normalization` | Units, periods, supported capital bridge inputs | M3 |
+| `extraction` | Typed model/fixture outputs linked to evidence | M3 implemented |
+| `verification` | Conflicts, source priority, amendments, categorical status | M3 implemented |
+| `normalization` | Decimal, units, periods, narrow capital bridge | M3 implemented |
 | `selection` | Hard filters, qualitative assessments, analyst overrides | M4/5 |
 | `valuation` | Multiple definitions, calculations, statistics, implied values | M4/5 |
 | `explanation` | Evidence-grounded narrative over deterministic results | M4/5 |
@@ -88,17 +88,17 @@ outcome. Terminal failures include invalid input, exhausted provider/model retri
 state corruption, and analyst rejection. Missing EBITDA alone is not a workflow crash; it makes the
 corresponding multiple unavailable.
 
-## RAG and LangChain plan
+## RAG and LangChain boundary
 
-M1/2 will ingest transaction announcements, filings, agreements, presentations, annual reports,
+M1/2 can ingest transaction announcements, filings, agreements, presentations, annual reports,
 and exchange disclosures. Provenance-aware chunks will carry document, page, section/table, and
 text locators. Retrieval will combine semantic vectors with keyword/BM25 signals because exact
 terms such as offer price, debt assumed, and stake percentage matter alongside semantic meaning.
 
-LangChain may compose loaders, retrievers, and typed extraction calls where it reduces integration
-code. Domain objects, validation, evidence policy, and calculations remain ordinary Python and do
-not depend on LangChain. Retrieved passages must link back to `EvidenceReference` before they can
-support a fact.
+M3 implements one concrete LangChain-compatible boundary for typed extraction through an injected
+chat model's native structured-output runnable. Domain objects, second-stage validation, evidence
+policy, normalization, verification, and calculations remain ordinary Python and do not depend on
+LangChain. Retrieved passages must link back to `EvidenceReference` before they can support a fact.
 
 ## Determinism
 

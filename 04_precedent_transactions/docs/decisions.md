@@ -57,3 +57,22 @@ embeddings can replace the provider without changing the index or result contrac
 The implemented parsers, local index, filters, and fusion remain clearer as typed Python. LangChain
 will be introduced only when a concrete loader, embedding integration, or composed retriever makes
 the dependency worthwhile.
+
+## Add LangChain only at the structured-output edge in M3
+
+M3 now has a concrete use: composing a chat model with a structured JSON schema. The adapter is
+optional and accepts an injected LangChain model. Application dataclasses validate the response a
+second time, and all evidence checking, normalization, verification, and arithmetic remain outside
+LangChain.
+
+## Preserve observations before selecting a review candidate
+
+Verification retains every disclosed value. Source priority identifies a preferred observation for
+review but never deletes conflicting evidence. Dated amendments supersede original terms only when
+revision context is explicit.
+
+## Limit derived valuation to a transparent EV bridge
+
+M3 may calculate EV only from explicit same-currency equity value, debt, and cash. The result is
+marked derived and carries formula, assumptions, inputs, and evidence. No multiple or implied
+valuation calculation belongs in M3.
