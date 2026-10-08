@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "dataset_id": "p03-m06-public-safe-v1",
+  "cases": [
+    {
+      "case_id": "profitable-software",
+      "name": "Profitable software company",
+      "scenario": "Recurring-revenue company with positive EBITDA and complete capital structure.",
+      "expected_behaviors": [
+        "Preserve LTM reported periods and evidence.",
+        "Produce EV/Revenue and EV/EBITDA ranges.",
+        "Bridge enterprise value to equity and per-share value."
+      ]
+    },
+    {
+      "case_id": "negative-ebitda",
+      "name": "High-growth company with negative EBITDA",
+      "scenario": "Revenue is positive while EBITDA and earnings are negative.",
+      "expected_behaviors": [
+        "Retain revenue multiples.",
+        "Mark EV/EBITDA and P/E not meaningful.",
+        "Explain the exclusion without deleting raw values."
+      ]
+    },
+    {
+      "case_id": "industrial-debt",
+      "name": "Industrial company with debt",
+      "scenario": "Positive operating metrics with material debt and cash.",
+      "expected_behaviors": [
+        "Add debt and subtract cash in EV.",
+        "Reverse the signs in the target equity bridge.",
+        "Keep bridge component IDs."
+      ]
+    },
+    {
+      "case_id": "mixed-basis",
+      "name": "Mixed reported and adjusted EBITDA",
+      "scenario": "Peer observations contain different EBITDA bases.",
+      "expected_behaviors": [
+        "Never pool reported and adjusted denominators.",
+        "Return missing input for an unavailable requested basis.",
+        "Preserve the denominator basis."
+      ]
+    },
+    {
+      "case_id": "stale-market",
+      "name": "Stale or missing market data",
+      "scenario": "A peer has a stale price or an incomplete EV bridge.",
+      "expected_behaviors": [
+        "Reject stale equity value inputs.",
+        "Return an unavailable numerator when debt is missing.",
+        "Propagate quality warnings."
+      ]
+    },
+    {
+      "case_id": "incomplete-capital",
+      "name": "Incomplete target capital structure",
+      "scenario": "Target metric is usable but debt or cash is absent.",
+      "expected_behaviors": [
+        "Preserve implied enterprise value.",
+        "Leave equity and per-share values unavailable.",
+        "Explain the missing bridge input."
+      ]
+    },
+    {
+      "case_id": "forward-estimates",
+      "name": "Forward estimates available",
+      "scenario": "Peers have FY2027E revenue, EBITDA, and EPS.",
+      "expected_behaviors": [
+        "Calculate forward multiples separately from LTM.",
+        "Keep FY2027E labels.",
+        "Never fabricate a target forward range when target forecasts are absent."
+      ]
+    },
+    {
+      "case_id": "negative-earnings",
+      "name": "No meaningful P/E",
+      "scenario": "A peer has negative EPS and net income.",
+      "expected_behaviors": [
+        "Mark P/E not meaningful.",
+        "Retain the negative EPS input.",
+        "Avoid false certainty in explanation."
+      ]
+    }
+  ]
+}
