@@ -1,7 +1,7 @@
 # Project 1–3 reuse and compatibility assessment
 
-This assessment reflects the repository at Project 3 V1. Project 4 does not import earlier private
-modules in M0.
+This assessment reflects the repository at Project 3 V1 and Project 4 M1/2. Project 4 remains
+standalone; the optional PDF adapter resolves Project 1 dynamically only when installed.
 
 ## Reusable today through future adapters
 
@@ -12,10 +12,11 @@ embedding/vector indexing, retrieval, citations, grounded RAG, structured resear
 and API hardening. Project 4 evidence includes compatible `document_id`, `chunk_id`, page, section,
 text location, and excerpt fields.
 
-A future adapter can translate Project 1 `DocumentSource`, `SourceProvenance`, `DocumentChunk`,
-retrieval results, and citations into Project 4 document/evidence contracts. Project 1 is oriented to
-company research, so deal-document classification, merger-agreement tables, and transaction-specific
-queries require Project 4 behavior rather than direct reuse.
+`Project1PdfParserAdapter` now translates Project 1 parsed pages and warnings into Project 4
+documents. Project 1's provenance, chunking, embedding, atomic-indexing, and cosine-retrieval
+patterns were adapted. Its company/fiscal-year metadata and chunk/store types cannot directly
+support transaction, acquirer, target, jurisdiction, and source-quality filters, so Project 4 owns
+those contracts plus BM25 and hybrid fusion.
 
 ### Project 2: target screening and sourcing
 
@@ -24,7 +25,8 @@ evidence-backed entity profiles, deterministic hard filters, semantic judgments,
 trails, LangGraph typed state, conditional routing, bounded retries, checkpointing, and human
 review.
 
-Project 4 discovery concerns events and bids rather than only companies. Project 2's candidate
+Project 4 reused these service and failure-handling patterns in its fixture discovery and identity
+resolver. Discovery concerns events and bids rather than only companies. Project 2's candidate
 identity cannot uniquely represent competing bids, amended terms, repeated acquisitions, or stake
 purchases. Reuse the patterns and later adapter boundaries, not the candidate model itself.
 
@@ -67,5 +69,6 @@ headline/equity/transaction-EV ambiguity, withdrawn bids, and deal-date financia
 
 ## Dependency decision
 
-Project 4 has no runtime dependency on Projects 1–3 in M0. Later adapters should be optional at the
-composition layer so core models and offline tests remain usable without installing every project.
+Project 4 has no required runtime dependency on Projects 1–3. The optional Project 1 PDF adapter is
+resolved at execution time; core models, text/HTML ingestion, discovery, retrieval, tests, and demo
+work without installing every project.

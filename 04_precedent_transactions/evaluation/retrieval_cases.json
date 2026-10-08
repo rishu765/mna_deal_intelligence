@@ -1,0 +1,44 @@
+[
+  {
+    "case_id": "cash-consideration",
+    "query": "What cash consideration was paid?",
+    "transaction_id": "txn-cash",
+    "relevant_text_markers": ["USD 420 million in cash"],
+    "top_k": 3
+  },
+  {
+    "case_id": "per-share-offer",
+    "query": "What was the offer price per share?",
+    "transaction_id": "txn-cash",
+    "relevant_text_markers": ["USD 10.50 in cash"],
+    "top_k": 3
+  },
+  {
+    "case_id": "stock-consideration",
+    "query": "Was the merger consideration cash or stock?",
+    "transaction_id": "txn-stock",
+    "relevant_text_markers": ["0.45 Meridian Cloud shares"],
+    "top_k": 3
+  },
+  {
+    "case_id": "ownership-acquired",
+    "query": "How much of the target was acquired?",
+    "transaction_id": "txn-partial",
+    "relevant_text_markers": ["additional 20 percent interest"],
+    "top_k": 3
+  },
+  {
+    "case_id": "withdrawn-status",
+    "query": "Was the deal completed?",
+    "transaction_id": "txn-withdrawn",
+    "relevant_text_markers": ["did not complete"],
+    "top_k": 3
+  },
+  {
+    "case_id": "announcement-ebitda",
+    "query": "What EBITDA was disclosed near announcement?",
+    "transaction_id": "txn-cash",
+    "relevant_text_markers": ["adjusted EBITDA of USD 18 million"],
+    "top_k": 3
+  }
+]

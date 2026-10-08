@@ -12,6 +12,9 @@ license = { text = "Proprietary" }
 authors = [{ name = "Project Maintainer" }]
 dependencies = []
 
+[project.scripts]
+mapt-discovery-rag-demo = "ma_precedent_transactions.demo:main"
+
 [project.optional-dependencies]
 dev = [
   "mypy>=1.11,<2",
