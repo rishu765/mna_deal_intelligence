@@ -11,3 +11,11 @@ class Project1AdapterError(TargetProfileError):
 
 class MalformedFixtureError(TargetProfileError):
     """A target-profile fixture could not be parsed or validated."""
+
+
+class ValuationWorkflowError(Exception):
+    """A complete valuation workflow could not produce a usable result."""
+
+
+class NoMeaningfulValuationError(ValuationWorkflowError):
+    """No requested method produced a meaningful target valuation range."""

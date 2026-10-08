@@ -14,7 +14,7 @@ investment advice or autonomous deal decisions.
 | --- | --- | --- |
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
-| Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **M4/5 trading comps + valuation reasoning complete** |
+| Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |
 | Due Diligence | `05_due_diligence/` | Planned |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
@@ -27,9 +27,10 @@ evidence-backed enrichment, deterministic screening, grounded strategic-fit asse
 transparent ranking, checkpointed LangGraph human review, a subsystem benchmark, FastAPI, and an
 offline end-to-end demo.
 
-Project 3 M0–M4/5 defines the public trading-comps workflow, normalizes the target profile,
-selects an auditable peer set, and ingests evidence-backed financial and timestamped market data
-into offline-testable snapshots. It does not yet calculate multiples or valuation.
+Project 3 Version 1.0 defines the public trading-comps workflow, normalizes the target profile,
+selects an auditable peer set, ingests evidence-backed financial and timestamped market data,
+calculates deterministic multiples and valuation ranges, adds grounded explanations, and exposes
+an offline evaluation suite, demo, and FastAPI interface.
 
 ## Portfolio foundations
 
@@ -38,9 +39,9 @@ intelligence and retrieval-augmented generation foundation for company and M&A r
 It provides PDF ingestion, provenance-aware chunking, semantic retrieval, grounded answers,
 citations, structured research, component-level evaluation, and a hardened FastAPI interface.
 
-[Project 3](03_comparable_companies_valuation/) now establishes the architecture, target profile,
-peer selection, and comparable-data snapshot layers. Trading multiples and valuation remain
-pending.
+[Project 3](03_comparable_companies_valuation/) provides an auditable comparable-company
+valuation V1 with strict period/basis semantics, calculation traces, subsystem evaluation, and a
+callable offline API.
 
 ## Development workflow
 

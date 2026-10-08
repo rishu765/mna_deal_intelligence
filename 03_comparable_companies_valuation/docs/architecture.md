@@ -9,8 +9,30 @@ valuation calculations, and grounded explanation of those results.
 
 It does not own document parsing/retrieval (Project 1), target sourcing (Project 2), external
 vendor systems, or other valuation methods. M0 defined the boundaries, M1 implemented the target
-profile, M2/3 implements peer selection and data ingestion, and M4/5 activates deterministic
-trading-comps calculations plus a constrained explanation boundary.
+profile, M2/3 implemented peer selection and data ingestion, M4/5 activated deterministic
+trading-comps calculations plus a constrained explanation boundary, and M6 adds evaluation and a
+thin API/demo delivery layer.
+
+## Final V1 flow
+
+```mermaid
+flowchart LR
+    P1[Project 1\nFinancial/document evidence] --> Profile[Target Financial Profile]
+    P2[Project 2\nSelected target] --> Target[Target]
+    Target --> Profile
+    Profile --> Universe[Peer Universe]
+    Universe --> Selection[Selection]
+    Selection --> Ingestion[Data Ingestion]
+    Ingestion --> Snapshots[Snapshots]
+    Snapshots --> Multiples[Multiples]
+    Multiples --> Statistics[Statistics]
+    Statistics --> Valuation[Valuation + EV/Equity Bridge]
+    Valuation --> Explanation[Grounded Explanation]
+    Explanation --> Delivery[API / Demo]
+    Evaluation[Seven-subsystem Evaluation] -. tests .-> Profile
+    Evaluation -. tests .-> Selection
+    Evaluation -. tests .-> Valuation
+```
 
 ## Stage contracts
 
@@ -52,15 +74,21 @@ ma_comparable_valuation/
     demo_peers.py         # offline M2/3 selection-to-snapshot demonstration
     valuation.py          # deterministic values, multiples, statistics, ranges, explanation port
     valuation_fixtures.py # five-peer offline M4/5 scenarios
-    demo_valuation.py     # complete offline M4/5 demonstration
+    workflow.py           # complete offline M1-M6 composition
+    presentation.py       # Decimal-safe, evidence-complete response projection
+    evaluation/           # curated dataset, independent subsystem checks, reports
+    api/                  # strict request/response schemas and minimal FastAPI surface
+    demo_valuation.py     # complete offline V1 demonstration
+    api_cli.py            # local API entry point
+    evaluation_cli.py     # reproducible baseline generation
     ports.py              # provider contracts
 ```
 
-Implemented services are `TargetFinancialProfileService`, `ComparableSelectionService`, and
-`ComparableSnapshotService`. Likely later service boundaries are `MultipleCalculationService`,
-`PeerStatisticsService`,
-`ValuationService`, and `ValuationExplanationService`. They should be introduced only with
-their milestone's behavior; M0 does not create empty service classes.
+Implemented services include `TargetFinancialProfileService`, `ComparableSelectionService`,
+`ComparableSnapshotService`, `ValuationEngine`, and `OfflineValuationService`. The valuation
+engine owns value, multiple, statistics, bridge, and range calculations; the workflow service
+only composes existing stages. FastAPI remains a delivery adapter rather than a second domain
+model.
 
 ## Domain relationships
 

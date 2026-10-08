@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "dataset_id": "p03-m06-public-safe-v1",
+  "generated_at": "2026-10-07T10:00:00+00:00",
+  "case_count": 8,
+  "passed": true,
+  "subsystems": [
+    {
+      "subsystem": "target_financial_profile",
+      "passed": true,
+      "pass_count": 6,
+      "fail_count": 0,
+      "checks": [
+        {
+          "check_id": "financial-gold-values",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "{<FinancialMetricName.REVENUE: 'revenue'>: Decimal('4200'), <FinancialMetricName.EBITDA: 'ebitda'>: Decimal('680'), <FinancialMetricName.EBIT: 'ebit'>: Decimal('510'), <FinancialMetricName.NET_INCOME: 'net_income'>: Decimal('350'), <FinancialMetricName.EPS: 'eps'>: Decimal('7')}",
+          "actual": "{<FinancialMetricName.REVENUE: 'revenue'>: Decimal('4200'), <FinancialMetricName.EBITDA: 'ebitda'>: Decimal('680'), <FinancialMetricName.EBIT: 'ebit'>: Decimal('510'), <FinancialMetricName.NET_INCOME: 'net_income'>: Decimal('350'), <FinancialMetricName.EPS: 'eps'>: Decimal('7')}",
+          "representative_failure": null
+        },
+        {
+          "check_id": "capital-gold-values",
+          "case_id": "industrial-debt",
+          "passed": true,
+          "expected": "{<MarketMetricKind.CASH_AND_EQUIVALENTS: 'cash_and_equivalents'>: Decimal('400'), <MarketMetricKind.DEBT: 'debt'>: Decimal('1000'), <MarketMetricKind.DILUTED_SHARES: 'diluted_shares'>: Decimal('50')}",
+          "actual": "{<MarketMetricKind.CASH_AND_EQUIVALENTS: 'cash_and_equivalents'>: Decimal('400'), <MarketMetricKind.DEBT: 'debt'>: Decimal('1000'), <MarketMetricKind.DILUTED_SHARES: 'diluted_shares'>: Decimal('50')}",
+          "representative_failure": null
+        },
+        {
+          "check_id": "unit-normalization",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "million aggregate values and per_share EPS",
+          "actual": "normalized units preserved",
+          "representative_failure": null
+        },
+        {
+          "check_id": "period-and-basis",
+          "case_id": "mixed-basis",
+          "passed": true,
+          "expected": "exact LTM Jun-2026 reported semantics",
+          "actual": "[('LTM Jun-2026', 'reported'), ('LTM Jun-2026', 'reported')]",
+          "representative_failure": null
+        },
+        {
+          "check_id": "evidence-retention",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "evidence on every financial metric",
+          "actual": "all metrics source-backed",
+          "representative_failure": null
+        },
+        {
+          "check_id": "conflict-handling",
+          "case_id": "mixed-basis",
+          "passed": true,
+          "expected": "conflicting duplicate observations retained and flagged",
+          "actual": "1 conflict(s)",
+          "representative_failure": null
+        }
+      ],
+      "limitation": "Gold values cover controlled INR fixtures, not arbitrary issuer disclosures."
+    },
+    {
+      "subsystem": "comparable_selection",
+      "passed": true,
+      "pass_count": 5,
+      "fail_count": 0,
+      "checks": [
+        {
+          "check_id": "strong-comp-overlap",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "peer-a and peer-c selected",
+          "actual": "('peer-a', 'peer-c')",
+          "representative_failure": null
+        },
+        {
+          "check_id": "obvious-exclusion",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "peer-b excluded",
+          "actual": "exclude",
+          "representative_failure": null
+        },
+        {
+          "check_id": "insufficient-data",
+          "case_id": "stale-market",
+          "passed": true,
+          "expected": "peer-d insufficient_data",
+          "actual": "insufficient_data",
+          "representative_failure": null
+        },
+        {
+          "check_id": "rationale-quality",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "non-empty rationale with criterion evaluations",
+          "actual": "all decisions explain criteria",
+          "representative_failure": null
+        },
+        {
+          "check_id": "manual-override",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "peer-e force-included with recorded override",
+          "actual": "include",
+          "representative_failure": null
+        }
+      ],
+      "limitation": "The five-company benchmark is illustrative and does not establish market-wide relevance."
+    },
+    {
+      "subsystem": "market_financial_ingestion",
+      "passed": true,
+      "pass_count": 5,
+      "fail_count": 0,
+      "checks": [
+        {
+          "check_id": "snapshot-as-of",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "2026-10-07T10:00:00+00:00",
+          "actual": "{'2026-10-07T10:00:00+00:00'}",
+          "representative_failure": null
+        },
+        {
+          "check_id": "source-preservation",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "evidence on every ingested metric",
+          "actual": "all ingested metrics source-backed",
+          "representative_failure": null
+        },
+        {
+          "check_id": "financial-periods",
+          "case_id": "forward-estimates",
+          "passed": true,
+          "expected": "LTM Jun-2026 and FY2027E preserved",
+          "actual": "historical and forecast periods remain distinct",
+          "representative_failure": null
+        },
+        {
+          "check_id": "missing-market-data",
+          "case_id": "stale-market",
+          "passed": true,
+          "expected": "missing debt warning on peer-e",
+          "actual": "Missing peer financial fields: ebitda; Missing peer market/capital fields: debt",
+          "representative_failure": null
+        },
+        {
+          "check_id": "provider-failure",
+          "case_id": "stale-market",
+          "passed": true,
+          "expected": "provider failures produce partial snapshot without exception",
+          "actual": "financial=0, market=0",
+          "representative_failure": null
+        }
+      ],
+      "limitation": "Provider behavior is evaluated with deterministic fixture failures, not live outages."
+    },
+    {
+      "subsystem": "trading_multiples",
+      "passed": true,
+      "pass_count": 6,
+      "fail_count": 0,
+      "checks": [
+        {
+          "check_id": "ev_revenue-arithmetic",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "6.119047619047619047619047619",
+          "actual": "6.119047619047619047619047619",
+          "representative_failure": null
+        },
+        {
+          "check_id": "ev_ebitda-arithmetic",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "37.79411764705882352941176471",
+          "actual": "37.79411764705882352941176471",
+          "representative_failure": null
+        },
+        {
+          "check_id": "ev_ebit-arithmetic",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "50.39215686274509803921568627",
+          "actual": "50.39215686274509803921568627",
+          "representative_failure": null
+        },
+        {
+          "check_id": "price_earnings-arithmetic",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "17.85714285714285714285714286",
+          "actual": "17.85714285714285714285714286",
+          "representative_failure": null
+        },
+        {
+          "check_id": "negative-denominator",
+          "case_id": "negative-ebitda",
+          "passed": true,
+          "expected": "not_meaningful with raw -100 denominator",
+          "actual": "not_meaningful, -100",
+          "representative_failure": null
+        },
+        {
+          "check_id": "forward-label",
+          "case_id": "forward-estimates",
+          "passed": true,
+          "expected": "FY2027E",
+          "actual": "FY2027E",
+          "representative_failure": null
+        }
+      ],
+      "limitation": "Exact arithmetic covers four V1 multiple definitions on controlled Decimal inputs."
+    },
+    {
+      "subsystem": "peer_statistics",
+      "passed": true,
+      "pass_count": 2,
+      "fail_count": 0,
+      "checks": [
+        {
+          "check_id": "five-number-summary",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "(Decimal('3.725'), Decimal('4.915625'), Decimal('5.715773809523809523809523810'), Decimal('7.982142857142857142857142857'), Decimal('13.57142857142857142857142857'))",
+          "actual": "(Decimal('3.725'), Decimal('4.915625'), Decimal('5.715773809523809523809523810'), Decimal('7.982142857142857142857142857'), Decimal('13.57142857142857142857142857'))",
+          "representative_failure": null
+        },
+        {
+          "check_id": "outlier-policy",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "one retained IQR outlier; four valid values; type-7 interpolation",
+          "actual": "outliers=1, count=4, method=linear_interpolation_r7",
+          "representative_failure": null
+        }
+      ],
+      "limitation": "Small peer counts make quartiles sensitive even when interpolation is exact."
+    },
+    {
+      "subsystem": "implied_valuation",
+      "passed": true,
+      "pass_count": 4,
+      "fail_count": 0,
+      "checks": [
+        {
+          "check_id": "implied-ev-range",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "each EV anchor equals target EBITDA 820 times peer anchor",
+          "actual": "32920.58823529411764705882354, 34850.000, 66112.5000",
+          "representative_failure": null
+        },
+        {
+          "check_id": "bridge-signs",
+          "case_id": "industrial-debt",
+          "passed": true,
+          "expected": "1000 EV - 1000 debt + 400 cash = 400 equity",
+          "actual": "400",
+          "representative_failure": null
+        },
+        {
+          "check_id": "per-share",
+          "case_id": "industrial-debt",
+          "passed": true,
+          "expected": "mid equity value divided by 50 million diluted shares",
+          "actual": "685.000",
+          "representative_failure": null
+        },
+        {
+          "check_id": "multi-method-output",
+          "case_id": "forward-estimates",
+          "passed": true,
+          "expected": "seven peer sets and only compatible target ranges",
+          "actual": "sets=7, ranges=2",
+          "representative_failure": null
+        }
+      ],
+      "limitation": "Target fixture lacks EBIT/EPS/forward metrics, so those peer sets do not imply ranges."
+    },
+    {
+      "subsystem": "ai_explanation",
+      "passed": true,
+      "pass_count": 5,
+      "fail_count": 0,
+      "checks": [
+        {
+          "check_id": "grounding",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "one or more evidence references",
+          "actual": "33 evidence IDs",
+          "representative_failure": null
+        },
+        {
+          "check_id": "deterministic-consistency",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "The peer evidence supplies 22 usable multiple observations and 13 explicit exclusions across the requested methods.",
+          "actual": "The peer evidence supplies 22 usable multiple observations and 13 explicit exclusions across the requested methods.",
+          "representative_failure": null
+        },
+        {
+          "check_id": "outlier-commentary",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "comment on flagged outlier",
+          "actual": "('multiple:peer-c:ev_revenue:LTM Jun-2026:reported is flagged by the documented 1.5*IQR rule.',)",
+          "representative_failure": null
+        },
+        {
+          "check_id": "caveat-quality",
+          "case_id": "negative-earnings",
+          "passed": true,
+          "expected": "explicitly reject false certainty",
+          "actual": "Low, mid, and high use the peer 25th percentile, median, and 75th percentile; none is an intrinsic or true value.",
+          "representative_failure": null
+        },
+        {
+          "check_id": "structured-status",
+          "case_id": "profitable-software",
+          "passed": true,
+          "expected": "available structured explanation",
+          "actual": "available",
+          "representative_failure": null
+        }
+      ],
+      "limitation": "The offline explanation fixture tests grounding rules, not open-ended prose quality."
+    }
+  ],
+  "limitations": [
+    "Eight synthetic cases and deterministic fixtures are a regression benchmark, not production-grade validation.",
+    "No licensed live market-data or consensus-estimate provider is evaluated.",
+    "The explanation rubric checks the offline structured provider; a live LLM judge is optional and not part of the correctness baseline."
+  ]
+}
