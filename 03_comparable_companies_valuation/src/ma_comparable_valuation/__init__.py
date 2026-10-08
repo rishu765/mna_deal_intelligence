@@ -1,5 +1,7 @@
 """Comparable-company valuation domain contracts."""
 
+__version__ = "1.0.0"
+
 from ma_comparable_valuation.domain import (
     CapitalStructure,
     CompanyIdentity,
@@ -74,6 +76,10 @@ from ma_comparable_valuation.valuation import (
     ValuationPolicy,
     ValuationRange,
 )
+from ma_comparable_valuation.workflow import (
+    EndToEndValuationResult,
+    OfflineValuationService,
+)
 
 __all__ = [
     "CapitalStructure",
@@ -97,6 +103,7 @@ __all__ = [
     "EstimateStatus",
     "EvidenceReference",
     "EquityValueCalculation",
+    "EndToEndValuationResult",
     "FinancialMetric",
     "FinancialMetricName",
     "FinancialObservation",
@@ -114,6 +121,7 @@ __all__ = [
     "MultipleRequest",
     "MultipleStatus",
     "NormalizationDecision",
+    "OfflineValuationService",
     "PeerSelectionDecision",
     "PeerSelectionPolicy",
     "PeerMultipleSet",
@@ -144,4 +152,5 @@ __all__ = [
     "ValuationOutput",
     "ValuationPolicy",
     "ValuationRange",
+    "__version__",
 ]
