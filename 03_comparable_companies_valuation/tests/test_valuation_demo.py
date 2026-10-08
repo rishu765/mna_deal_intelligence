@@ -7,11 +7,15 @@ def test_demo_runs_complete_offline_flow(capsys: pytest.CaptureFixture[str]) -> 
     main()
     output = capsys.readouterr().out
 
-    assert '"peer_equity_and_enterprise_values"' in output
+    assert '"target_profile"' in output
+    assert '"universe"' in output
+    assert '"selection"' in output
+    assert '"peer_set"' in output
     assert '"multiple_sets"' in output
-    assert '"valuation_ranges"' in output
-    assert '"mid_equity_value"' in output
-    assert '"mid_per_share"' in output
+    assert '"ranges"' in output
+    assert '"implied_equity_value"' in output
+    assert '"implied_per_share"' in output
     assert '"explanation"' in output
     assert '"not_meaningful"' in output
     assert '"missing_input"' in output
+    assert '"mode": "offline_fixture"' in output

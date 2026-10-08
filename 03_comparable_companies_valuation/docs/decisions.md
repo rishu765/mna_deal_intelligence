@@ -147,14 +147,14 @@
   scraper or hidden-key dependency.
 - **Why:** Reproducibility, licensing, rate limits, and time-consistent data matter more than a
   nominal demo integration that cannot support reliable valuation inputs.
-## P3-014 — Keep deterministic arithmetic authoritative
+## P3-021 — Keep deterministic arithmetic authoritative
 
 - **Status:** Accepted in M4/5
 - **Decision:** Only `ValuationEngine` calculates values, multiples, percentiles, bridges, and
   ranges. Explanation providers receive immutable calculated output and cannot alter it.
 - **Why:** Narrative generation must not rewrite reproducible math.
 
-## P3-015 — Distinguish required and optional EV bridge fields
+## P3-022 — Distinguish required and optional EV bridge fields
 
 - **Status:** Accepted in M4/5
 - **Decision:** Share price and diluted end-of-period shares are required for equity value; debt
@@ -163,14 +163,14 @@
 - **Why:** Required claims cannot be silently assumed to be zero; optional V1 fields remain
   visible without making every otherwise-complete snapshot unusable.
 
-## P3-016 — Partition multiples by exact semantics
+## P3-023 — Partition multiples by exact semantics
 
 - **Status:** Accepted in M4/5
 - **Decision:** Partition observations by exact period label, denominator metric, and
   reported/adjusted basis. Never relabel historical values or pool bases.
 - **Why:** LTM, fiscal-year estimates, and accounting bases are different observations.
 
-## P3-017 — Use transparent percentiles and outliers
+## P3-024 — Use transparent percentiles and outliers
 
 - **Status:** Accepted in M4/5
 - **Decision:** Use Decimal Hyndman-Fan type 7 interpolation. Flag Tukey 1.5-IQR outliers when
@@ -178,9 +178,34 @@
   and auditable.
 - **Why:** The policy is deterministic and avoids silently deleting extreme market observations.
 
-## P3-018 — Keep valuation methods separate
+## P3-025 — Keep valuation methods separate
 
 - **Status:** Accepted in M4/5
 - **Decision:** Use the 25th percentile, median, and 75th percentile as low, mid, and high for
   each method independently. Do not average methods automatically.
 - **Why:** Interquartile anchors communicate dispersion without claiming a single true value.
+
+## P3-026 — Evaluate subsystems independently
+
+- **Status:** Accepted in M6
+- **Decision:** Report target-profile, selection, ingestion, multiple, statistics, valuation, and
+  explanation checks separately. Produce pass/fail counts but no blended score.
+- **Why:** An aggregate score can hide a material failure in a financially important subsystem.
+
+## P3-027 — Keep the API thin and offline-first
+
+- **Status:** Accepted in M6
+- **Decision:** Expose profile validation and the complete workflow through strict FastAPI
+  envelopes while retaining domain objects and services as the source of truth. V1 supports only
+  `offline_fixture` provider mode and process-local result retrieval.
+- **Why:** The API demonstrates callability without duplicating finance logic or implying a
+  production provider, database, authentication layer, or deployment.
+
+## P3-028 — Use a deterministic explanation baseline
+
+- **Status:** Accepted in M6
+- **Decision:** Evaluate structured offline explanations for evidence references, number
+  consistency, outlier coverage, peer-set caveats, and non-authority. Live LLM judging is optional
+  and excluded from CI correctness.
+- **Why:** Core evaluation must be reproducible and must not depend on credentials, model drift,
+  or a judge that can override deterministic finance.

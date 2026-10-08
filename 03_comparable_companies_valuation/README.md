@@ -1,142 +1,243 @@
 # Comparable Companies & Valuation Copilot
 
-Project 3 is the valuation layer of the AI × M&A portfolio. Its intended question is:
+Comparable Companies & Valuation Copilot builds auditable public-market peer sets, normalizes
+financial and market data, calculates trading multiples and valuation ranges deterministically,
+and adds evidence-grounded explanations around peer quality and valuation drivers. It is an
+educational portfolio project, not investment advice.
 
-> What is this company worth relative to relevant publicly traded comparable companies, and
-> why?
+## Project status
 
-The primary method is **Comparable Companies Analysis (trading comps)**. Public-company
-enterprise-value and equity-value multiples will eventually be applied to compatible target
-metrics to produce an evidence-backed valuation range. This is educational analytical software,
-not investment advice.
+Project 3 V1 is complete:
 
-## Milestone status
+- M0 — Architecture + valuation workflow design: complete
+- M1 — Target financial profile + normalized metrics: complete
+- M2/3 — Comparable selection + market/financial ingestion: complete
+- M4/5 — Trading multiples + valuation range + assisted reasoning: complete
+- M6 — Evaluation + API/demo + V1 polish: complete
 
-- **M0 — Architecture + valuation workflow design: ✅ complete**
-- **M1 — Target financial profile + normalized metrics: ✅ complete**
-- **M2/3 — Comparable selection + market/financial ingestion: ✅ complete**
-- **M4/5 — Trading multiples + valuation range + AI-assisted reasoning: ✅ complete**
-- M6 — Evaluation + API/demo + V1 polish: **NOT IMPLEMENTED**
+## Problem
 
-M0 supplies architecture and provider-neutral domain contracts. M1 adds the target financial
-profile. M2/3 adds an auditable peer universe, deterministic and pluggable semantic criteria,
-manual overrides, identity deduplication, market/financial/forecast provider ports, partial-safe
-snapshot ingestion, Project 1 and Project 2 adapters, and an offline five-peer demo. M4/5 adds
-auditable equity/enterprise value, strict-period multiples, peer statistics, implied ranges,
-target bridges, per-share values, and a constrained explanation boundary.
+Trading comps look simple only after the difficult choices have been hidden. A reviewable result
+must preserve why peers were selected, which date and period every input represents, whether a
+metric is reported or adjusted, why an observation was excluded, and how each valuation number
+was derived. This project makes those choices explicit.
 
-## What comparable companies analysis is
+## Why trading comps matter
 
-Trading comps compare a target with relevant listed businesses using consistently defined
-market and financial measures. Typical future multiples are `EV / Revenue`, `EV / EBITDA`,
-`EV / EBIT`, and `P / E`. Peer statistics such as the 25th percentile, median, and 75th
-percentile become valuation anchors; the target metric and capital structure then translate
-those anchors into implied enterprise value, equity value, and—where applicable—per-share value.
+Public-company multiples provide market-based reference points for a selected target. They are
+useful as a range, not a single true value: peer relevance, accounting basis, market timing,
+capital structure, forecast availability, and small samples all affect interpretation.
 
-The method is a range, not a single magically precise answer. Peer selection, periods,
-accounting adjustments, capital structure, market timing, and outliers all affect the result.
+## What the system does
 
-## Planned workflow
+The offline V1 runs this complete workflow:
+
+1. validates a target financial profile;
+2. builds and scores a comparable universe;
+3. records inclusion, exclusion, review, and manual-override decisions;
+4. ingests historical, forecast, market, and capital-structure facts through provider ports;
+5. calculates equity value, enterprise value, and four focused trading multiples;
+6. produces transparent peer statistics and outlier flags;
+7. applies 25th-percentile, median, and 75th-percentile anchors to the target;
+8. bridges implied enterprise value to equity and per-share value when inputs support it;
+9. generates a structured, evidence-referenced explanation without changing the math; and
+10. returns the result through a Python service, CLI demo, evaluation runner, or FastAPI API.
+
+## Architecture
 
 ```mermaid
-flowchart TD
-    Target[Target Company] --> Profile[Target Financial Profile]
-    Profile --> Universe[Comparable Universe]
-    Universe --> Selection[Comparable Selection]
-    Selection --> Collection[Financial + Market Data Collection]
-    Collection --> Normalize[Normalization]
-    Normalize --> Multiples[Trading Multiples]
+flowchart LR
+    P1[Project 1\nDocument evidence] --> Profile[Target Financial Profile]
+    P2[Project 2\nSelected target] --> Target[Target Company]
+    Target --> Profile
+    Profile --> Universe[Peer Universe]
+    Universe --> Selection[Peer Selection]
+    Selection --> Ingestion[Data Ingestion]
+    Ingestion --> Snapshots[Comparable Snapshots]
+    Snapshots --> Multiples[Trading Multiples]
     Multiples --> Statistics[Peer Statistics]
-    Statistics --> Implied[Implied Valuation]
-    Implied --> Range[Valuation Range]
-    Range --> Interpretation[AI-Assisted Interpretation]
-    Interpretation --> Output[Evidence-Backed Output]
+    Statistics --> Valuation[Implied Valuation + Bridge]
+    Valuation --> Explanation[Grounded Explanation]
+    Explanation --> Output[API / Demo Output]
 ```
 
-The complete stage contracts, responsibilities, provenance needs, and failure modes are in
-[docs/architecture.md](docs/architecture.md). The finance conventions are in
-[docs/valuation_methodology.md](docs/valuation_methodology.md), and the implemented M1 layer is
-documented in [docs/target-financial-profile.md](docs/target-financial-profile.md).
+The core is provider-neutral. Domain objects and deterministic services do not depend on
+FastAPI, a vendor SDK, or a live LLM. See [the architecture](docs/architecture.md) for ownership,
+stage contracts, and integration boundaries.
 
-## Deterministic finance, assisted reasoning
+## Target financial profile
 
-```mermaid
-flowchart LR
-    subgraph AI[AI-assisted research / reasoning]
-        Descriptions[Business-description interpretation]
-        Similarity[Strategic similarity]
-        Issues[Potential normalization issues]
-        Narrative[Grounded analyst narrative]
-    end
-    subgraph Deterministic[Deterministic finance engine]
-        Validation[Compatibility validation]
-        EV[Equity / enterprise value bridge]
-        Multiple[Multiple calculations]
-        Stats[Peer statistics]
-        Value[Implied values and ranges]
-    end
-    Evidence[(Evidence catalog)] --> AI
-    Evidence --> Deterministic
-    AI --> Review[Auditable recommendation / explanation]
-    Deterministic --> Output[Authoritative numerical output]
-    Review --> Output
+`TargetFinancialProfile` preserves Decimal values, currency, scale, period, actual/estimate
+status, reported/adjusted basis, source observations, normalization decisions, conflicts,
+quality flags, and evidence. Units normalize to millions where appropriate; no FX conversion is
+invented. Diluted end-of-period shares are distinct from weighted-average EPS shares.
+
+## Comparable selection
+
+Selection combines transparent deterministic criteria with a bounded semantic evaluator.
+Every candidate keeps dimension-level results, confidence, rationale, and evidence. Required
+deterministic failures control exclusion. Manual inclusion or exclusion records the analyst,
+time, and rationale without erasing the original automated decision.
+
+## Market and financial data
+
+Narrow provider ports separate universe, financial, forecast, and market capabilities. Snapshot
+ingestion preserves source and as-of dates, continues safely when one provider fails, and emits
+typed issues for stale, missing, conflicting, negative, and date-incompatible inputs. The V1
+ships deterministic providers only; it does not claim a licensed live feed.
+
+## Trading multiples
+
+The supported V1 methods are `EV / Revenue`, `EV / EBITDA`, `EV / EBIT`, and `P / E`.
+Numerator and denominator families, currency, unit, period, estimate status, and accounting
+basis are validated. A non-positive denominator is retained but marked not meaningful; missing
+or incompatible input is unavailable. LTM and forecast labels are never inferred or mixed.
+
+Equity value and enterprise value use explicit sourced inputs:
+
+```text
+Equity value = share price × diluted end-of-period shares
+Enterprise value = equity value + debt + preferred stock + minority interest - cash
 ```
 
-An LLM may later interpret descriptions, explain inclusion or exclusion, surface possible
-adjustments, and narrate deterministic results. It may not invent inputs, perform authoritative
-arithmetic, override formulas, or supply an untraceable valuation.
+Debt and cash are required for V1 EV. Optional preferred stock and minority interest are used
+only when sourced and otherwise disclosed as omitted.
 
-## Project relationships
+## Peer statistics
 
-```mermaid
-flowchart LR
-    P1[Project 1\nCompany Document Intelligence] -->|cited financial evidence\nthrough a structural adapter| P3[Project 3\nComparable Companies Valuation]
-    P2[Project 2\nTarget Screening & Sourcing] -->|candidate/profile\nthrough a structural adapter| P3
-    Direct[Direct user/provider input] --> P3
-```
+For each exact method/period/basis partition, the engine reports count, minimum, 25th
+percentile, median, 75th percentile, maximum, exclusions, warnings, and valid/excluded counts.
+Percentiles use Decimal Hyndman–Fan type 7 interpolation. Tukey 1.5-IQR outliers are flagged
+when at least four observations exist and are retained by default; no observation disappears
+silently.
 
-Project 1 can support filing ingestion, retrieval, extraction, and citations through a structural
-peer-financial adapter, but it does not guarantee every valuation metric Project 3 requires.
-Project 2 candidates and profiles can be mapped through a structural identity/profile adapter.
-Project 3 remains independently usable and imports no Project 1 or Project 2 implementation type.
+## Valuation range and EV/equity bridge
 
-## Scope boundary
+Low, mid, and high use the peer 25th percentile, median, and 75th percentile independently for
+each method. EV methods multiply the compatible target metric to derive implied EV, then subtract
+debt, preferred stock, and minority interest and add cash to derive implied equity value. P/E
+uses compatible EPS for implied share price or net income for implied equity value. Diluted
+end-of-period shares support per-share output. Methods are not automatically averaged.
 
-Project 3 is designed for public trading comps. It is not a DCF, precedent-transactions,
-accretion/dilution, LBO, purchase-price-allocation, merger-model, or due-diligence system.
-Those methods are not hidden inside the roadmap.
+## AI-assisted reasoning
 
-## Development
+The explanation provider receives immutable calculated output, selection rationale, exclusions,
+warnings, and evidence references. It may assess peer quality, outliers, metric relevance,
+sensitivities, and caveats. It cannot calculate, mutate, or replace authoritative numbers. The
+default provider is deterministic and offline; live LLM quality is outside the V1 baseline.
+
+## Evidence and provenance
+
+Every final figure includes a calculation trace linking the target metric, peer observation,
+statistic, bridge component, policy version, warnings, and evidence IDs. Serialization emits
+Decimals as strings and dates/times explicitly so API JSON does not introduce binary-float
+ambiguity.
+
+## Evaluation
+
+The curated public-safe dataset contains eight cases: profitable software, negative EBITDA,
+levered industrial, mixed reported/adjusted EBITDA, stale/missing market data, incomplete capital
+structure, available forward estimates, and negative earnings. The runner reports seven
+subsystems separately; it never collapses them into a misleading aggregate score.
+
+The checked-in baseline passes 33/33 deterministic checks:
+
+| Subsystem | Checks | Result |
+| --- | ---: | --- |
+| Target financial profile | 6 | PASS |
+| Comparable selection | 5 | PASS |
+| Market/financial ingestion | 5 | PASS |
+| Trading multiples | 6 | PASS |
+| Peer statistics | 2 | PASS |
+| Implied valuation | 4 | PASS |
+| AI explanation | 5 | PASS |
+
+This is a regression benchmark over controlled fixtures, not production-grade or market-wide
+validation. See [evaluation methodology](docs/evaluation.md) and the checked-in
+[baseline report](evaluation/baselines/m06_offline_report.md).
+
+## API
+
+The minimal FastAPI surface is:
+
+- `GET /health`
+- `POST /target/profile`
+- `POST /valuation/run`
+- `GET /valuation/{valuation_id}`
+
+`POST /valuation/run` executes the complete offline workflow and returns the peer universe,
+selection decisions, snapshots, multiples, statistics, valuation ranges, bridges, traces,
+warnings, and explanation. Results are stored in process memory for retrieval; restarting the
+server clears them. See [API usage and error behavior](docs/api.md).
+
+## Demo
+
+The default demo is credential-free and reproducible. Its five fixture peers include normal,
+high-multiple, negative-profitability, missing-data, stale-data, and forecast scenarios.
 
 ```powershell
-cd 03_comparable_companies_valuation
-python -m pip install -e ".[dev]"
-python -m ruff check .
-python -m ruff format --check .
-python -m mypy
-python -m pytest
-python -m ma_comparable_valuation.demo_profile
-python -m ma_comparable_valuation.demo_peers
 python -m ma_comparable_valuation.demo_valuation
 ```
 
-No API keys or network access are required. The project has no runtime dependencies outside the
-Python standard library.
+The JSON output identifies each completed stage and retains excluded or unavailable observations.
+
+## Setup
+
+Python 3.11 or later is required.
+
+```powershell
+cd 03_comparable_companies_valuation
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+```
+
+No API key or network call is needed. V1 exposes only `offline_fixture` provider mode. The
+provider interfaces can accept a separately implemented live adapter, but no paid or unstable
+scraping integration is bundled.
+
+## Testing
+
+```powershell
+.\.venv\Scripts\python.exe -m ruff check src tests
+.\.venv\Scripts\python.exe -m ruff format --check src tests
+.\.venv\Scripts\python.exe -m mypy
+.\.venv\Scripts\python.exe -m pytest
+.\.venv\Scripts\python.exe -m ma_comparable_valuation.evaluation_cli
+```
+
+To run the API:
+
+```powershell
+.\.venv\Scripts\macv-api.exe
+```
+
+Interactive OpenAPI documentation is available at `http://127.0.0.1:8003/docs`.
 
 ## Limitations
 
-- No live market-data provider is bundled: unstable unauthenticated sources were deliberately not
-  made a production dependency. Provider interfaces and deterministic fixtures are implemented.
-- No FX conversion, live LLM/provider integration, API, UI, or deployment.
-- Contracts prevent silent loss of key semantics; they do not prove that source data is correct.
-- Calendarization, FX conversion, capital-structure policy, and accounting adjustments are
-  designed but deliberately deferred.
-- The initial enums cover the planned V1 methods and can be extended through reviewed schema
-  changes rather than untyped strings.
-- `COMPLETE_ENOUGH_FOR_VALUATION` means the configured M2/3 input fields are present and pass
-  snapshot quality gates; it does not assert correctness or calculate a valuation.
+- Fixture-heavy evaluation is deliberately small and cannot establish real-market accuracy.
+- No Bloomberg, Capital IQ, licensed market feed, or live consensus-estimate provider is bundled.
+- Forward estimates exist only where the supplied provider provides them.
+- There is no FX conversion, broad calendarization, or sector-specific multiple library.
+- V1 excludes financial-institution-specific methods, DCF, precedent transactions, merger
+  models, accretion/dilution, and LBO analysis.
+- The offline explanation fixture validates grounding constraints, not open-ended LLM prose.
+- The API has no production authentication, durable result store, rate limiting, UI, or banker
+  formatting/export.
 
-See [docs/comparable-selection-data.md](docs/comparable-selection-data.md) for the implemented
-selection formula, override semantics, providers, consistency checks, and failure behavior.
-See [docs/trading-comps-valuation.md](docs/trading-comps-valuation.md) for the M4/5 formulas,
-period/basis rules, outlier policy, ranges, traces, and deterministic/AI boundary.
+## Relationship to Projects 1 and 2
+
+Project 1 can provide source-backed company and financial evidence through structural adapters;
+Project 3 still validates valuation-specific completeness. Project 2 can provide a screened
+candidate and identity/profile data; Project 3 owns peer research and valuation. Neither upstream
+project is a runtime dependency, and the repository does not claim an automated cross-project
+deployment.
+
+## Future project connection
+
+Project 4 may reuse concepts such as target identity, evidence references, normalized financial
+metrics, valuation metric semantics, and range structures. No precedent-transactions workflow is
+implemented or designed here.
+
+See [the portfolio and interview guide](docs/portfolio-interview-guide.md) for an accurate project
+summary, resume bullets, interview narrative, reusable components, and concepts to know.
