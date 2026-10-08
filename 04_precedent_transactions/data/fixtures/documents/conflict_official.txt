@@ -1,0 +1,2 @@
+[Section: Transaction overview]
+Brightwire announced an agreement to acquire CircuitLedger. The company described the headline transaction value as USD 600 million, subject to customary closing conditions.
