@@ -14,7 +14,7 @@ investment advice or autonomous deal decisions.
 | --- | --- | --- |
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
-| Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **M2/3 peer selection + data ingestion complete** |
+| Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **M4/5 trading comps + valuation reasoning complete** |
 | Precedent Transactions | `04_precedent_transactions/` | Planned |
 | Due Diligence | `05_due_diligence/` | Planned |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
@@ -27,7 +27,7 @@ evidence-backed enrichment, deterministic screening, grounded strategic-fit asse
 transparent ranking, checkpointed LangGraph human review, a subsystem benchmark, FastAPI, and an
 offline end-to-end demo.
 
-Project 3 M0–M2/3 defines the public trading-comps workflow, normalizes the target profile,
+Project 3 M0–M4/5 defines the public trading-comps workflow, normalizes the target profile,
 selects an auditable peer set, and ingests evidence-backed financial and timestamped market data
 into offline-testable snapshots. It does not yet calculate multiples or valuation.
 
