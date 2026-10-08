@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "dataset_id": "project3-synthetic-peer-set-v1",
+  "as_of": "2026-10-07T10:00:00+00:00",
+  "purpose": "Human-readable catalog for the deterministic Python fixture providers.",
+  "companies": [
+    {"company_id": "peer-a", "name": "PeerA Systems", "ticker": "PEERA", "exchange": "NSE"},
+    {"company_id": "peer-b", "name": "PeerB Consumer Apps", "ticker": "PEERB", "exchange": "NASDAQ"},
+    {"company_id": "peer-c", "name": "PeerC Digital Services", "ticker": "PEERC", "exchange": "NSE"},
+    {"company_id": "peer-d", "name": "PeerD Unclassified", "ticker": "PEERD", "exchange": "NSE"},
+    {"company_id": "peer-e", "name": "PeerE Fintech Platform", "ticker": "PEERE", "exchange": "NSE"}
+  ],
+  "notice": "All companies and values are synthetic and are not investment data. Runtime fixtures live in peer_fixtures.py."
+}

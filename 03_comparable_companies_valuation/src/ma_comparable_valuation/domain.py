@@ -110,6 +110,15 @@ class DataQualityFlag(StrEnum):
     INCOMPLETE = "incomplete"
     CONFLICTING = "conflicting"
     NOT_COMPARABLE = "not_comparable"
+    COMPLETE_ENOUGH_FOR_VALUATION = "complete_enough_for_valuation"
+    MISSING_MARKET_DATA = "missing_market_data"
+    MISSING_FINANCIALS = "missing_financials"
+    PERIOD_MISMATCH = "period_mismatch"
+    STALE_MARKET_DATA = "stale_market_data"
+    UNSUPPORTED_CURRENCY = "unsupported_currency"
+    NEGATIVE_EBITDA = "negative_ebitda"
+    NEGATIVE_EBIT = "negative_ebit"
+    NEGATIVE_EPS = "negative_eps"
 
 
 class ShareCountBasis(StrEnum):
@@ -138,11 +147,34 @@ class SelectionDecision(StrEnum):
     INCLUDE = "include"
     EXCLUDE = "exclude"
     REVIEW = "review"
+    INSUFFICIENT_DATA = "insufficient_data"
 
 
 class SimilarityMethod(StrEnum):
     DETERMINISTIC = "deterministic"
     SEMANTIC = "semantic"
+
+
+class SelectionCriterionKind(StrEnum):
+    INDUSTRY = "industry"
+    SUB_INDUSTRY = "sub_industry"
+    COUNTRY = "country"
+    REVENUE_SCALE = "revenue_scale"
+    BUSINESS_MODEL = "business_model"
+    PRODUCTS_SERVICES = "products_services"
+    CUSTOMER_TYPE = "customer_type"
+    GEOGRAPHY = "geography"
+
+
+class CriterionOutcome(StrEnum):
+    PASS = "pass"
+    FAIL = "fail"
+    UNKNOWN = "unknown"
+
+
+class ManualOverrideAction(StrEnum):
+    FORCE_INCLUDE = "force_include"
+    FORCE_EXCLUDE = "force_exclude"
 
 
 class MultipleKind(StrEnum):
@@ -263,6 +295,10 @@ class CompanyIdentity:
             object.__setattr__(
                 self, field_name, _optional_text(getattr(self, field_name), field_name)
             )
+        for field_name in ("ticker", "exchange"):
+            value = getattr(self, field_name)
+            if value is not None:
+                object.__setattr__(self, field_name, value.upper())
         normalized = tuple(
             (_text(scheme, "identifier scheme"), _text(value, "identifier value"))
             for scheme, value in self.identifiers
@@ -314,13 +350,41 @@ class ComparableCompany:
     industry: str | None = None
     sub_industry: str | None = None
     business_description: str | None = None
+    products_services: tuple[str, ...] = ()
+    customer_type: str | None = None
+    geographies: tuple[str, ...] = ()
+    business_model: str | None = None
+    fiscal_year_end: str | None = None
+    reporting_currency: str | None = None
+    website_domain: str | None = None
     evidence: tuple[EvidenceReference, ...] = ()
 
     def __post_init__(self) -> None:
-        for field_name in ("industry", "sub_industry", "business_description"):
+        for field_name in (
+            "industry",
+            "sub_industry",
+            "business_description",
+            "customer_type",
+            "business_model",
+            "website_domain",
+        ):
             object.__setattr__(
                 self, field_name, _optional_text(getattr(self, field_name), field_name)
             )
+        object.__setattr__(
+            self, "products_services", _unique_text(self.products_services, "products_services")
+        )
+        object.__setattr__(self, "geographies", _unique_text(self.geographies, "geographies"))
+        if self.fiscal_year_end is not None:
+            normalized = self.fiscal_year_end.strip()
+            if _FISCAL_YEAR_END_PATTERN.fullmatch(normalized) is None:
+                raise ValueError("fiscal_year_end must use MM-DD")
+            object.__setattr__(self, "fiscal_year_end", normalized)
+        if self.reporting_currency is not None:
+            currency = self.reporting_currency.strip().upper()
+            if _CURRENCY_PATTERN.fullmatch(currency) is None:
+                raise ValueError("reporting_currency must be a three-letter ISO-style code")
+            object.__setattr__(self, "reporting_currency", currency)
 
 
 @dataclass(frozen=True, slots=True)
@@ -810,12 +874,90 @@ class TargetFinancialProfile:
 
 
 @dataclass(frozen=True, slots=True)
+class SelectionCriterion:
+    """One transparent peer-selection rule under a versioned policy."""
+
+    kind: SelectionCriterionKind
+    method: SimilarityMethod
+    weight: Decimal
+    required: bool = False
+    minimum_ratio: Decimal | None = None
+    maximum_ratio: Decimal | None = None
+
+    def __post_init__(self) -> None:
+        weight = _decimal(self.weight, "criterion weight")
+        if weight <= 0:
+            raise ValueError("criterion weight must be positive")
+        object.__setattr__(self, "weight", weight)
+        if self.kind is SelectionCriterionKind.REVENUE_SCALE:
+            if self.method is not SimilarityMethod.DETERMINISTIC:
+                raise ValueError("revenue scale must be deterministic")
+            if self.minimum_ratio is None or self.maximum_ratio is None:
+                raise ValueError("revenue scale requires minimum_ratio and maximum_ratio")
+            minimum = _decimal(self.minimum_ratio, "minimum_ratio")
+            maximum = _decimal(self.maximum_ratio, "maximum_ratio")
+            if minimum <= 0 or maximum < minimum:
+                raise ValueError("revenue scale ratios must define a positive ordered range")
+            object.__setattr__(self, "minimum_ratio", minimum)
+            object.__setattr__(self, "maximum_ratio", maximum)
+        elif self.minimum_ratio is not None or self.maximum_ratio is not None:
+            raise ValueError("ratio bounds are only valid for revenue scale")
+
+
+@dataclass(frozen=True, slots=True)
+class CriterionEvaluation:
+    criterion: SelectionCriterionKind
+    method: SimilarityMethod
+    outcome: CriterionOutcome
+    rationale: str
+    score: Decimal | None = None
+    evidence: tuple[EvidenceReference, ...] = ()
+    missing_information: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "rationale", _text(self.rationale, "criterion rationale"))
+        if self.score is not None:
+            score = _decimal(self.score, "criterion score")
+            if score < 0 or score > 1:
+                raise ValueError("criterion score must be between 0 and 1")
+            object.__setattr__(self, "score", score)
+        if self.outcome is CriterionOutcome.UNKNOWN and not self.missing_information:
+            raise ValueError("unknown criterion evaluations require missing_information")
+        object.__setattr__(
+            self,
+            "missing_information",
+            _unique_text(self.missing_information, "missing_information"),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class ManualPeerOverride:
+    company_id: str
+    action: ManualOverrideAction
+    rationale: str
+    analyst: str
+    recorded_at: datetime
+    evidence: tuple[EvidenceReference, ...] = ()
+
+    def __post_init__(self) -> None:
+        for field_name in ("company_id", "rationale", "analyst"):
+            object.__setattr__(self, field_name, _text(getattr(self, field_name), field_name))
+        object.__setattr__(self, "recorded_at", _aware(self.recorded_at, "recorded_at"))
+
+
+@dataclass(frozen=True, slots=True)
 class ComparableCompanySnapshot:
     company: ComparableCompany
     as_of: datetime
     financial_metrics: tuple[FinancialMetric, ...]
     market_metrics: tuple[MarketMetric, ...]
     enterprise_value: EnterpriseValueSnapshot | None = None
+    capital_structure: CapitalStructure | None = None
+    normalization_decisions: tuple[NormalizationDecision, ...] = ()
+    conflicts: tuple[ProfileConflict, ...] = ()
+    issues: tuple[ProfileIssue, ...] = ()
+    quality_flags: tuple[DataQualityFlag, ...] = ()
+    warnings: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "as_of", _aware(self.as_of, "as_of"))
@@ -829,6 +971,12 @@ class ComparableCompanySnapshot:
             raise ValueError("market metrics must not post-date the company snapshot")
         if self.enterprise_value is not None and self.enterprise_value.as_of > self.as_of:
             raise ValueError("enterprise value must not post-date the company snapshot")
+        if self.capital_structure is not None and self.capital_structure.as_of > self.as_of:
+            raise ValueError("capital structure must not post-date the company snapshot")
+        if len(set(self.quality_flags)) != len(self.quality_flags):
+            raise ValueError("snapshot quality_flags must not contain duplicates")
+        if any(not item.strip() for item in self.warnings):
+            raise ValueError("snapshot warnings must not contain blank values")
 
 
 @dataclass(frozen=True, slots=True)
@@ -838,6 +986,8 @@ class ComparableUniverse:
     companies: tuple[ComparableCompany, ...]
     provider_name: str
     observed_at: datetime
+    evidence: tuple[EvidenceReference, ...] = ()
+    warnings: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         for field_name in ("universe_id", "target_id", "provider_name"):
@@ -846,6 +996,8 @@ class ComparableUniverse:
         ids = [item.identity.company_id for item in self.companies]
         if len(set(ids)) != len(ids):
             raise ValueError("comparable universe company IDs must be unique")
+        if any(not item.strip() for item in self.warnings):
+            raise ValueError("universe warnings must not contain blank values")
 
 
 @dataclass(frozen=True, slots=True)
@@ -871,6 +1023,11 @@ class PeerSelectionDecision:
     evidence: tuple[EvidenceReference, ...]
     confidence: Decimal
     policy_id: str
+    evaluations: tuple[CriterionEvaluation, ...] = ()
+    score: Decimal | None = None
+    missing_information: tuple[str, ...] = ()
+    warnings: tuple[str, ...] = ()
+    manual_override: ManualPeerOverride | None = None
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "company_id", _text(self.company_id, "company_id"))
@@ -880,8 +1037,20 @@ class PeerSelectionDecision:
         if confidence < 0 or confidence > 1:
             raise ValueError("confidence must be between 0 and 1")
         object.__setattr__(self, "confidence", confidence)
-        if not self.evidence:
-            raise ValueError("peer selection decisions require evidence")
+        if self.score is not None:
+            score = _decimal(self.score, "selection score")
+            if score < 0 or score > 1:
+                raise ValueError("selection score must be between 0 and 1")
+            object.__setattr__(self, "score", score)
+        object.__setattr__(
+            self,
+            "missing_information",
+            _unique_text(self.missing_information, "missing_information"),
+        )
+        if any(not item.strip() for item in self.warnings):
+            raise ValueError("selection warnings must not contain blank values")
+        if self.manual_override is not None and self.manual_override.company_id != self.company_id:
+            raise ValueError("manual override must reference the selection company")
 
 
 @dataclass(frozen=True, slots=True)
@@ -889,6 +1058,8 @@ class ComparableSelectionResult:
     universe_id: str
     decisions: tuple[PeerSelectionDecision, ...]
     policy_id: str
+    selected_at: datetime | None = None
+    warnings: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "universe_id", _text(self.universe_id, "universe_id"))
@@ -896,6 +1067,10 @@ class ComparableSelectionResult:
         ids = [item.company_id for item in self.decisions]
         if len(set(ids)) != len(ids):
             raise ValueError("selection decisions must contain one decision per company")
+        if self.selected_at is not None:
+            object.__setattr__(self, "selected_at", _aware(self.selected_at, "selected_at"))
+        if any(not item.strip() for item in self.warnings):
+            raise ValueError("selection warnings must not contain blank values")
 
     @property
     def selected_company_ids(self) -> tuple[str, ...]:
@@ -909,6 +1084,20 @@ class ComparableSelectionResult:
             item.company_id for item in self.decisions if item.decision is SelectionDecision.EXCLUDE
         )
 
+    @property
+    def review_company_ids(self) -> tuple[str, ...]:
+        return tuple(
+            item.company_id for item in self.decisions if item.decision is SelectionDecision.REVIEW
+        )
+
+    @property
+    def insufficient_data_company_ids(self) -> tuple[str, ...]:
+        return tuple(
+            item.company_id
+            for item in self.decisions
+            if item.decision is SelectionDecision.INSUFFICIENT_DATA
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class PeerSet:
@@ -916,16 +1105,27 @@ class PeerSet:
     universe_id: str
     snapshots: tuple[ComparableCompanySnapshot, ...]
     decisions: tuple[PeerSelectionDecision, ...]
+    target_id: str | None = None
+    created_at: datetime | None = None
+    policy_id: str | None = None
+    issues: tuple[ProfileIssue, ...] = ()
+    warnings: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "peer_set_id", _text(self.peer_set_id, "peer_set_id"))
         object.__setattr__(self, "universe_id", _text(self.universe_id, "universe_id"))
+        object.__setattr__(self, "target_id", _optional_text(self.target_id, "target_id"))
+        object.__setattr__(self, "policy_id", _optional_text(self.policy_id, "policy_id"))
+        if self.created_at is not None:
+            object.__setattr__(self, "created_at", _aware(self.created_at, "created_at"))
         snapshot_ids = {item.company.identity.company_id for item in self.snapshots}
         included_ids = {
             item.company_id for item in self.decisions if item.decision is SelectionDecision.INCLUDE
         }
         if snapshot_ids != included_ids:
             raise ValueError("peer snapshots must exactly match included selection decisions")
+        if any(not item.strip() for item in self.warnings):
+            raise ValueError("peer-set warnings must not contain blank values")
 
 
 @dataclass(frozen=True, slots=True)

@@ -4,8 +4,8 @@
 
 Project 3 focuses on public comparable-company multiples. It does not implement DCF, precedent
 transactions, accretion/dilution, LBO, purchase price allocation, merger modeling, or due
-diligence. Multiple methods may eventually coexist elsewhere, but M0 does not blur them into a
-generic valuation engine.
+diligence. Multiple methods may eventually coexist elsewhere, but Project 3 does not blur them
+into a generic valuation engine.
 
 ## Financial metric contract
 
@@ -49,9 +49,10 @@ Every share price, market capitalization, diluted share count, debt, cash, prefe
 minority interest, and other bridge input has a timezone-aware `as_of` timestamp and evidence.
 A `CapitalStructure` and `EnterpriseValueSnapshot` also carry an as-of time and policy ID.
 
-The future engine will enforce a disclosed tolerance: a stock price cannot silently combine
-with an incompatible capital-structure date. “Latest” is not a stable valuation date. Stale or
-mismatched values remain visible and are rejected or flagged according to policy.
+M2/3 snapshot ingestion enforces disclosed stale-market and capital-structure alignment
+tolerances: a stock price cannot silently combine with an incompatible balance-sheet date.
+“Latest” is not a stable valuation date. Stale or mismatched values remain visible and flagged;
+M4/5 will decide whether a multiple is usable.
 
 ## Equity value and enterprise value
 
@@ -70,7 +71,7 @@ Enterprise Value = Equity Value
 This is a policy, not a universal truth. Availability and transaction context may require
 treatment of leases, pension deficits, investments, non-controlling interests, or other items.
 The eventual calculation must name its policy, retain every included/excluded component, and
-record missing items. M0 models inputs and lineage but performs no bridge arithmetic.
+record missing items. M2/3 ingests the inputs and lineage but performs no bridge arithmetic.
 
 ## Future multiple definitions
 
