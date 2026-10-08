@@ -110,5 +110,33 @@
     "retrieved_at": "2026-10-09T09:17:00+00:00",
     "reliability": "primary_company",
     "official_source": true
+  },
+  {
+    "source_id": "doc-amended-original",
+    "transaction_id": "txn-amended",
+    "source_type": "acquisition_press_release",
+    "title": "SummitPay announces ClearRoute offer",
+    "location": "documents/amended_original.txt",
+    "publisher": "SummitPay Group plc",
+    "publication_date": "2025-01-10",
+    "jurisdiction": "United Kingdom",
+    "document_format": "text",
+    "retrieved_at": "2026-10-09T09:18:00+00:00",
+    "reliability": "primary_company",
+    "official_source": true
+  },
+  {
+    "source_id": "doc-amended-revised",
+    "transaction_id": "txn-amended",
+    "source_type": "regulatory_filing",
+    "title": "Revised SummitPay scheme terms",
+    "location": "documents/amended_revised.txt",
+    "publisher": "Synthetic Takeover Panel",
+    "publication_date": "2025-02-14",
+    "jurisdiction": "United Kingdom",
+    "document_format": "text",
+    "retrieved_at": "2026-10-09T09:19:00+00:00",
+    "reliability": "regulatory",
+    "official_source": true
   }
 ]

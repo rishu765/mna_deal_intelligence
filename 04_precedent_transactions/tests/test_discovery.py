@@ -41,8 +41,8 @@ def test_discovery_service_deduplicates_same_deal_across_sources() -> None:
         AcquisitionContext("ctx-2", target_industry="B2B fintech infrastructure")
     )
 
-    assert result.raw_candidate_count == 7
-    assert len(result.transactions) == 6
+    assert result.raw_candidate_count == 8
+    assert len(result.transactions) == 7
     cash = next(item for item in result.transactions if item.candidate_id == "txn-cash")
     assert len(cash.discovery_sources) == 2
     decision = next(
