@@ -1160,7 +1160,7 @@ class MultipleDefinition:
 
 @dataclass(frozen=True, slots=True)
 class TradingMultiple:
-    """Future calculated observation; M0 defines lineage and treatment, not arithmetic."""
+    """Calculated observation with raw inputs, semantics, and explicit treatment."""
 
     multiple_id: str
     company_id: str
@@ -1171,6 +1171,13 @@ class TradingMultiple:
     policy_id: str
     value: Decimal | None = None
     treatment_reason: str | None = None
+    numerator_value: Decimal | None = None
+    denominator_value: Decimal | None = None
+    denominator_period: FinancialPeriod | None = None
+    denominator_basis: MetricBasis | None = None
+    evidence: tuple[EvidenceReference, ...] = ()
+    quality_flags: tuple[DataQualityFlag, ...] = ()
+    warnings: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         for field_name in (
@@ -1197,6 +1204,14 @@ class TradingMultiple:
             if normalized < 0:
                 raise ValueError("multiple value must not be negative")
             object.__setattr__(self, "value", normalized)
+        for field_name in ("numerator_value", "denominator_value"):
+            raw = getattr(self, field_name)
+            if raw is not None:
+                object.__setattr__(self, field_name, _decimal(raw, field_name))
+        if len(set(self.quality_flags)) != len(self.quality_flags):
+            raise ValueError("quality_flags must not contain duplicates")
+        if any(not item.strip() for item in self.warnings):
+            raise ValueError("warnings must not contain blank values")
 
 
 def _mapping(value: object, name: str) -> Mapping[str, object]:
