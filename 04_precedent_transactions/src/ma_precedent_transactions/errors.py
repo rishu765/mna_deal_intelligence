@@ -55,3 +55,23 @@ class EmbeddingError(IndexingError):
 
 class RetrievalError(PrecedentTransactionsError):
     """Raised for invalid or failed retrieval requests."""
+
+
+class ExtractionError(PrecedentTransactionsError):
+    """Structured extraction could not produce a usable observation batch."""
+
+
+class ExtractionProviderError(ExtractionError):
+    """An optional model provider failed or timed out."""
+
+
+class ExtractionValidationError(ExtractionError):
+    """A structured extraction response violated the application schema."""
+
+
+class NormalizationError(PrecedentTransactionsError):
+    """A source observation could not be normalized without guessing."""
+
+
+class VerificationError(PrecedentTransactionsError):
+    """Transaction observations could not be verified consistently."""
