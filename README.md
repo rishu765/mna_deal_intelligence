@@ -15,7 +15,7 @@ investment advice or autonomous deal decisions.
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
-| Precedent Transactions | `04_precedent_transactions/` | Planned |
+| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **M0 foundation complete** |
 | Due Diligence | `05_due_diligence/` | Planned |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
@@ -42,6 +42,11 @@ citations, structured research, component-level evaluation, and a hardened FastA
 [Project 3](03_comparable_companies_valuation/) provides an auditable comparable-company
 valuation V1 with strict period/basis semantics, calculation traces, subsystem evaluation, and a
 callable offline API.
+
+[Project 4](04_precedent_transactions/) begins with provider-neutral, evidence-grounded transaction
+contracts that distinguish deal identity, lifecycle, consideration, ownership, headline/equity/EV
+value bases, point-in-time financials, and disputed source observations. Discovery and valuation
+execution remain planned for later milestones.
 
 ## Development workflow
 
