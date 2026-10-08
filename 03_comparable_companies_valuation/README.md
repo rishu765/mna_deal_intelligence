@@ -15,14 +15,15 @@ not investment advice.
 - **M0 — Architecture + valuation workflow design: ✅ complete**
 - **M1 — Target financial profile + normalized metrics: ✅ complete**
 - **M2/3 — Comparable selection + market/financial ingestion: ✅ complete**
-- M4/5 — Trading multiples + valuation range + AI-assisted reasoning: **NOT IMPLEMENTED**
+- **M4/5 — Trading multiples + valuation range + AI-assisted reasoning: ✅ complete**
 - M6 — Evaluation + API/demo + V1 polish: **NOT IMPLEMENTED**
 
 M0 supplies architecture and provider-neutral domain contracts. M1 adds the target financial
 profile. M2/3 adds an auditable peer universe, deterministic and pluggable semantic criteria,
 manual overrides, identity deduplication, market/financial/forecast provider ports, partial-safe
-snapshot ingestion, Project 1 and Project 2 adapters, and an offline five-peer demo. The project
-still does **not** calculate enterprise value, trading multiples, statistics, or valuation.
+snapshot ingestion, Project 1 and Project 2 adapters, and an offline five-peer demo. M4/5 adds
+auditable equity/enterprise value, strict-period multiples, peer statistics, implied ranges,
+target bridges, per-share values, and a constrained explanation boundary.
 
 ## What comparable companies analysis is
 
@@ -116,6 +117,7 @@ python -m mypy
 python -m pytest
 python -m ma_comparable_valuation.demo_profile
 python -m ma_comparable_valuation.demo_peers
+python -m ma_comparable_valuation.demo_valuation
 ```
 
 No API keys or network access are required. The project has no runtime dependencies outside the
@@ -125,8 +127,7 @@ Python standard library.
 
 - No live market-data provider is bundled: unstable unauthenticated sources were deliberately not
   made a production dependency. Provider interfaces and deterministic fixtures are implemented.
-- No FX conversion, enterprise-value calculator, multiple calculator, statistics engine,
-  valuation range, narrative generator, API, UI, or deployment.
+- No FX conversion, live LLM/provider integration, API, UI, or deployment.
 - Contracts prevent silent loss of key semantics; they do not prove that source data is correct.
 - Calendarization, FX conversion, capital-structure policy, and accounting adjustments are
   designed but deliberately deferred.
@@ -137,3 +138,5 @@ Python standard library.
 
 See [docs/comparable-selection-data.md](docs/comparable-selection-data.md) for the implemented
 selection formula, override semantics, providers, consistency checks, and failure behavior.
+See [docs/trading-comps-valuation.md](docs/trading-comps-valuation.md) for the M4/5 formulas,
+period/basis rules, outlier policy, ranges, traces, and deterministic/AI boundary.

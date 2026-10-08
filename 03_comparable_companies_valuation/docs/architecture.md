@@ -9,7 +9,8 @@ valuation calculations, and grounded explanation of those results.
 
 It does not own document parsing/retrieval (Project 1), target sourcing (Project 2), external
 vendor systems, or other valuation methods. M0 defined the boundaries, M1 implemented the target
-profile, and M2/3 implements peer selection and data ingestion without activating calculations.
+profile, M2/3 implements peer selection and data ingestion, and M4/5 activates deterministic
+trading-comps calculations plus a constrained explanation boundary.
 
 ## Stage contracts
 
@@ -49,6 +50,9 @@ ma_comparable_valuation/
     project1_peer_adapter.py # Project 1 research-to-peer-financial boundary
     project2_adapter.py   # Project 2 candidate/profile identity boundary
     demo_peers.py         # offline M2/3 selection-to-snapshot demonstration
+    valuation.py          # deterministic values, multiples, statistics, ranges, explanation port
+    valuation_fixtures.py # five-peer offline M4/5 scenarios
+    demo_valuation.py     # complete offline M4/5 demonstration
     ports.py              # provider contracts
 ```
 
@@ -84,7 +88,8 @@ classDiagram
 M2/3 activates peer selection and snapshot contracts. `ComparableSelectionResult` retains every
 candidate disposition and criterion result; `PeerSet` retains all decisions plus snapshots for
 included companies. Snapshot flags preserve missing, stale, conflicting, negative, and
-date-inconsistent inputs. Calculation contracts remain inactive scaffolding.
+date-inconsistent inputs. M4/5 consumes these objects through `ValuationEngine`; it never
+rewrites the M1–M3 source observations.
 
 ## Deterministic and AI boundary
 

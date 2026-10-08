@@ -147,3 +147,40 @@
   scraper or hidden-key dependency.
 - **Why:** Reproducibility, licensing, rate limits, and time-consistent data matter more than a
   nominal demo integration that cannot support reliable valuation inputs.
+## P3-014 — Keep deterministic arithmetic authoritative
+
+- **Status:** Accepted in M4/5
+- **Decision:** Only `ValuationEngine` calculates values, multiples, percentiles, bridges, and
+  ranges. Explanation providers receive immutable calculated output and cannot alter it.
+- **Why:** Narrative generation must not rewrite reproducible math.
+
+## P3-015 — Distinguish required and optional EV bridge fields
+
+- **Status:** Accepted in M4/5
+- **Decision:** Share price and diluted end-of-period shares are required for equity value; debt
+  and cash are required for EV. Preferred stock and minority interest are included when sourced,
+  while absence is explicitly disclosed as omitted.
+- **Why:** Required claims cannot be silently assumed to be zero; optional V1 fields remain
+  visible without making every otherwise-complete snapshot unusable.
+
+## P3-016 — Partition multiples by exact semantics
+
+- **Status:** Accepted in M4/5
+- **Decision:** Partition observations by exact period label, denominator metric, and
+  reported/adjusted basis. Never relabel historical values or pool bases.
+- **Why:** LTM, fiscal-year estimates, and accounting bases are different observations.
+
+## P3-017 — Use transparent percentiles and outliers
+
+- **Status:** Accepted in M4/5
+- **Decision:** Use Decimal Hyndman-Fan type 7 interpolation. Flag Tukey 1.5-IQR outliers when
+  at least four observations exist and retain them by default. Optional exclusion is versioned
+  and auditable.
+- **Why:** The policy is deterministic and avoids silently deleting extreme market observations.
+
+## P3-018 — Keep valuation methods separate
+
+- **Status:** Accepted in M4/5
+- **Decision:** Use the 25th percentile, median, and 75th percentile as low, mid, and high for
+  each method independently. Do not average methods automatically.
+- **Why:** Interquartile anchors communicate dispersion without claiming a single true value.
