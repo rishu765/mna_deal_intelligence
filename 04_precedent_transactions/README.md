@@ -10,16 +10,17 @@ deals, retrieve transaction documents, extract and verify deal facts, normalize 
 financials, select comparable acquisitions, calculate transaction multiples deterministically, and
 produce an auditable analyst explanation.
 
-This directory currently implements **M0 only**: architecture and transaction data contracts. It
-does not discover deals, retrieve documents, call an LLM, calculate enterprise value or multiples,
-select precedents, run LangGraph, expose an API, or render a frontend.
+This directory currently implements **M0 and M1/2**: transaction data contracts plus an offline,
+evidence-first discovery and hybrid retrieval pipeline. It does not extract final structured deal
+facts, calculate enterprise value or multiples, select precedents, run LangGraph, expose an API, or
+render a frontend.
 
 ## Roadmap
 
 | Milestone | Scope | Status |
 | --- | --- | --- |
-| M0 | Architecture and transaction data models | Implemented on this branch |
-| M1/2 | Historical deal discovery and document intelligence/RAG | Planned |
+| M0 | Architecture and transaction data models | Complete |
+| M1/2 | Historical deal discovery and document intelligence/RAG | Complete |
 | M3 | Structured extraction, financial normalization, verification | Planned |
 | M4/5 | Comparable selection, transaction multiples, implied valuation | Planned |
 | M6/7 | LangGraph, human review, evaluation, API/demo, V1 | Planned |
@@ -65,10 +66,79 @@ Detailed planned nodes, transitions, approvals, and failures are in
 - `fixtures.py`: six fictitious offline transaction cases;
 - `config.py`: conservative M0 defaults that disable automatic FX and partial-stake gross-up;
 - `errors.py`: package, validation, and serialization error types.
+- `discovery/`: provider contracts, fixture discovery, filtering, and conservative identity
+  resolution;
+- `documents/`: source catalogs, text/HTML ingestion, optional Project 1 PDF adaptation, and
+  transaction-aware chunking;
+- `retrieval/`: deterministic semantic embeddings, BM25, in-memory indexing, filters, hybrid
+  ranking, evidence results, and quality warnings;
+- `pipeline.py`: independently testable discovery-to-index composition;
+- `evaluation.py` and `demo.py`: a six-query benchmark and reproducible offline demonstration.
 
-No provider or retrieval protocol is included in M0. A useful protocol requires concrete M1/2
-request and response types; adding one now would be speculative. Future provider clients will sit
-behind narrow Project 4 interfaces and return Project 4 domain objects.
+M1/2 adds one concrete `DealDiscoveryProvider` boundary and one document-catalog boundary. It does
+not add separate news, filing, and exchange-provider interfaces because their response contract is
+currently identical. Future live providers can implement the same narrow discovery contract.
+
+## M1/2 research flow
+
+```mermaid
+flowchart LR
+    A[Acquisition context] --> B[Fixture or future live provider]
+    B --> C[Candidate transactions]
+    C --> D[Conservative identity resolution]
+    D --> E[Deal document catalog]
+    E --> F[Text / HTML ingestion<br/>optional Project 1 PDF adapter]
+    F --> G[Transaction-aware chunks]
+    G --> H[Hashing semantic vectors]
+    G --> I[BM25 lexical index]
+    H --> J[Weighted hybrid fusion]
+    I --> J
+    J --> K[Evidence passages<br/>and quality warnings]
+```
+
+`AcquisitionContext` accepts industry, business description, geography, announcement dates,
+transaction and buyer types, same-currency size bounds, and keywords. Discovery generates
+candidates only; it does not decide whether a deal is a valuation comparable.
+
+The deterministic fixture provider produces seven observations representing six fictitious deals.
+The identity resolver merges only matching external IDs or exact acquirer/target/date/type
+fingerprints. Near matches such as competing bids remain separate and carry an ambiguity warning.
+
+The fixture document catalog covers official announcements, a regulatory filing, an exchange
+disclosure, and one secondary report. Text and HTML are parsed locally. PDF support is supplied by
+`Project1PdfParserAdapter`, which dynamically uses the installed Project 1 parser without making
+Project 4 depend on Project 1. Missing, malformed, unsupported, or failed documents are reported;
+other documents can still be indexed.
+
+Chunks preserve transaction, source, document, page, section, date, acquirer, target, jurisdiction,
+format, official-source flag, and reliability. Generated indexes remain local and out of Git.
+
+## Semantic, lexical, and hybrid retrieval
+
+The offline semantic channel uses normalized transaction vocabulary, token and bigram feature
+hashing, L2 normalization, and cosine similarity. It is deterministic and reproducible, but it is
+not a substitute for a production embedding model. `EmbeddingProvider` permits a future hosted or
+local model without changing retrieval contracts.
+
+The lexical channel implements BM25 over exact tokens. It is valuable for M&A terms and numbers
+such as `EBITDA`, `USD 10.50`, `20 percent`, and `0.45 shares`. Hybrid ranking normalizes BM25 by
+the best eligible lexical score and combines it with non-negative semantic similarity using 55%
+semantic and 45% lexical weights. The exact raw channel scores and fused score remain visible.
+
+Retrieval filters support transaction ID, source type, publication date range, acquirer, target,
+jurisdiction, and document format. `DealRetrievalResult` includes the cited text and an
+`EvidenceReference` with document, chunk, page, section, publisher, source quality, and retrieval
+location.
+
+Quality warnings cover no results, missing semantic or lexical matches, low fused scores,
+unofficial-only evidence, and conflicting headline transaction values across documents. These are
+warnings for M3 or an analyst; M1/2 does not turn passages into final facts.
+
+LangChain is not a runtime dependency in M1/2. The current document wrappers, local index, BM25,
+and fusion are smaller and more auditable as typed Python. A later provider integration may use a
+LangChain loader or retriever behind the existing boundaries if it reduces real integration code.
+
+Full design and limitations are in [`docs/discovery-rag.md`](docs/discovery-rag.md).
 
 ## Transaction identity
 
@@ -241,7 +311,27 @@ assumptions.
 5. a completed deal with undisclosed value;
 6. a deal retaining two conflicting headline-value observations.
 
-## Run M0 checks
+M1/2 adds seven discovery observations and eight small deal documents for the same six scenarios.
+The duplicate cash-deal observation tests resolution; the two conflicting-value documents test
+warning behavior; the undisclosed-price document verifies that retrieval does not invent a price.
+
+## Retrieval evaluation
+
+The milestone benchmark contains six queries with known relevant text markers. On the committed
+fixture corpus it currently achieves Hit@3 `1.00`, Recall@3 `1.00`, and MRR `0.9167`. This is a
+reproducibility check over a tiny synthetic corpus, not evidence of production retrieval quality.
+
+Run the demo with:
+
+```powershell
+py -3.11 -m ma_precedent_transactions.demo
+```
+
+It shows discovery, deduplication, document ingestion, indexing, cited retrieval, conflicting
+headline values, an undisclosed-price passage, and benchmark output. It never extracts final deal
+fields.
+
+## Run M1/2 checks
 
 From `04_precedent_transactions/`, using Python 3.11+:
 
@@ -253,11 +343,17 @@ py -3.11 -m mypy
 py -3.11 -m pytest
 ```
 
-All tests are offline and make no API or LLM calls.
+All tests and the demo are offline and make no API or LLM calls.
 
-## M0 limitations
+## Current limitations
 
-M0 provides representation and validation, not correctness of source facts. Transaction identity
-resolution, document storage policy, extraction prompts, source-ranking policy, value verification,
-FX policy, EV bridges, partial-stake treatment, comparable selection, calculations, orchestration,
-evaluation, API, UI, and deployment remain later milestones.
+Discovery currently uses fixtures; there is no credential-free live deal database that is reliable
+enough to present as comprehensive. Semantic vectors are lightweight local feature hashes. HTML
+parsing is intentionally simple, PDF parsing requires the optional Project 1 adapter, and no OCR or
+remote download occurs. Identity resolution handles strong duplicates and flags near matches but
+does not solve complex amendments or consortium changes.
+
+M1/2 retrieves evidence; it does not establish truth. Structured extraction, financial
+normalization, value verification, FX policy, EV bridges, partial-stake treatment, comparable
+selection, calculations, LangGraph, final evaluation, API, UI, and deployment remain later
+milestones.

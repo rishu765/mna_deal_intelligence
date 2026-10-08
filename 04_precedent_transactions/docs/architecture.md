@@ -6,10 +6,10 @@ The final system should keep the following boundaries even if implementations ch
 
 | Boundary | Owns | Planned milestone |
 | --- | --- | --- |
-| `discovery` | Search criteria, provider adapters, candidate observations | M1/2 |
-| `identity` | Entity and transaction resolution proposals, ambiguity | M1/2 |
-| `documents` | Retrieval, parsing, chunking, source metadata | M1/2 |
-| `retrieval` | Vector, keyword/BM25, hybrid ranking, grounded context | M1/2 |
+| `discovery` | Search criteria, provider adapters, candidate observations | M1/2 implemented |
+| `identity` | Entity and transaction resolution proposals, ambiguity | M1/2 preliminary implementation |
+| `documents` | Retrieval, parsing, chunking, source metadata | M1/2 text/HTML plus PDF adapter |
+| `retrieval` | Vector, keyword/BM25, hybrid ranking, grounded context | M1/2 implemented offline |
 | `extraction` | Typed LLM outputs linked to evidence | M3 |
 | `verification` | Conflicts, source checks, acceptance/rejection | M3 |
 | `normalization` | Units, periods, supported capital bridge inputs | M3 |
