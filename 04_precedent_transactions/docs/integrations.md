@@ -1,6 +1,6 @@
 # Project 1–3 reuse and compatibility assessment
 
-This assessment reflects the repository at Project 3 V1 and Project 4 M4/5. Project 4 remains
+This assessment reflects the repository at Project 3 V1 and Project 4 V1. Project 4 remains
 standalone; the optional PDF adapter resolves Project 1 dynamically only when installed.
 
 ## Reusable today through future adapters
@@ -78,3 +78,16 @@ Project 4 has no required runtime dependency on Projects 1–3. The optional Pro
 resolved at execution time. The optional LangChain adapter accepts an injected model and adds no
 dependency to offline extraction. Core models, ingestion, retrieval, extraction, verification,
 tests, and demos work without installing every project.
+
+## M6/7 orchestration reuse
+
+Project 2's proven patterns informed typed LangGraph state, thin orchestration nodes, explicit
+conditional routes, bounded retries, in-memory checkpoints, and a start/resume facade. Project 4
+owns its graph and review schema because transaction conflicts, evidence resolutions, and precedent
+overrides differ from target-screening shortlist review.
+
+Project 3's FastAPI patterns informed the application factory, strict Pydantic envelopes, safe
+exception mapping, in-process result lifecycle, and offline TestClient coverage. Project 4 exposes
+only run, status, and review endpoints because the graph already composes the subsystem services.
+
+These are local adaptations of stable patterns, not runtime imports from Projects 2 or 3.

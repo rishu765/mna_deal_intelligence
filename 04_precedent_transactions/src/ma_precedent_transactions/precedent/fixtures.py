@@ -46,7 +46,18 @@ def precedent_fixture_inputs() -> tuple[
     TargetValuationProfile,
     tuple[VerifiedTransactionRecord, ...],
 ]:
-    m3 = build_fixture_records()
+    return build_precedent_fixture_inputs(build_fixture_records())
+
+
+def build_precedent_fixture_inputs(
+    m3: dict[str, VerifiedTransactionRecord],
+) -> tuple[
+    TargetComparabilityProfile,
+    TargetValuationProfile,
+    tuple[VerifiedTransactionRecord, ...],
+]:
+    """Build deterministic M4/5 fixtures from already verified M3 records."""
+
     cash = m3["txn-cash"]
     stock = _with_stock_values(m3["txn-stock"])
     generated = (

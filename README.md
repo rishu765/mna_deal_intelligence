@@ -15,7 +15,7 @@ investment advice or autonomous deal decisions.
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
-| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **M4/5 precedent valuation complete** |
+| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **Version 1.0 complete** |
 | Due Diligence | `05_due_diligence/` | Planned |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
@@ -52,6 +52,8 @@ in M3 adds validated evidence-linked observations, deterministic normalization, 
 verification, amendment/conflict retention, and traceable derived values. M4/5 adds auditable
 precedent selection, transaction multiples, peer statistics, implied valuation ranges, and grounded
 explanation while preserving transaction-specific dates, ownership, and value bases.
+M6/7 completes the checkpointed LangGraph workflow, focused analyst review, structured failure
+routing, final subsystem evaluation, offline end-to-end demo, and FastAPI run/review interface.
 
 ## Development workflow
 

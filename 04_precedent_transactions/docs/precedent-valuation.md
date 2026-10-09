@@ -69,4 +69,5 @@ remain usable. Tests use deterministic fixtures and never call a model or networ
 - Partial stakes are not grossed up.
 - Exact-period warnings do not create artificial period equivalence.
 - Sector-specific multiples, DCF, LBO, accretion/dilution, and merger models are outside scope.
-- LangGraph, analyst workflow, final evaluation, API, frontend, and deployment remain M6/7.
+- LangGraph, analyst workflow, final evaluation, and API are implemented in M6/7; frontend and
+  deployment remain outside Project 4 V1.

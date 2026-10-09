@@ -5,15 +5,14 @@ Project 4 answers a specific M&A question:
 > What have acquirers historically paid for businesses comparable to our target, and what does
 > that imply for the target's valuation?
 
-The intended V1 is an evidence-grounded research and valuation system. It will discover historical
-deals, retrieve transaction documents, extract and verify deal facts, normalize point-in-time
-financials, select comparable acquisitions, calculate transaction multiples deterministically, and
-produce an auditable analyst explanation.
+Project 4 V1 is an evidence-grounded research and valuation agent. It discovers historical deals,
+retrieves transaction documents, extracts and verifies deal facts, normalizes point-in-time
+financials, selects comparable acquisitions, calculates transaction multiples deterministically,
+and produces an auditable analyst explanation. LangGraph coordinates the existing services with
+bounded retries, checkpointed human review, structured failures, evaluation, and a FastAPI layer.
 
-This directory currently implements **M0 through M4/5**: transaction contracts, offline discovery
-and hybrid retrieval, schema-validated extraction and verification, comparable-deal selection,
-transaction multiples, peer statistics, implied valuation, and grounded explanation. It does not
-run LangGraph, expose an API, implement analyst workflow, or render a frontend.
+All six milestones are implemented. The default mode is fully offline and reproducible; no API
+key, paid transaction database, live model, or network request is required.
 
 ## Roadmap
 
@@ -23,35 +22,34 @@ run LangGraph, expose an API, implement analyst workflow, or render a frontend.
 | M1/2 | Historical deal discovery and document intelligence/RAG | Complete |
 | M3 | Structured extraction, financial normalization, verification | Complete |
 | M4/5 | Comparable selection, transaction multiples, implied valuation | Complete |
-| M6/7 | LangGraph, human review, evaluation, API/demo, V1 | Planned |
+| M6/7 | LangGraph, human review, evaluation, API/demo, V1 | Complete |
 
 ## End-to-end architecture
 
 ```mermaid
 flowchart LR
-    A[Target company<br/>and acquisition criteria] --> B[Historical deal discovery]
-    B --> C[Transaction identity resolution]
-    C --> D[Deal document retrieval]
-    D --> E[Document processing<br/>and hybrid RAG]
-    E --> F[Structured deal extraction]
-    F --> G[Evidence verification<br/>and conflict retention]
-    G --> H[Transaction normalization]
-    H --> I[Comparable transaction selection]
-    I --> J[Transaction multiples]
-    J --> K[Peer statistics<br/>and implied valuation]
-    K --> L[Grounded AI explanation]
-    L --> M{Analyst review}
-    M --> N[API and report]
+    U[User / target context] --> API[FastAPI /precedents/run]
+    API --> LG[LangGraph orchestrator]
+    LG --> D[Discovery + identity resolution]
+    D --> R[Document ingestion + hybrid RAG]
+    R --> X[Structured extraction]
+    X --> V[Normalization + verification]
+    V --> H{Material ambiguity?}
+    H -->|yes| HR[Checkpointed analyst review]
+    H -->|no| S[Precedent selection]
+    HR --> S
+    S --> M[Deterministic multiples + valuation]
+    M --> E[Grounded explanation]
+    E --> Q[Evaluation + final result]
+    Q --> API
 
-    P[(Source evidence)] -. supports .-> D
-    P -. grounds .-> F
-    P -. verifies .-> G
-    P -. cites .-> L
+    P1[Project 1 patterns:<br/>parsing, chunks, provenance] -.-> R
+    P2[Project 2 patterns:<br/>discovery, LangGraph, review] -.-> LG
+    P3[Project 3 patterns:<br/>Decimal, statistics, bridges] -.-> M
 ```
 
-LangGraph will coordinate the workflow in M6/7. M0 defines only the serializable state shape in
-`PrecedentWorkflowState`; it contains no graph, nodes, tools, checkpoint store, or retry loop.
-Detailed planned nodes, transitions, approvals, and failures are in
+LangGraph coordinates service boundaries and never owns extraction or valuation logic. Detailed
+nodes, transitions, retry limits, checkpointing, review, and failures are in
 [`docs/architecture.md`](docs/architecture.md).
 
 ## Implemented package
@@ -59,10 +57,11 @@ Detailed planned nodes, transitions, approvals, and failures are in
 `src/ma_precedent_transactions/` contains:
 
 - `domain.py`: immutable transaction, party, lifecycle, value, ownership, financial, selection,
-  and future multiple contracts;
+  and multiple contracts;
 - `serialization.py`: schema-versioned JSON-safe round trips that preserve `Decimal`, dates,
   timestamps, enums, tuples, and evidence;
-- `workflow.py`: the planned orchestration state contract only;
+- `workflow/`: typed LangGraph state, thin nodes, bounded retries, in-memory checkpoints, review,
+  offline composition, and start/resume facade;
 - `fixtures.py`: six fictitious offline transaction cases;
 - `config.py`: conservative M0 defaults that disable automatic FX and partial-stake gross-up;
 - `errors.py`: package, validation, and serialization error types.
@@ -81,6 +80,39 @@ Detailed planned nodes, transitions, approvals, and failures are in
 - `precedent/`: eligibility and comparability, deterministic transaction multiples, statistics,
   valuation ranges, bridge traces, and optional structured AI explanation;
 - `demo_m45.py`: offline selection-to-valuation demonstration over seven synthetic deals.
+- `evaluation_final.py` and `demo_final.py`: final subsystem evaluation and checkpointed V1 demo;
+- `api/` and `api_cli.py`: typed FastAPI run, status, and human-review transport.
+
+## LangChain versus LangGraph
+
+LangChain is an optional adapter at two model boundaries: evidence-bounded structured extraction
+and structured grounded explanation. Domain validation, normalization, verification, selection,
+statistics, and valuation remain ordinary Python.
+
+LangGraph owns state transitions, conditional routing, bounded retries, the analyst interrupt,
+in-memory checkpoint resume, operational trace events, and finalization. Nodes call existing
+services; they do not duplicate service business logic. The V1 retry policy applies only to
+recoverable research and extraction/provider failures. Deterministic validation and finance errors
+route to exclusion, review, or a structured terminal failure.
+
+## Human-in-the-loop
+
+`WHEN_NEEDED` review pauses only for material conflicts, ambiguous valuation bases, or minority and
+partial-stake concerns. `ALWAYS` is useful for demonstrations, while `NEVER` records warnings and
+continues under deterministic policy. An analyst can approve or reject the run, select an
+observation from a known conflict, and force include or exclude a precedent with a rationale.
+Reviewer identity, timestamp, resolutions, and overrides remain in the final audit record.
+
+The default `InMemorySaver` supports resume within one trusted process. Its custom pickle serializer
+is explicitly limited to same-process data written by the application; it is not a durable or
+shared persistence design.
+
+## Failure states and observability
+
+Structured failure codes cover invalid input, no deals, insufficient retrieval, failed extraction,
+blocked verification, required review, no eligible precedents, unavailable valuation, explanation
+failure, and analyst rejection. Operational trace events record node, status, duration, retry count,
+timestamp, and a short decision message. Logs omit document bodies, secrets, and model reasoning.
 
 ## M4/5 precedent selection and valuation
 
@@ -347,8 +379,8 @@ margin. It preserves:
 - measurement date, fact status, and evidence.
 
 Revenue cannot be negative. Negative EBITDA, EBIT, net income, and EPS remain valid observations;
-future multiple policy must mark inappropriate denominators as not meaningful rather than create a
-fake multiple. A 2022 deal does not automatically use a 2026 metric.
+the multiple policy marks inappropriate denominators as not meaningful rather than creating a fake
+multiple. A 2022 deal does not automatically use a 2026 metric.
 
 There is no FX conversion, accounting-period equivalence, or forecast fabrication in M0.
 
@@ -394,10 +426,10 @@ Planned capability placement:
 | M1/2 | Deal discovery tools; ingestion; provenance-aware chunking; embeddings; vector, BM25, and hybrid retrieval; source grounding; LangChain integration where it simplifies composition |
 | M3 | Implemented typed extraction; evidence linking; verification; conflict retention; explicit extraction failures |
 | M4/5 | Implemented semantic comparable reasoning plus deterministic screening, multiple calculations, statistics, and grounded explanation |
-| M6/7 | LangGraph state and routing; tools; checkpointing; bounded retries; human review; evaluation; tracing; API |
+| M6/7 | Implemented LangGraph state and routing; checkpointing; bounded retries; human review; evaluation; tracing; API |
 
-LangChain is optional connective code, not a domain dependency. LangGraph is reserved for the
-stateful, conditional, reviewable workflow in M6/7. No artificial agents are planned.
+LangChain is optional connective code, not a domain dependency. LangGraph implements the stateful,
+conditional, reviewable workflow. No artificial agents are used.
 
 ## Integration with Projects 1–3
 
@@ -479,7 +511,60 @@ It shows discovery, deduplication, document ingestion, indexing, cited retrieval
 headline values, an undisclosed-price passage, and benchmark output. It never extracts final deal
 fields.
 
-## Run M4/5 checks
+## Final evaluation
+
+The final suite keeps subsystem metrics separate and exercises ten end-to-end behaviors. Current
+fixture results are:
+
+| Subsystem | Metric | Fixture result |
+| --- | --- | --- |
+| Deal discovery | Candidate recall; duplicate handling | 7/7; 8 observations → 7 deals |
+| Hybrid RAG | Hit@3; Recall@3; MRR | 1.0000; 1.0000; 0.9167 |
+| Extraction | Field; numeric; missing; evidence-link accuracy | 1.0000 each |
+| Verification | Conflict-detection accuracy | 1.0000 |
+| Selection | Expected control inclusion and exclusions | 5 selected; partial/withdrawn excluded |
+| Valuation | R7 statistics and traced implied ranges | Pass; 5 ranges |
+| Workflow | Review pause, checkpoint resume, terminal routing | Pass |
+| Explanation | Citations limited to available evidence IDs | Pass |
+
+These are deterministic regression results over a tiny synthetic corpus. They do not establish
+production deal coverage, legal completeness, model accuracy, or market valuation accuracy. The
+machine-readable runner is `python -m ma_precedent_transactions.evaluation_final`; the concise
+report is [`evaluation/final_report.md`](evaluation/final_report.md).
+
+## API
+
+The V1 surface intentionally stays small:
+
+- `GET /health`
+- `POST /precedents/run`
+- `GET /precedents/runs/{run_id}`
+- `POST /precedents/runs/{run_id}/review`
+
+Requests use strict Pydantic schemas. Target metrics explicitly carry currency, unit, period kind,
+period label, estimate status, basis, measurement date, and evidence ID. Responses contain the run
+status, review requirement, compact transaction summaries, included and excluded precedents,
+multiples, statistics, valuation ranges, evidence IDs, analyst decisions, warnings, errors, and
+trace. Raw stack traces and full document contents are not returned.
+
+Run locally:
+
+```powershell
+py -3.11 -m ma_precedent_transactions.api_cli
+```
+
+## Final offline demo
+
+```powershell
+py -3.11 -m ma_precedent_transactions.demo_final
+```
+
+The demo discovers and deduplicates deals, builds the hybrid index, retrieves deal-scoped evidence,
+extracts and verifies facts, pauses once for a conflicting headline value, resumes from the
+checkpoint with an analyst resolution, selects precedents, calculates multiples and valuation
+ranges, attaches grounded commentary, and prints the operational audit trail.
+
+## Setup and testing
 
 From `04_precedent_transactions/`, using Python 3.11+:
 
@@ -491,7 +576,7 @@ py -3.11 -m mypy
 py -3.11 -m pytest
 ```
 
-All tests and the demo are offline and make no API or LLM calls.
+All tests, evaluations, API tests, and demos are offline and make no API or LLM calls.
 
 ## Current limitations
 
@@ -509,5 +594,23 @@ date/revision context. Period parsing is intentionally narrow. No FX, automatic 
 live market-data integration exists. M4/5 selection uses a deliberately small policy and fixture
 semantic provider; it is not a production sector taxonomy. Statistics do not adjust historical
 transactions for market regime or inflation, cross-currency samples remain separate, and inferred
-control premiums are prohibited. LangGraph runtime, human approval workflow, final evaluation
-suite, API, UI, and deployment remain M6/7 work.
+control premiums are prohibited. Checkpointing and API run storage are in-memory and process-local;
+there is no authentication, concurrency hardening, durable database, production tracing backend,
+frontend, or deployment. The evaluation is fixture-heavy, licensed deal databases are absent, and
+private-target financial disclosure remains inherently incomplete. There is no DCF, merger model,
+LBO, accretion/dilution model, advanced sector metric library, or banker-format report.
+
+## Portfolio and interview material
+
+- [`docs/portfolio.md`](docs/portfolio.md) contains the concise description and resume bullets.
+- [`docs/interview-story.md`](docs/interview-story.md) provides the business-to-engineering story.
+- [`docs/project5-handoff.md`](docs/project5-handoff.md) identifies reusable patterns for the future
+  Due-Diligence Agent without implementing Project 5.
+
+## Future integration into Project 6
+
+Project 6 can compose the public Project 4 workflow/API boundary with company research, target
+screening, trading comps, and future diligence outputs. Stable candidates for integration are the
+compact final result, evidence IDs, calculation traces, structured failures, review audit, and
+start/status/review lifecycle. Project 6 should not import Project 4 private nodes or rely on its
+in-memory persistence implementation.
