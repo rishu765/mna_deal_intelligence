@@ -1,8 +1,8 @@
 # M1/2 offline retrieval baseline
 
-Dataset: `northstar-vdr-m12`  
-Cases: 7  
-K: 5
+- Dataset: `northstar-vdr-m12`
+- Cases: 7
+- K: 5
 
 | Metric | Result |
 | --- | ---: |
