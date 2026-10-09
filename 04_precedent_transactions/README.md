@@ -10,11 +10,10 @@ deals, retrieve transaction documents, extract and verify deal facts, normalize 
 financials, select comparable acquisitions, calculate transaction multiples deterministically, and
 produce an auditable analyst explanation.
 
-This directory currently implements **M0, M1/2, and M3**: transaction contracts, offline discovery
-and hybrid retrieval, plus schema-validated extraction, deterministic financial normalization,
-cross-source verification, conflict retention, and a narrow traceable EV bridge. It does not
-select precedents, calculate transaction multiples or implied valuation, run LangGraph, expose an
-API, or render a frontend.
+This directory currently implements **M0 through M4/5**: transaction contracts, offline discovery
+and hybrid retrieval, schema-validated extraction and verification, comparable-deal selection,
+transaction multiples, peer statistics, implied valuation, and grounded explanation. It does not
+run LangGraph, expose an API, implement analyst workflow, or render a frontend.
 
 ## Roadmap
 
@@ -23,7 +22,7 @@ API, or render a frontend.
 | M0 | Architecture and transaction data models | Complete |
 | M1/2 | Historical deal discovery and document intelligence/RAG | Complete |
 | M3 | Structured extraction, financial normalization, verification | Complete |
-| M4/5 | Comparable selection, transaction multiples, implied valuation | Planned |
+| M4/5 | Comparable selection, transaction multiples, implied valuation | Complete |
 | M6/7 | LangGraph, human review, evaluation, API/demo, V1 | Planned |
 
 ## End-to-end architecture
@@ -79,6 +78,64 @@ Detailed planned nodes, transitions, approvals, and failures are in
   LangChain providers, normalization, verification, extraction context retrieval, service, and
   field-level evaluation;
 - `demo_m3.py`: seven-case offline retrieval-to-verification demonstration.
+- `precedent/`: eligibility and comparability, deterministic transaction multiples, statistics,
+  valuation ranges, bridge traces, and optional structured AI explanation;
+- `demo_m45.py`: offline selection-to-valuation demonstration over seven synthetic deals.
+
+## M4/5 precedent selection and valuation
+
+```mermaid
+flowchart LR
+    A[Verified M3 transactions] --> B[Hard eligibility filters]
+    B --> C[Soft comparability assessment]
+    C --> D{Include, exclude,<br/>separate, or review}
+    D --> E[Compatible EV or equity numerator]
+    E --> F[Date, currency, period,<br/>and basis matched denominator]
+    F --> G[Deterministic transaction multiples]
+    G --> H[R7 percentiles and<br/>visible IQR flags]
+    H --> I[Target metric application]
+    I --> J[EV to equity bridge<br/>and per-share value]
+    J --> K[Grounded explanation]
+```
+
+`ComparableTransactionSelector` treats status, announcement window, transaction type, ownership,
+usable valuation basis, and revenue size as deterministic criteria. Business/product similarity,
+geography, and buyer type are separately recorded judgments. The offline provider uses transparent
+token overlap; a future model can implement the same narrow protocol. Each decision records its
+criteria, rationale, evidence, missing information, inherited M3 warnings, and any analyst override.
+An override requires an actor, timezone-aware timestamp, and rationale.
+
+Completed control acquisitions form the default set. Withdrawn deals and transactions without a
+usable EV or equity value are excluded. Minority investments are excluded by default, but policy
+can retain them as a separate set or treat them as lower-comparability candidates. The engine never
+grosses up a partial stake automatically. Strategic and financial buyers remain visible as a
+comparability dimension; no universal pricing premium is assumed.
+
+`TransactionMultipleEngine` supports transaction EV/revenue, EV/EBITDA, EV/EBIT, and equity
+value/net income. It accepts only explicitly disclosed or independently calculated EV/equity
+observations. An ambiguous headline value is never relabeled as EV. Denominators retain their exact
+period and reported/adjusted basis. Post-announcement, stale, cross-currency, zero, and negative
+denominators are excluded or marked not meaningful with a reason. Same-currency units are converted
+to millions with `Decimal`; there is no automatic FX conversion.
+
+Multiple sets are separated by multiple type, currency, period kind, and reported/adjusted basis.
+Statistics use linear-interpolation R7 minimum, 25th percentile, median, 75th percentile, maximum,
+and mean. The raw observation remains present when the documented 1.5×IQR rule flags an outlier;
+exclusion requires an explicit policy. Warnings identify zero, one, or fewer than four valid deals
+and mixed exact periods. A median is a sample statistic, not a claim of intrinsic value.
+
+Implied ranges use P25/median/P75 independently for each method. Every case records the target
+metric, selected statistic, formula, inputs, source evidence, and output. EV-based ranges bridge to
+equity only when compatible target debt and cash exist; preferred stock and noncontrolling interest
+are deducted when supplied. Per-share value requires a compatible diluted end-of-period share
+count, avoiding weighted-average shares. Methods remain separate and are never averaged.
+
+`LangChainValuationExplanationProvider` accepts an injected model using native structured output.
+It receives only structured selection, deterministic statistics, ranges, warnings, and evidence
+IDs. Unknown citations invalidate the explanation, while provider failure leaves all deterministic
+results intact. `FixtureValuationExplanationProvider` keeps tests and the demo offline. Explanations
+may discuss control pricing and deal structure but cannot modify calculations or invent a control
+premium. Full details are in [`docs/precedent-valuation.md`](docs/precedent-valuation.md).
 
 ## M3 extraction and verification flow
 
@@ -313,21 +370,20 @@ sources; the model does not pick a winner silently.
 
 ## Comparable selection and transaction multiples
 
-`ComparableSelectionPolicy` distinguishes hard filters from qualitative judgments across industry,
-business model, geography, announcement period, size, target revenue, margin, transaction type,
-ownership/control, buyer type, and growth. M4/5 will implement decisions and an audit trail.
+`PrecedentSelectionPolicy` distinguishes hard filters from qualitative judgments across business
+model, geography, announcement period, size, transaction type, ownership/control, and buyer type.
+M4/5 implements a per-deal decision and audit trail, including explicit overrides.
 
-`TransactionMultipleDefinition` reserves valid numerator/denominator pairs for transaction
-EV/revenue, EV/EBITDA, EV/EBIT, and equity value/net income. The future output contract preserves
-the numerator observation, denominator metric and period, transaction identity/date through those
-references, inclusion status, assumptions, treatment reason, and calculation trace. M0 never
-calculates a multiple.
+`TransactionMultipleDefinition` defines valid numerator/denominator pairs for transaction
+EV/revenue, EV/EBITDA, EV/EBIT, and equity value/net income. M4/5 calculations preserve the
+numerator observation, denominator metric and period, inclusion status, evidence, treatment reason,
+warnings, and formula trace.
 
 ## AI and deterministic boundary
 
-AI work may interpret announcements and extract typed candidate facts; future milestones may
-explain comparability and summarize caveats. Deterministic Python validates numbers, normalizes units, implements supported
-EV bridges, calculate multiples and statistics, and derive implied valuations. An LLM may propose
+AI work may interpret announcements, extract typed candidate facts, explain comparability, and
+summarize caveats. Deterministic Python validates numbers, normalizes units, implements supported
+EV bridges, calculates multiples and statistics, and derives implied valuations. An LLM may propose
 or explain; it may not invent missing values, convert currencies silently, override validated
 numbers, or approve its own exceptions.
 
@@ -337,7 +393,7 @@ Planned capability placement:
 | --- | --- |
 | M1/2 | Deal discovery tools; ingestion; provenance-aware chunking; embeddings; vector, BM25, and hybrid retrieval; source grounding; LangChain integration where it simplifies composition |
 | M3 | Implemented typed extraction; evidence linking; verification; conflict retention; explicit extraction failures |
-| M4/5 | Semantic comparable reasoning plus deterministic screening, multiple calculations, statistics, and grounded explanation |
+| M4/5 | Implemented semantic comparable reasoning plus deterministic screening, multiple calculations, statistics, and grounded explanation |
 | M6/7 | LangGraph state and routing; tools; checkpointing; bounded retries; human review; evaluation; tracing; API |
 
 LangChain is optional connective code, not a domain dependency. LangGraph is reserved for the
@@ -393,6 +449,20 @@ It covers a completed cash deal, mixed consideration, a partial stake, a withdra
 amendment, conflicting headline values, undisclosed price/missing EBITDA, reported versus adjusted
 EBITDA, and a disclosed-input EV bridge. It performs no precedent selection or multiple valuation.
 
+## M4/5 demo
+
+Run the deterministic selection and valuation demo with:
+
+```powershell
+py -3.11 -m ma_precedent_transactions.demo_m45
+```
+
+It uses seven synthetic B2B fintech transactions: completed strategic and financial control deals,
+a mixed-stock deal, partial stake, withdrawn deal, high-multiple outlier, negative-earnings deal,
+and ambiguous headline wording inherited from the evidence fixtures. It shows eligibility,
+inclusions and exclusions, supported multiples, outliers, statistics, implied ranges, EV-to-equity
+bridges, per-share output, and grounded commentary. It performs no LangGraph orchestration or API.
+
 ## Retrieval evaluation
 
 The milestone benchmark contains six queries with known relevant text markers. On the committed
@@ -409,7 +479,7 @@ It shows discovery, deduplication, document ingestion, indexing, cited retrieval
 headline values, an undisclosed-price passage, and benchmark output. It never extracts final deal
 fields.
 
-## Run M3 checks
+## Run M4/5 checks
 
 From `04_precedent_transactions/`, using Python 3.11+:
 
@@ -435,6 +505,9 @@ M3 uses deterministic fixture responses by default; production model quality, pr
 and provider retry policy remain unproven. The JSON schema intentionally validates into richer
 application dataclasses rather than encoding every nested rule in provider schema alone. Source
 priority cannot resolve substantive legal ambiguity, and amendment recognition requires explicit
-date/revision context. Period parsing is intentionally narrow. No FX, automatic stake gross-up,
-comparable selection, transaction multiple, implied valuation, LangGraph runtime, human approval,
-API, UI, or deployment exists.
+date/revision context. Period parsing is intentionally narrow. No FX, automatic stake gross-up, or
+live market-data integration exists. M4/5 selection uses a deliberately small policy and fixture
+semantic provider; it is not a production sector taxonomy. Statistics do not adjust historical
+transactions for market regime or inflation, cross-currency samples remain separate, and inferred
+control premiums are prohibited. LangGraph runtime, human approval workflow, final evaluation
+suite, API, UI, and deployment remain M6/7 work.

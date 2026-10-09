@@ -1,6 +1,6 @@
 # Project 1–3 reuse and compatibility assessment
 
-This assessment reflects the repository at Project 3 V1 and Project 4 M3. Project 4 remains
+This assessment reflects the repository at Project 3 V1 and Project 4 M4/5. Project 4 remains
 standalone; the optional PDF adapter resolves Project 1 dynamically only when installed.
 
 ## Reusable today through future adapters
@@ -43,6 +43,11 @@ after both projects consume an intentionally stable contract:
 - evidence-bearing financial metrics;
 - explicit multiple definitions/statuses and calculation traces;
 - deterministic statistics and valuation output patterns.
+
+M4/5 also adapts Project 3's R7 percentile convention, visible 1.5×IQR flags, low-sample warnings,
+range and bridge traces, and isolation of optional explanation failures. It adds transaction-specific
+status, ownership, negotiated value basis, announcement-date alignment, and control-price context.
+No Project 3 implementation module is imported.
 
 Project 3's concrete classes are not imported because each numbered project is independently
 packaged and its modules are private implementation details. Project 4 also needs concepts absent
