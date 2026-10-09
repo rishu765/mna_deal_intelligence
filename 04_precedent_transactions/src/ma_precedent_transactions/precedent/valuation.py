@@ -415,6 +415,15 @@ class PrecedentValuationEngine:
         )
         if explanation_provider is None:
             return output
+        return self.attach_explanation(output, explanation_provider)
+
+    @staticmethod
+    def attach_explanation(
+        output: PrecedentValuationOutput,
+        explanation_provider: ValuationExplanationProvider,
+    ) -> PrecedentValuationOutput:
+        """Attach optional commentary without allowing provider failure to alter calculations."""
+
         try:
             explanation = explanation_provider.explain(output)
         except Exception as error:

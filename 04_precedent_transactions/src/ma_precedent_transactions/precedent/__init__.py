@@ -1,6 +1,9 @@
 """Comparable transaction selection and deterministic precedent valuation."""
 
-from ma_precedent_transactions.precedent.fixtures import precedent_fixture_inputs
+from ma_precedent_transactions.precedent.fixtures import (
+    build_precedent_fixture_inputs,
+    precedent_fixture_inputs,
+)
 from ma_precedent_transactions.precedent.models import (
     CalculationInput,
     CalculationStatus,
@@ -90,4 +93,5 @@ __all__ = [
     "EXPLANATION_INSTRUCTIONS",
     "EXPLANATION_SCHEMA",
     "precedent_fixture_inputs",
+    "build_precedent_fixture_inputs",
 ]

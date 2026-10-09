@@ -1,4 +1,6 @@
-"""Evidence-grounded precedent transaction contracts for Project 4 M0."""
+"""Evidence-grounded precedent transaction research and valuation agent."""
+
+__version__ = "1.0.0"
 
 from ma_precedent_transactions.config import ProjectConfig
 from ma_precedent_transactions.domain import (
@@ -67,7 +69,11 @@ from ma_precedent_transactions.serialization import (
     transaction_to_dict,
     transaction_to_json,
 )
-from ma_precedent_transactions.workflow import PrecedentWorkflowState, WorkflowStatus
+from ma_precedent_transactions.workflow import (
+    PrecedentWorkflowState,
+    WorkflowState,
+    WorkflowStatus,
+)
 
 __all__ = [
     "SCHEMA_VERSION",
@@ -128,6 +134,8 @@ __all__ = [
     "ValuationMeasure",
     "ValuationObservation",
     "WorkflowStatus",
+    "WorkflowState",
+    "__version__",
     "DealResearchCorpus",
     "DealResearchPipeline",
     "transaction_from_dict",
