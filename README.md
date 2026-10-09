@@ -16,7 +16,7 @@ investment advice or autonomous deal decisions.
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
 | Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **Version 1.0 complete** |
-| Due Diligence | `05_due_diligence/` | Planned |
+| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **M0 foundation complete** |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
 Future project directories will be added when work on those projects begins. A `shared/`
@@ -31,6 +31,10 @@ Project 3 Version 1.0 defines the public trading-comps workflow, normalizes the 
 selects an auditable peer set, ingests evidence-backed financial and timestamped market data,
 calculates deterministic multiples and valuation ranges, adds grounded explanations, and exposes
 an offline evaluation suite, demo, and FastAPI interface.
+
+Project 5 M0 establishes provider-neutral, evidence-first contracts for engagements, VDR documents,
+atomic facts, findings, conflicts, financial adjustments, balance-sheet items, missing information,
+human review, provenance, future specialist interfaces, and future report/orchestration state.
 
 ## Portfolio foundations
 
