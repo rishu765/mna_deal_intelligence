@@ -15,6 +15,7 @@ dependencies = []
 [project.scripts]
 mapt-discovery-rag-demo = "ma_precedent_transactions.demo:main"
 mapt-extraction-demo = "ma_precedent_transactions.demo_m3:main"
+mapt-precedent-valuation-demo = "ma_precedent_transactions.demo_m45:main"
 
 [project.optional-dependencies]
 dev = [

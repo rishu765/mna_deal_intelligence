@@ -75,3 +75,11 @@ class NormalizationError(PrecedentTransactionsError):
 
 class VerificationError(PrecedentTransactionsError):
     """Transaction observations could not be verified consistently."""
+
+
+class SelectionError(PrecedentTransactionsError):
+    """Comparable-transaction selection inputs or policy are invalid."""
+
+
+class ValuationError(PrecedentTransactionsError):
+    """Precedent multiple or implied-valuation inputs are invalid."""

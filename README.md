@@ -15,7 +15,7 @@ investment advice or autonomous deal decisions.
 | Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
-| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **M3 extraction and verification complete** |
+| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **M4/5 precedent valuation complete** |
 | Due Diligence | `05_due_diligence/` | Planned |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
@@ -49,8 +49,9 @@ value bases, point-in-time financials, and disputed source observations. Its M1/
 adds reproducible deal discovery, document ingestion, transaction-aware chunking, semantic and BM25
 retrieval, hybrid ranking, provenance, and an offline retrieval benchmark. Structured extraction
 in M3 adds validated evidence-linked observations, deterministic normalization, cross-source
-verification, amendment/conflict retention, and traceable derived values. Comparable selection and
-valuation remain later milestones.
+verification, amendment/conflict retention, and traceable derived values. M4/5 adds auditable
+precedent selection, transaction multiples, peer statistics, implied valuation ranges, and grounded
+explanation while preserving transaction-specific dates, ownership, and value bases.
 
 ## Development workflow
 
