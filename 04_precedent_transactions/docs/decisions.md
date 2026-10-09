@@ -27,7 +27,8 @@ values use `Decimal`. Schema-versioned serialization preserves exact types.
 
 M0 has no concrete discovery/retrieval request contract and no need for a provider protocol.
 Protocols arrive with M1/2 integrations. LangGraph execution, retry code, checkpoint stores, and
-human interrupts arrive in M6/7; M0 supplies only the state contract and architecture.
+human interrupts are implemented in M6/7; M0 originally supplied only the state contract and
+architecture.
 
 ## Keep configuration conservative
 

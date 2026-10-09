@@ -1,108 +1,97 @@
-# Architecture and orchestration contract
+# Final architecture and orchestration
 
-## Module boundaries
+## Implemented boundaries
 
-The final system should keep the following boundaries even if implementations change:
+| Boundary | Responsibility |
+| --- | --- |
+| `discovery` | Acquisition context, fixture provider, candidate generation, identity resolution |
+| `documents` | Source catalog, text/HTML ingestion, optional Project 1 PDF adapter, chunks |
+| `retrieval` | Deterministic semantic vectors, BM25, hybrid fusion, filters, provenance |
+| `extraction` | Evidence-bounded structured observations, normalization, verification, conflicts |
+| `precedent` | Eligibility, soft assessment, overrides, multiples, statistics, valuation, explanation |
+| `workflow` | LangGraph state, routing, retries, checkpointing, review, final result |
+| `api` | Strict HTTP schemas and run/review lifecycle |
 
-| Boundary | Owns | Planned milestone |
-| --- | --- | --- |
-| `discovery` | Search criteria, provider adapters, candidate observations | M1/2 implemented |
-| `identity` | Entity and transaction resolution proposals, ambiguity | M1/2 preliminary implementation |
-| `documents` | Retrieval, parsing, chunking, source metadata | M1/2 text/HTML plus PDF adapter |
-| `retrieval` | Vector, keyword/BM25, hybrid ranking, grounded context | M1/2 implemented offline |
-| `extraction` | Typed model/fixture outputs linked to evidence | M3 implemented |
-| `verification` | Conflicts, source priority, amendments, categorical status | M3 implemented |
-| `normalization` | Decimal, units, periods, narrow capital bridge | M3 implemented |
-| `selection` | Hard filters, qualitative assessments, analyst overrides | M4/5 |
-| `valuation` | Multiple definitions, calculations, statistics, implied values | M4/5 |
-| `explanation` | Evidence-grounded narrative over deterministic results | M4/5 |
-| `workflow` | LangGraph state, routing, retries, checkpoints, review | M6/7 |
-| `api` | Validated external request and response contracts | M6/7 |
-
-The domain package remains provider-neutral. Provider-specific payloads stop at adapters. Earlier
-portfolio projects remain separate packages, connected only by narrow adapters owned by Project 4.
-
-## Planned LangGraph
-
-M0 implements `PrecedentWorkflowState` only. The planned graph is:
+Provider payloads stop at adapters. The graph calls these services rather than embedding their
+business rules in nodes.
 
 ```mermaid
-stateDiagram-v2
-    [*] --> ValidateInput
-    ValidateInput --> DiscoverDeals: valid
-    ValidateInput --> Failed: invalid
-    DiscoverDeals --> ResolveIdentity: candidates found
-    DiscoverDeals --> DiscoverDeals: retryable provider failure
-    DiscoverDeals --> AnalystReview: unresolved search gap
-    ResolveIdentity --> RetrieveDocuments
-    ResolveIdentity --> AnalystReview: ambiguous bids/entities
-    RetrieveDocuments --> ProcessAndRetrieve
-    RetrieveDocuments --> RetrieveDocuments: bounded retry
-    ProcessAndRetrieve --> ExtractFacts
-    ExtractFacts --> VerifyFacts
-    ExtractFacts --> ProcessAndRetrieve: insufficient grounded context
-    VerifyFacts --> NormalizeTransactions: sufficient verified facts
-    VerifyFacts --> AnalystReview: conflicts/material unknowns
-    NormalizeTransactions --> SelectPrecedents
-    SelectPrecedents --> AnalystReview: proposed peer set
-    AnalystReview --> SelectPrecedents: revise criteria
-    AnalystReview --> CalculateValuation: approved
-    AnalystReview --> Failed: rejected/abandoned
-    CalculateValuation --> ExplainResults
-    ExplainResults --> FinalReview
-    FinalReview --> PublishResult: approved
-    FinalReview --> ExplainResults: narrative revision
-    PublishResult --> [*]
-    Failed --> [*]
+flowchart TB
+    User[User / target context] --> API[FastAPI]
+    API --> Graph[LangGraph orchestrator]
+    Graph --> Validate[Validate input]
+    Validate --> Research[Discovery + identity + documents + index]
+    Research --> Extract[Deal-scoped retrieval + extraction + verification]
+    Extract --> Route{Material ambiguity?}
+    Route -->|yes| Review[Checkpoint + analyst interrupt]
+    Route -->|no| Select[Comparable selection]
+    Review --> Select
+    Select --> Value[Multiples + statistics + implied valuation]
+    Value --> Explain[Grounded explanation]
+    Explain --> Evaluate[Run evaluation metadata]
+    Evaluate --> Result[Structured final result]
+    Result --> API
+
+    P1[Project 1 patterns] -. parsing / chunks / provenance .-> Research
+    P2[Project 2 patterns] -. discovery / graph / review .-> Graph
+    P3[Project 3 patterns] -. Decimal / statistics / bridge .-> Value
 ```
 
-### Entry and state
+## Typed state
 
-The graph enters with target context and an acquisition/comparability policy. State will retain
-discovered deal IDs, retrieved document IDs, extracted observation IDs, verified transaction
-records, selected precedent IDs, valuation result IDs, warnings, errors, analyst decisions,
-evidence references, per-stage retry counts, and workflow status.
+`WorkflowState` carries a `WorkflowRequest`, compact `DealResearchCorpus`, evidence bundles,
+verified and valuation-ready transactions, review request and decision, selection, multiples,
+valuation output, run evaluation metadata, warnings, structured issues, retry counters, trace, and
+terminal result. Large source binaries and external indexes are not checkpoint payloads.
 
-Large documents, embeddings, and generated indexes belong in external stores. State carries stable
-IDs and compact contracts, not source binaries.
+`PrecedentWorkflowResult` exposes target/request context, discovered research metadata, verified
+transactions, included and excluded precedents, multiples, ranges, evidence, review audit, warnings,
+errors, evaluation metadata, and trace through a compact presentation contract.
 
-### Retry boundaries
+## Nodes and routing
 
-Retries are limited to transient discovery, retrieval, parsing, model, and storage failures. Each
-stage owns a small explicit retry budget and records attempts. Validation failures, unsupported
-currency/basis combinations, unresolved conflicts, and missing required financials are not retried
-blindly; they route to review, exclusion, or a terminal failure.
+The compiled graph uses ten nodes:
 
-### Human checkpoints
+1. `validate_input`
+2. `research_deals`
+3. `extract_and_verify`
+4. `route_for_human_review`
+5. `human_review`
+6. `select_precedents`
+7. `calculate_valuation`
+8. `generate_explanation`
+9. `evaluate_run`
+10. `finalize`
 
-Human approval is planned after material identity conflicts, material fact conflicts, proposed
-precedent selection, and final valuation/explanation. Decisions record checkpoint, outcome, and
-rationale. Analysts can revise criteria or reject a deal; an LLM cannot waive deterministic
-validation.
+No-deal, exhausted-retrieval, extraction, no-precedent, valuation, rejection, and invalid-review
+paths terminate through `finalize`. Recoverable research and extraction failures loop only within
+their configured retry budgets. Deterministic validation or finance failures are not retried.
 
-### Terminal conditions and failure states
+## Human review and checkpointing
 
-Success requires an approved result with a complete evidence manifest and deterministic
-calculation traces. A valid result may contain warnings or an explicit "insufficient precedents"
-outcome. Terminal failures include invalid input, exhausted provider/model retries, unrecoverable
-state corruption, and analyst rejection. Missing EBITDA alone is not a workflow crash; it makes the
-corresponding multiple unavailable.
+Review policies are `WHEN_NEEDED`, `ALWAYS`, and `NEVER`. Material triggers include unresolved
+source conflicts, ambiguous deal-value basis, and minority/partial-stake structure. LangGraph
+`interrupt` pauses after the review request has been checkpointed. Resume accepts approval or
+rejection, conflict resolutions that cite a known observation ID, and force-include/force-exclude
+overrides with rationale.
 
-## RAG and LangChain boundary
+V1 uses `InMemorySaver` with a trusted same-process serializer so frozen domain objects survive
+resume. The serializer must never load untrusted bytes. Durable or shared deployment requires a
+different secured checkpointer.
 
-M1/2 can ingest transaction announcements, filings, agreements, presentations, annual reports,
-and exchange disclosures. Provenance-aware chunks will carry document, page, section/table, and
-text locators. Retrieval will combine semantic vectors with keyword/BM25 signals because exact
-terms such as offer price, debt assumed, and stake percentage matter alongside semantic meaning.
+## Failure and trace contracts
 
-M3 implements one concrete LangChain-compatible boundary for typed extraction through an injected
-chat model's native structured-output runnable. Domain objects, second-stage validation, evidence
-policy, normalization, verification, and calculations remain ordinary Python and do not depend on
-LangChain. Retrieved passages must link back to `EvidenceReference` before they can support a fact.
+`FailureCode` includes `INVALID_INPUT`, `NO_DEALS_FOUND`, `RETRIEVAL_INSUFFICIENT`,
+`EXTRACTION_FAILED`, `VERIFICATION_BLOCKED`, `HUMAN_REVIEW_REQUIRED`,
+`NO_ELIGIBLE_PRECEDENTS`, `VALUATION_UNAVAILABLE`, `EXPLANATION_FAILED`, and `USER_REJECTED`.
 
-## Determinism
+Trace events contain node, public status, short message, duration, retry count, and aware timestamp.
+They are operational audit data, not hidden model reasoning. Logging records node lifecycle and
+counts without source passages, secrets, or chain-of-thought.
 
-LLM outputs are proposals at extraction, qualitative comparison, and explanation boundaries.
-Parsing numeric strings, validating dates/currencies/units, resolving supported unit conversions,
-building EV bridges, calculating multiples/statistics, and computing implied valuation ranges are
-deterministic functions with explicit policies and traces.
+## LangChain and deterministic logic
+
+LangChain-compatible adapters are limited to native structured extraction and explanation output.
+LangGraph owns orchestration. Deterministic Python owns parsing, units, dates, conflicts, selection
+filters, EV bridges, multiples, percentiles, implied values, and all calculation traces. Model
+failure cannot change or invalidate already computed numbers.
