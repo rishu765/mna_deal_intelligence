@@ -11,6 +11,7 @@ from ma_precedent_transactions.discovery import AcquisitionContext
 from ma_precedent_transactions.extraction import (
     FixtureStructuredExtractor,
     StructuredTransactionService,
+    VerifiedTransactionRecord,
     load_extraction_benchmark,
     retrieve_extraction_context,
     run_extraction_benchmark,
@@ -19,6 +20,22 @@ from ma_precedent_transactions.retrieval import HybridDealRetriever
 
 
 def run_demo() -> dict[str, object]:
+    outputs = build_fixture_records()
+    benchmark = run_extraction_benchmark(
+        outputs,
+        load_extraction_benchmark(PROJECT_ROOT / "evaluation" / "extraction_cases.json"),
+    )
+    return {
+        "pipeline": "retrieval -> structured extraction -> normalization -> verification",
+        "transactions": {
+            transaction_id: _record_summary(result) for transaction_id, result in outputs.items()
+        },
+        "evaluation": asdict(benchmark),
+        "scope_guard": "No transaction multiples, comparable selection, or valuation range.",
+    }
+
+
+def build_fixture_records() -> dict[str, VerifiedTransactionRecord]:
     research = build_fixture_pipeline()
     corpus = research.build(
         AcquisitionContext(
@@ -34,28 +51,14 @@ def run_demo() -> dict[str, object]:
     service = StructuredTransactionService(
         FixtureStructuredExtractor(PROJECT_ROOT / "data" / "fixtures" / "extraction_responses.json")
     )
-    outputs = {}
+    outputs: dict[str, VerifiedTransactionRecord] = {}
     for candidate in corpus.discovery.transactions:
         evidence = retrieve_extraction_context(retriever, candidate.candidate_id)
         outputs[candidate.candidate_id] = service.build(candidate, evidence)
-    benchmark = run_extraction_benchmark(
-        outputs,
-        load_extraction_benchmark(PROJECT_ROOT / "evaluation" / "extraction_cases.json"),
-    )
-    return {
-        "pipeline": "retrieval -> structured extraction -> normalization -> verification",
-        "transactions": {
-            transaction_id: _record_summary(result) for transaction_id, result in outputs.items()
-        },
-        "evaluation": asdict(benchmark),
-        "scope_guard": "No transaction multiples, comparable selection, or valuation range.",
-    }
+    return outputs
 
 
-def _record_summary(result: object) -> dict[str, object]:
-    from ma_precedent_transactions.extraction import VerifiedTransactionRecord
-
-    assert isinstance(result, VerifiedTransactionRecord)
+def _record_summary(result: VerifiedTransactionRecord) -> dict[str, object]:
     record = result.record
     return {
         "acquirer": record.acquirer.legal_name,
