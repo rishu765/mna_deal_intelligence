@@ -16,7 +16,7 @@ investment advice or autonomous deal decisions.
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
 | Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **Version 1.0 complete** |
-| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **M4/5 specialist investigation complete** |
+| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **Version 1.0 complete** |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
 Future project directories will be added when work on those projects begins. A `shared/`
@@ -42,6 +42,9 @@ debt bridges, candidate financial findings, and a category-specific offline eval
 M4/5 adds filtered financial, commercial, legal/contractual, and operational analyzers,
 period- and revision-aware claim comparison, retained cross-document conflicts, finding
 consolidation, compound risk linking, information requests, and an offline evaluation/demo.
+M6/7 completes a checkpointed LangGraph workflow, policy-based analyst interruption and resume,
+audited review decisions, deterministic risk prioritization, evidence-linked diligence reporting,
+a 14-scenario final evaluation, offline end-to-end demo, and local FastAPI run/review/report API.
 
 ## Portfolio foundations
 
