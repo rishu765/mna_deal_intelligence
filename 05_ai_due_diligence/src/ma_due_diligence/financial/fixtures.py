@@ -394,4 +394,5 @@ def _adjustment(
         (evidence,),
         SupportStatus.VERIFIED,
         decision,
+        unit="million",
     )

@@ -23,7 +23,7 @@ from ma_due_diligence.financial.models import (
     FinancialThresholds,
     FinancialUnit,
 )
-from ma_due_diligence.financial.normalization import normalize_unit, safe_ratio
+from ma_due_diligence.financial.normalization import convert_value, normalize_unit, safe_ratio
 
 
 class AdjustmentAssessmentService:
@@ -139,7 +139,14 @@ def build_ebitda_bridge(
         factor = (
             Decimal("1") if adjustment.direction is AdjustmentDirection.INCREASE else Decimal("-1")
         )
-        amount = adjustment.amount.amount * factor
+        amount = (
+            convert_value(
+                adjustment.amount.amount,
+                FinancialUnit(adjustment.unit),
+                target_unit,
+            )
+            * factor
+        )
         total += amount
         lines.append(
             CalculationLine(

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import replace
 from decimal import Decimal
 
-from ma_due_diligence.domain import AnalystDecision, ProposalStatus
+from ma_due_diligence.domain import AnalystDecision, Money, ProposalStatus
 from ma_due_diligence.financial.analytics import (
     analyze_nwc_trend,
     calculate_margin,
@@ -67,6 +67,19 @@ def test_unaccepted_adjustment_stays_out_of_bridge() -> None:
         case.observations[6], AdjustmentAssessmentService().assess((adjustment,))
     )
     assert bridge.final_adjusted_ebitda == Decimal("14")
+
+
+def test_ebitda_bridge_normalizes_adjustment_units() -> None:
+    case = build_financial_fixture_case()
+    adjustment = replace(
+        case.adjustments[2],
+        amount=Money(Decimal("1000"), "GBP"),
+        unit="thousand",
+    )
+    bridge = build_ebitda_bridge(
+        case.observations[6], AdjustmentAssessmentService().assess((adjustment,))
+    )
+    assert bridge.final_adjusted_ebitda == Decimal("15")
 
 
 def test_revenue_growth_and_margins() -> None:

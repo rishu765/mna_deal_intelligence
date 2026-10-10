@@ -34,6 +34,14 @@ def normalize_unit(
     return replace(observation, value=normalized, unit=target_unit)
 
 
+def convert_value(value: Decimal, source: FinancialUnit, target: FinancialUnit) -> Decimal:
+    """Convert a monetary value between explicit scales."""
+
+    if source is FinancialUnit.PERCENT or target is FinancialUnit.PERCENT:
+        raise DomainValidationError("percent and monetary units are not interchangeable")
+    return value * _FACTORS[source] / _FACTORS[target]
+
+
 def require_compatible(
     observations: tuple[FinancialObservation, ...], target_unit: FinancialUnit
 ) -> tuple[FinancialObservation, ...]:

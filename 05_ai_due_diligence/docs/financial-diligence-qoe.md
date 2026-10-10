@@ -64,7 +64,8 @@ purported one-time categories repeated across periods. The bridge uses only acce
 
 `Reported EBITDA + accepted upward adjustments - accepted downward adjustments = diligence-adjusted EBITDA`
 
-Every bridge line records its sign, source IDs, and evidence. Rejected items remain visible.
+Every adjustment carries an explicit monetary unit. The bridge normalizes its scale before addition
+and records each line's sign, source IDs, and evidence. Rejected items remain visible.
 
 ## Revenue quality, concentration, and margins
 
