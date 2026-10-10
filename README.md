@@ -16,7 +16,7 @@ investment advice or autonomous deal decisions.
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
 | Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **Version 1.0 complete** |
-| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **M3 financial diligence complete** |
+| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **M4/5 specialist investigation complete** |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
 Future project directories will be added when work on those projects begins. A `shared/`
@@ -39,6 +39,9 @@ metadata filters, cross-document evidence grouping, bounded RAG context, and ret
 M3 adds evidence-linked financial observations, explicit normalization and source priority,
 deterministic QoE adjustment assessment, EBITDA, customer concentration, working-capital and net
 debt bridges, candidate financial findings, and a category-specific offline evaluation.
+M4/5 adds filtered financial, commercial, legal/contractual, and operational analyzers,
+period- and revision-aware claim comparison, retained cross-document conflicts, finding
+consolidation, compound risk linking, information requests, and an offline evaluation/demo.
 
 ## Portfolio foundations
 
