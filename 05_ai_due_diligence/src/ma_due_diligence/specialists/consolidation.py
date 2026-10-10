@@ -219,7 +219,7 @@ def consolidate_requests(
 ) -> tuple[ConsolidatedRequest, ...]:
     groups: dict[str, _RequestGroup] = {}
     for item in missing:
-        key = _request_key(item.requested_item)
+        key = _matching_request_key(groups, item.requested_item)
         group = groups.setdefault(
             key,
             _RequestGroup(
@@ -238,7 +238,7 @@ def consolidate_requests(
         if _PRIORITY[item.importance] > _PRIORITY[group.priority]:
             group.priority = item.importance
     for question in questions:
-        key = _request_key(question.question)
+        key = _matching_request_key(groups, question.question)
         group = groups.setdefault(
             key,
             _RequestGroup(
@@ -316,9 +316,24 @@ def _find(findings: tuple[AttributedFinding, ...], key: str) -> AttributedFindin
 
 
 def _request_key(value: str) -> str:
+    return " ".join(sorted(_request_tokens(value)))
+
+
+def _request_tokens(value: str) -> set[str]:
     tokens = re.findall(r"[a-z0-9]+", value.casefold())
     ignored = {"please", "provide", "confirm", "the", "and", "a", "an"}
-    return " ".join(sorted(token for token in tokens if token not in ignored))
+    return {token[:5] for token in tokens if token not in ignored}
+
+
+def _matching_request_key(groups: dict[str, _RequestGroup], value: str) -> str:
+    candidate = _request_tokens(value)
+    exact = " ".join(sorted(candidate))
+    for key in groups:
+        existing = set(key.split())
+        union = candidate | existing
+        if union and len(candidate & existing) / len(union) >= 0.4:
+            return key
+    return exact
 
 
 def _unique_evidence(values: tuple[EvidenceReference, ...]) -> tuple[EvidenceReference, ...]:
