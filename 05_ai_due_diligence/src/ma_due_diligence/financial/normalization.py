@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import replace
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 from ma_due_diligence.domain import FinancialPeriod, PeriodKind
@@ -84,9 +84,7 @@ def parse_period(label: str) -> FinancialPeriod:
         if match is None:
             raise DomainValidationError("LTM period requires an end date")
         end = date(*map(int, match.groups()))
-        start = date(end.year - 1, end.month, end.day).fromordinal(
-            date(end.year - 1, end.month, end.day).toordinal() + 1
-        )
+        start = end - timedelta(days=364)
         return FinancialPeriod(PeriodKind.LTM, compact, start, end)
     raise DomainValidationError(f"unsupported financial period: {label}")
 

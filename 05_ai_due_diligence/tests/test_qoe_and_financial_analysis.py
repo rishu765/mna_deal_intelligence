@@ -21,6 +21,7 @@ from ma_due_diligence.financial.fixtures import ENGAGEMENT_ID, build_financial_f
 from ma_due_diligence.financial.models import (
     CalculationWarningCode,
     FinancialMetric,
+    MarginResult,
     NwcPegMethod,
 )
 from ma_due_diligence.financial.net_debt import calculate_adjusted_net_debt
@@ -197,3 +198,32 @@ def test_materiality_findings_and_follow_up_questions() -> None:
     assert len(follow_up_questions(ENGAGEMENT_ID, findings)) == len(findings)
     assessment = materiality_for_amount(Decimal("8"), case.observations[4], rationale="test")
     assert assessment.percentage == Decimal("8") / Decimal("92") * Decimal("100")
+
+
+def test_revenue_growth_and_margin_red_flags_use_configured_thresholds() -> None:
+    case = build_financial_fixture_case()
+    high_growth = revenue_growth(
+        case.observations[0], replace(case.observations[4], value=Decimal("100"))
+    )
+    prior_margin = MarginResult(
+        FinancialMetric.GROSS_MARGIN,
+        case.observations[2].period,
+        Decimal("40"),
+        ("gp-24", "rev-24"),
+    )
+    current_margin = MarginResult(
+        FinancialMetric.GROSS_MARGIN,
+        case.observations[4].period,
+        Decimal("36"),
+        ("gp-audited-25", "rev-audited-25"),
+    )
+    findings = FinancialFindingService().generate(
+        engagement_id=ENGAGEMENT_ID,
+        revenue_growth_results=(high_growth,),
+        margin_results=(prior_margin, current_margin),
+    )
+    assert {item.finding.title for item in findings} == {
+        "Unusually high revenue growth",
+        "Declining margin trend",
+    }
+    assert all(item.finding.support_status.value == "derived" for item in findings)

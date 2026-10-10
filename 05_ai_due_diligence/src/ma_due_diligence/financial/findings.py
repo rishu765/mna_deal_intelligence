@@ -27,6 +27,8 @@ from ma_due_diligence.financial.models import (
     FinancialFindingOutput,
     FinancialObservation,
     FinancialThresholds,
+    GrowthResult,
+    MarginResult,
     NetDebtBridge,
     ReconciliationResult,
     ReconciliationStatus,
@@ -71,12 +73,16 @@ class FinancialFindingService:
         bridge: EbitdaBridge | None = None,
         nwc_trend: WorkingCapitalTrend | None = None,
         net_debt: NetDebtBridge | None = None,
+        revenue_growth_results: tuple[GrowthResult, ...] = (),
+        margin_results: tuple[MarginResult, ...] = (),
     ) -> tuple[FinancialFindingOutput, ...]:
         output: list[FinancialFindingOutput] = []
         for result in reconciliations:
             if result.status is not ReconciliationStatus.CONFLICTING:
                 continue
-            evidence = tuple(item for obs in result.observations for item in obs.evidence)
+            evidence = _unique_evidence(
+                tuple(item for obs in result.observations for item in obs.evidence)
+            )
             fact_ids = tuple(item.observation_id for item in result.observations)
             amount = result.absolute_variance or Decimal("0")
             preferred = next(
@@ -195,6 +201,36 @@ class FinancialFindingService:
                     net_debt.lines,
                 )
             )
+        for growth in revenue_growth_results:
+            if (
+                growth.percentage is not None
+                and growth.percentage >= self.thresholds.forecast_growth_percent
+            ):
+                output.append(
+                    self._derived_finding(
+                        engagement_id,
+                        f"fin-growth-{growth.current_period.label}",
+                        "Unusually high revenue growth",
+                        f"Revenue growth of {growth.percentage}% exceeds the configured threshold.",
+                        "revenue_growth",
+                        growth.input_observation_ids,
+                    )
+                )
+        known_margins = tuple(item for item in margin_results if item.percentage is not None)
+        for prior, current in zip(known_margins, known_margins[1:], strict=False):
+            assert prior.percentage is not None and current.percentage is not None
+            decline = prior.percentage - current.percentage
+            if decline >= self.thresholds.margin_change_points:
+                output.append(
+                    self._derived_finding(
+                        engagement_id,
+                        f"fin-margin-{current.period.label}",
+                        "Declining margin trend",
+                        f"Margin declined by {decline} percentage points.",
+                        current.metric.value,
+                        current.input_observation_ids,
+                    )
+                )
         return tuple(output)
 
     @staticmethod
@@ -225,6 +261,35 @@ class FinancialFindingService:
             recommended_follow_up="Provide supporting detail and management's reconciliation.",
         )
         return FinancialFindingOutput(finding, (), lines)
+
+    @staticmethod
+    def _derived_finding(
+        engagement_id: str,
+        finding_id: str,
+        title: str,
+        description: str,
+        topic: str,
+        observation_ids: tuple[str, ...],
+    ) -> FinancialFindingOutput:
+        finding = DiligenceFinding(
+            finding_id=finding_id,
+            engagement_id=engagement_id,
+            workstream=DiligenceWorkstream.FINANCIAL,
+            category="revenue_quality",
+            title=title,
+            description=description,
+            finding_type=FindingType.RED_FLAG,
+            severity=Severity.MEDIUM,
+            materiality=MaterialityAssessment(
+                rationale="Compared with configured trend thresholds."
+            ),
+            support_status=SupportStatus.DERIVED,
+            affected_topic=topic,
+            supporting_fact_ids=observation_ids,
+            impact_areas=(DealImpactArea.QUALITY_OF_EARNINGS,),
+            recommended_follow_up="Explain the underlying drivers and provide supporting monthly detail.",
+        )
+        return FinancialFindingOutput(finding, observation_ids, ())
 
 
 def follow_up_questions(

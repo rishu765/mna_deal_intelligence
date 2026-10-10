@@ -256,6 +256,7 @@ class GrowthResult:
     current_period: FinancialPeriod
     percentage: Decimal | None
     warnings: tuple[CalculationWarning, ...] = ()
+    input_observation_ids: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

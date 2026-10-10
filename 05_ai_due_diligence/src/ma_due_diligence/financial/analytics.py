@@ -82,6 +82,7 @@ def revenue_growth(prior: FinancialObservation, current: FinancialObservation) -
                     CalculationWarningCode.MIXED_CURRENCIES, "Revenue currencies differ."
                 ),
             ),
+            (prior.observation_id, current.observation_id),
         )
     normalized = normalize_unit(current, prior.unit)
     percentage = (
@@ -98,7 +99,14 @@ def revenue_growth(prior: FinancialObservation, current: FinancialObservation) -
         warning = (
             CalculationWarning(CalculationWarningCode.MISSING_INPUT, "Revenue value is missing."),
         )
-    return GrowthResult(FinancialMetric.REVENUE, prior.period, current.period, percentage, warning)
+    return GrowthResult(
+        FinancialMetric.REVENUE,
+        prior.period,
+        current.period,
+        percentage,
+        warning,
+        (prior.observation_id, current.observation_id),
+    )
 
 
 def customer_concentration(
