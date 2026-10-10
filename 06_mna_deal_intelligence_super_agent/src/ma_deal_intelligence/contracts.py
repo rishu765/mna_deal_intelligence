@@ -80,6 +80,8 @@ class ProjectCapability:
     requires_human_review: bool = False
     supports_offline_mode: bool = True
     version: str = "1.0.0"
+    required_inputs: tuple[str, ...] = ()
+    produced_outputs: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,12 +117,14 @@ class DocumentIntelligenceRequest:
     entity_id: str
     document_ids: tuple[str, ...] = ()
     question: str | None = None
+    execution_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
 class TargetScreeningRequest:
     deal_context: DealContext
     acquisition_criteria_id: str
+    execution_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,6 +132,7 @@ class TradingCompsRequest:
     deal_context: DealContext
     target_entity_id: str
     target_financial_profile_id: str
+    execution_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -135,6 +140,7 @@ class PrecedentTransactionsRequest:
     deal_context: DealContext
     target_entity_id: str
     search_criteria_id: str
+    execution_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -143,6 +149,7 @@ class DiligenceRequest:
     target_entity_id: str
     vdr_document_ids: tuple[str, ...]
     requested_workstreams: tuple[str, ...] = ()
+    execution_id: str | None = None
 
 
 class Project1Adapter(

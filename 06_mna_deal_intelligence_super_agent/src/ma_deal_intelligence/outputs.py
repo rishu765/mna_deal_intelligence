@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Generic, TypeVar
 
-from ma_deal_intelligence.evidence import ProjectId
+from ma_deal_intelligence.evidence import EvidenceReference, ProjectId
 from ma_deal_intelligence.finance import (
     DiligenceFindingReference,
     FinancialMetricReference,
@@ -32,6 +32,7 @@ class ProjectResultEnvelope(Generic[PayloadT]):
     generated_at: datetime
     data_as_of: datetime | None
     schema_version: str
+    evidence: tuple[EvidenceReference, ...] = ()
 
     def __post_init__(self) -> None:
         if self.generated_at.tzinfo is None or self.generated_at.utcoffset() is None:

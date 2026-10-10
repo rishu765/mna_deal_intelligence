@@ -1,6 +1,6 @@
 # Projects 1–5 integration matrix
 
-This matrix reflects the implementation inspected at the start of Project 6 M0. Project 6 uses
+This matrix reflects the implementation re-inspected for Project 6 M1/2. Project 6 uses
 adapters because each project is an independently packaged `src` application and repository rules
 prohibit imports from private specialist implementation modules.
 
@@ -14,7 +14,7 @@ prohibit imports from private specialist implementation modules.
 
 ## Actual compatibility gaps
 
-| Gap | Repository evidence | M0 treatment | Later owner |
+| Gap | Repository evidence | M1/2 treatment | Later owner |
 | --- | --- | --- | --- |
 | Entity identity | P2 `CandidateCompany`, P3 `CompanyIdentity`, P4 transaction parties, and P5 `EntityReference` use different IDs and fields; P1 often carries a company name only | `CanonicalEntityReference` retains canonical ID, names, aliases, market fields, external IDs, source projects, and evidence | M1/2 adapter mappings; M3 reconciliation policy |
 | Evidence shape | P1 distinguishes canonical page and physical PDF index; P3 has finance-oriented locators and timestamps; P4 evidence is transaction/document scoped; P5 includes spreadsheet and span locators | Superset `EvidenceReference` plus original `project_evidence_id` and `source_record_id` | M1/2 adapters |
@@ -26,7 +26,21 @@ prohibit imports from private specialist implementation modules.
 | Warning/error shape | P1/P2 often expose strings or local issue objects; P4/P5 use distinct structured failure codes | Project 6 envelope uses `DealWarning`/`DealError`, including project and capability, without raw stack traces | M1/2 adapters |
 | Human review | P2 shortlist actions and P4/P5 workflow decisions have different subjects/actions | Project 6 `AnalystDecision` records general subject/action/reviewer/time while keeping specialist source records | M3 reconciliation and M4/5 HITL |
 | Serialization | P3, P4, and P5 have separate tagged serializers and schema constants; P1/P2 mainly expose dataclasses/API schemas | Project 6 has an independent tagged state serializer and rejects unknown schema versions | Each adapter at its boundary |
-| Package boundaries | Five separate distributions with no shared package; some projects already contain explicit upstream adapters | M0 imports no specialist package and defines Protocols only | M1/2 concrete adapters |
+| Package boundaries | Five separate distributions reuse top-level package names such as `src` and expose different service/factory shapes | Concrete adapters use explicit native request models and injectable service callables; fixture mode remains import-safe | Native composition in M4/5 |
+
+## M1/2 adapter bindings
+
+| Adapter | Canonical capability | Verified native seam | Current binding |
+| --- | --- | --- | --- |
+| Project 1 | Company intelligence and cited Q&A | `ProjectApplicationService`, `CompanyIntelligenceService`, `ServiceContainer` | Explicit request/output translation; fixture callable by default; native callable injection |
+| Project 2 | Target sourcing and screening | `build_offline_services`, discovery/profile/screening services | Acquisition criteria mapping with typed candidate and evidence envelope |
+| Project 3 | Trading-comps valuation | Public valuation request/output models and offline fixtures | Target profile, currency, and as-of validation; specialist valuation retained unchanged |
+| Project 4 | Precedent valuation | Discovery/selection/valuation workflow services and fixtures | Search criteria mapping; transaction basis and evidence retained |
+| Project 5 | Structured diligence | Final workflow services and `DiligenceWorkflowResult` | VDR/workstream mapping; findings and finance references remain structured |
+
+The registry exposes these bindings without importing specialist internals. A host application can
+provide a project-native callable after loading the relevant distribution. This is required because
+the repository projects are independently packaged and are not safe to import eagerly together.
 
 ## Compatibility expectation
 
