@@ -219,10 +219,18 @@ class AdjustmentType(StrEnum):
     ADD_BACK = "add_back"
     NORMALIZATION = "normalization"
     ONE_TIME_EXPENSE = "one_time_expense"
+    NONRECURRING_INCOME = "nonrecurring_income"
     OWNER_COMPENSATION = "owner_compensation"
     NONRECURRING_LEGAL_EXPENSE = "nonrecurring_legal_expense"
+    LITIGATION = "litigation"
+    RESTRUCTURING = "restructuring"
+    PROFESSIONAL_FEES = "professional_fees"
+    ONE_TIME_BONUS = "one_time_bonus"
+    RELATED_PARTY = "related_party"
+    EXCEPTIONAL_ITEM = "exceptional_item"
     RUN_RATE = "run_rate"
     REVENUE_NORMALIZATION = "revenue_normalization"
+    ACCOUNTING_RECLASSIFICATION = "accounting_reclassification"
     OTHER = "other"
 
 
