@@ -40,14 +40,9 @@ class LocalRunRegistry:
     def start(self, payload: StartRunRequest) -> WorkflowState:
         if payload.run_id in self.states:
             raise ValueError("run_id already exists")
-        if payload.fixture_mode:
-            directory = TemporaryDirectory(prefix="madd-vdr-")
-            self.fixture_directories[payload.run_id] = directory
-            manifest = create_specialist_fixture_vdr(Path(directory.name))
-        elif payload.manifest_path:
-            manifest = Path(payload.manifest_path).expanduser().resolve()
-        else:
-            raise ValueError("manifest_path is required when fixture_mode is false")
+        directory = TemporaryDirectory(prefix="madd-vdr-")
+        self.fixture_directories[payload.run_id] = directory
+        manifest = create_specialist_fixture_vdr(Path(directory.name))
         engagement = replace(build_specialist_engagement(), engagement_id=payload.run_id)
         request = WorkflowRequest(
             payload.run_id,

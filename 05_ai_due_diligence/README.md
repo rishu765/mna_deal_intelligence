@@ -76,8 +76,8 @@ flags, four workstream sections, QoE, working capital, net debt, conflicts, miss
 requests, review decisions, and limitations. Numerical summaries are copied from M3 outputs and
 validated before release. Findings cite their original evidence references.
 
-The local FastAPI proof of concept provides health, run creation, run status, review submission,
-and report retrieval endpoints. Fixture mode requires no credentials. Run `madd-agent-demo` for an
+The local FastAPI proof of concept provides health, fixture-run creation, run status, review
+submission, and report retrieval endpoints. It requires no credentials. Run `madd-agent-demo` for an
 offline pause/resume demonstration, `madd-evaluate` for the 14-scenario evaluation, or `madd-api`
 for the API. See [Final agent architecture](docs/final-agent-architecture.md).
 

@@ -91,9 +91,11 @@ The local FastAPI interface exposes:
 - `POST /diligence/runs/{run_id}/review`
 - `GET /diligence/runs/{run_id}/report`
 
-Fixture mode is credential free. A local manifest path is supported for trusted local operation.
-The registry and checkpoints are process local. There is no authentication, persistence, queue,
-rate limiting, uploaded-file endpoint, or multi-tenant authorization in V1.
+The API is deliberately fixture-only and credential free because the default M3 workflow adapter
+uses the deterministic synthetic finance case. Custom VDR execution requires injecting a financial
+extraction adapter at the service boundary. The registry and checkpoints are process local. There
+is no authentication, persistence, queue, rate limiting, uploaded-file endpoint, or multi-tenant
+authorization in V1.
 
 ## AI and Deterministic Boundary
 

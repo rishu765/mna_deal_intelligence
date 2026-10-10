@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -21,8 +22,7 @@ class StartRunRequest(BaseModel):
 
     run_id: str = Field(min_length=1, max_length=120)
     review_policy: ReviewPolicy = ReviewPolicy.WHEN_NEEDED
-    fixture_mode: bool = True
-    manifest_path: str | None = None
+    fixture_mode: Literal[True] = True
 
 
 class ReviewDecisionRequest(BaseModel):
