@@ -16,7 +16,7 @@ investment advice or autonomous deal decisions.
 | Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
 | Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **Version 1.0 complete** |
-| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **M1/2 VDR intelligence complete** |
+| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **M3 financial diligence complete** |
 | Deal Intelligence System | `06_deal_intelligence_system/` | Planned |
 
 Future project directories will be added when work on those projects begins. A `shared/`
@@ -36,6 +36,9 @@ Project 5 M0 establishes provider-neutral, evidence-first diligence contracts. M
 multi-format VDR ingestion, deterministic document/workstream classification, table- and
 clause-aware chunks, exact duplicate/version handling, semantic plus BM25 hybrid retrieval,
 metadata filters, cross-document evidence grouping, bounded RAG context, and retrieval evaluation.
+M3 adds evidence-linked financial observations, explicit normalization and source priority,
+deterministic QoE adjustment assessment, EBITDA, customer concentration, working-capital and net
+debt bridges, candidate financial findings, and a category-specific offline evaluation.
 
 ## Portfolio foundations
 
