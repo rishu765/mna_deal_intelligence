@@ -38,7 +38,7 @@ valuation is generated.
 An adjusted metric with the same entity, metric type, and period can make a valuation based on a
 reported metric stale for that adjusted scenario. The original valuation remains valid for its
 original input basis. M3 creates a typed recomputation request containing the changed input IDs,
-target capability, scenario, priority, and approval requirement. M4/5 will decide whether and when
+target capability, scenario, priority, and approval requirement. M4/5 decides whether and when
 to execute it.
 
 Explicit `ArtifactVersion.produced_from` relationships also propagate superseded input status to a

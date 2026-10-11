@@ -5,6 +5,8 @@ M0 established canonical state and typed integration contracts. M1/2 adds concre
 adapters, a capability registry, offline-first intent classification, deterministic dependency
 planning, idempotent result ingestion, and a deliberately small sequential fixture runner. M3 adds
 deterministic cross-project reconciliation and a structured unified deal intelligence snapshot.
+M4/5 adds the checkpointed LangGraph runtime, dependency-aware fan-out/fan-in, bounded retries,
+failure isolation, analyst interrupts and resume, and controlled specialist reruns.
 
 ## Business Problem
 
@@ -17,8 +19,8 @@ outputs without losing ownership or source precision.
 
 Projects 1–5 are intentionally independent specialists. Project 6 will eventually interpret a
 deal-level request, invoke only the needed specialist capabilities, preserve outputs, expose
-conflicts, request analyst judgment, and synthesize an evidence-linked answer. M1/2 implements the
-selection and planning layer while leaving reconciliation and orchestration to later milestones.
+conflicts, request analyst judgment, and synthesize an evidence-linked answer. M0–M5 now cover the
+contracts, selection, planning, reconciliation, and checkpointed orchestration layers.
 
 ```mermaid
 flowchart LR
@@ -53,7 +55,7 @@ outputs, dependencies, and incompatibilities found in the current repository.
 
 Project 6 owns canonical entity references, shared deal context, specialist envelopes, cross-project
 lineage, workflow and capability status, dependency and staleness metadata, analyst decisions,
-future reconciliation, orchestration, and final synthesis metadata.
+reconciliation, orchestration, and final synthesis metadata.
 
 ## What Project 6 Does NOT Reimplement
 
@@ -126,7 +128,7 @@ records which inputs are actually present.
 
 `ExecutionPlanner` maps known intents to registered capabilities, adds only required provider
 steps, builds an acyclic dependency graph, assigns topological stages, and marks same-stage work as
-parallelizable for a future runtime. It records concise selection rationale, expected outputs,
+parallelizable for the M4/5 runtime. It records concise selection rationale, expected outputs,
 skipped capabilities, missing inputs, suggested clarification questions, and partial availability
 warnings. A specified target skips Project 2. A valuation-only request does not add Project 4 or
 Project 5. A target search does not add valuation or diligence.
@@ -134,7 +136,7 @@ Project 5. A target search does not add valuation or diligence.
 `SequentialPlanRunner` exercises ready steps in order for offline integration tests. It records
 selection, invocation, success, warning, failure, skip, and ingestion events. A failing adapter
 does not remove completed results and does not stop independent steps. This runner is validation
-scaffolding, not the future LangGraph runtime.
+scaffolding; M4/5 uses the LangGraph runtime described below.
 
 `ingest_result` inserts typed envelopes, evidence, metrics, valuations, findings, warnings, and
 errors into a new `DealState` revision. Reingesting the same project/capability/run ID is a no-op.
@@ -150,8 +152,8 @@ flowchart LR
     P --> E[ProjectResultEnvelope]
     E --> C[(Canonical DealState)]
     C --> R[Reconciliation Engine<br/>M3]
-    R --> O[Orchestration<br/>M4/5]
-    O --> H[Human review<br/>M4/5]
+    R --> O[LangGraph Orchestration<br/>M4/5]
+    O --> H[Checkpointed human review<br/>M4/5]
     H --> F[Final output<br/>M6/7]
     M[M3: reconciliation only] -. no LangGraph runtime .-> R
 ```
@@ -176,7 +178,7 @@ flowchart LR
     R --> S[Staleness]
     R --> Q[Review Queue]
     R --> U[Unified Deal Snapshot]
-    U -. future .-> L[LangGraph Orchestration M4/5]
+    U --> L[LangGraph Orchestration M4/5]
 ```
 
 ### Entity, metric, and evidence reconciliation
@@ -259,20 +261,59 @@ stale artifacts, and retains evidence lineage. An LLM may explain Project 3, 4, 
 never silently rewrite them. M3 uses no LLM: comparison, tolerance, staleness, review priority, and
 scenario construction are deterministic.
 
-## Future LangGraph Architecture
+## LangGraph Super-Agent Runtime
 
-LangChain may later provide structured model calls, tool interfaces, prompts, and access to
-specialist retrieval integrations. LangGraph is planned for typed state, routing, execution,
-conditional edges, fan-out/fan-in, checkpointing, human review, retry/resume, and failure isolation.
-No LangChain dependency is needed for classification or reconciliation. No LangGraph runtime is
-implemented through M3.
+M4/5 implements an explicit typed `StateGraph`. Request validation, intent classification, plan
+construction, plan validation, dependency-stage dispatch, adapter invocation, result collection,
+M3 reconciliation, review detection, analyst interruption, approved reruns, and terminal handling
+are separate workflow boundaries.
+
+```mermaid
+flowchart TD
+    U[User Request] --> I[Intent Classifier and Planner]
+    I --> E[Validated Execution Plan]
+    E --> D[LangGraph Dispatcher]
+    D -->|Send| P1[Project 1]
+    D -->|Send| P2[Project 2]
+    D -->|Send| P3[Project 3]
+    D -->|Send| P4[Project 4]
+    D -->|Send| P5[Project 5]
+    P1 & P2 & P3 & P4 & P5 --> C[Result Collection]
+    C --> R[M3 Reconciliation]
+    R --> H{Review needed?}
+    H -->|no| F[Structured terminal state]
+    H -->|yes| X{{HITL interrupt}}
+    X --> A[Analyst decision]
+    A --> Q{Approved rerun?}
+    Q -->|yes| D2[Affected specialist only]
+    D2 --> R
+    Q -->|no| R
+```
+
+The dispatcher reads M1/2 topological stages and invokes only selected capabilities. Ready steps in
+the same stage use LangGraph `Send`, then join at typed result ingestion. Missing required input
+enters `WAITING_FOR_INPUT`; it does not fabricate a target, VDR, financial profile, currency, or
+sector. Retryable provider failures use a bounded counter, while deterministic validation errors
+are not retried. Independent successful results survive another specialist's failure.
+
+M3 review items and policy-triggered material diligence findings create concise review payloads.
+LangGraph checkpoints before `interrupt`; resume uses the same thread ID and an append-only decision
+and audit record. An approved EBITDA scenario reruns only Project 3, retains its prior envelope, and
+reconciles again. The default process-local checkpointer and trusted serializer are suitable for
+offline tests and a single trusted process only.
+
+See [orchestration.md](docs/orchestration.md) for state fields, nodes, routing, retry policy,
+checkpointing, review payloads, invariants, and the milestone evaluation harness.
+
+LangChain remains available for structured model interactions inside intent interpretation or
+specialists. LangGraph is the sole Project 6 orchestration layer.
 
 ## Roadmap
 
 1. **M0 — Architecture + Canonical Deal State + Integration Contracts** ✅
 2. **M1/2 — Project Adapters + Tool Registry + Intent Routing / Planning** ✅
 3. **M3 — Cross-Agent Reconciliation + Unified Deal Intelligence** ✅
-4. **M4/5 — LangGraph Super-Agent Orchestration + HITL + Resilience**
+4. **M4/5 — LangGraph Super-Agent Orchestration + HITL + Resilience** ✅
 5. **M6/7 — Final Synthesis + Evaluation + Observability + API/Demo + Final V1**
 
 ## Development
@@ -286,6 +327,7 @@ python -m mypy
 python -m pytest
 python demo_routing.py
 python demo_reconciliation.py
+python demo_orchestration.py
 ```
 
 All tests and fixtures are offline. The package has no runtime dependency on Projects 1–5.
@@ -297,9 +339,10 @@ All tests and fixtures are offline. The package has no runtime dependency on Pro
   eager imports of every project in one interpreter.
 - Rules cover a bounded English intent vocabulary; ambiguous requests need the optional classifier
   or later clarification flow.
-- The runner is sequential and in-process. It has no retries, checkpoints, fan-out, or resume.
+- The M1/2 runner remains sequential scaffolding; M4/5 uses the checkpointed LangGraph runtime.
 - Dependency staleness follows explicit metric IDs and `produced_from` metadata; it does not infer
   undocumented specialist dependencies.
-- Automatic specialist reruns and automatic resolution of material conflicts remain unimplemented.
+- Native scenario reruns depend on the specialist adapter accepting the approved scenario input.
 - Final synthesis defines the future output shape; M0 creates no generated synthesis content.
-- No full graph execution, human interrupt/resume, API, frontend, or deployment exists.
+- The included checkpointer is process-local; no production database or distributed worker exists.
+- No final synthesis, production API, frontend, authentication, or deployment exists.
