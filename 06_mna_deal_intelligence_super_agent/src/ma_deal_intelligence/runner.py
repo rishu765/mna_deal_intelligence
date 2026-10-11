@@ -80,7 +80,7 @@ class SequentialPlanRunner:
                     )
                     continue
                 try:
-                    specialist_request = _request_for(step.capability_id, plan, current)
+                    specialist_request = request_for_capability(step.capability_id, plan, current)
                     trace.append(
                         _event(TraceEventType.INVOKED, step.capability_id, "Adapter invoked.")
                     )
@@ -139,7 +139,14 @@ class SequentialPlanRunner:
         return RunnerResult(replace(current, workflow_status=status), tuple(trace))
 
 
-def _request_for(capability_id: str, plan: ExecutionPlan, state: DealState) -> Any:
+def request_for_capability(
+    capability_id: str,
+    plan: ExecutionPlan,
+    state: DealState,
+    *,
+    execution_id: str | None = None,
+) -> Any:
+    """Build the canonical request passed across one specialist adapter boundary."""
     normalized = plan.request
     context = replace(
         state.deal_context,
@@ -154,24 +161,29 @@ def _request_for(capability_id: str, plan: ExecutionPlan, state: DealState) -> A
         if candidates:
             target_id = candidates[0].entity.canonical_entity_id
             context = replace(context, target_entity_id=target_id)
-    execution_id = f"{plan.plan_id}:{capability_id}:v1"
+    resolved_execution_id = execution_id or f"{plan.plan_id}:{capability_id}:v1"
     documents = tuple(item.document_id for item in state.source_documents)
     if capability_id == CapabilityId.P1_EXTRACT_COMPANY_INTELLIGENCE:
         return DocumentIntelligenceRequest(
-            context, target_id, documents, normalized.query, execution_id
+            context, target_id, documents, normalized.query, resolved_execution_id
         )
     if capability_id in {CapabilityId.P2_SOURCE_TARGETS, CapabilityId.P2_SCREEN_TARGETS}:
-        return TargetScreeningRequest(context, f"criteria:{normalized.request_id}", execution_id)
+        return TargetScreeningRequest(
+            context, f"criteria:{normalized.request_id}", resolved_execution_id
+        )
     if capability_id == CapabilityId.P3_PRODUCE_VALUATION_RANGE:
         profile_id = (
             state.company_intelligence[-1].payload.research_profile_id
             if state.company_intelligence
             else "canonical:financial-profile"
         )
-        return TradingCompsRequest(context, target_id, profile_id or "", execution_id)
+        return TradingCompsRequest(context, target_id, profile_id or "", resolved_execution_id)
     if capability_id == CapabilityId.P4_PRODUCE_VALUATION_RANGE:
         return PrecedentTransactionsRequest(
-            context, target_id, f"precedent-criteria:{normalized.request_id}", execution_id
+            context,
+            target_id,
+            f"precedent-criteria:{normalized.request_id}",
+            resolved_execution_id,
         )
     if capability_id == CapabilityId.P5_PRODUCE_DILIGENCE_FINDINGS:
         return DiligenceRequest(
@@ -179,7 +191,7 @@ def _request_for(capability_id: str, plan: ExecutionPlan, state: DealState) -> A
             target_id,
             documents,
             normalized.requested_workstreams,
-            execution_id,
+            resolved_execution_id,
         )
     raise ValueError(f"unsupported runner capability: {capability_id}")
 

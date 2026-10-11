@@ -1,6 +1,7 @@
 """M&A Deal Intelligence Super-Agent contracts and deterministic planning."""
 
 from ma_deal_intelligence.intent import DealIntent, IntentClassifier
+from ma_deal_intelligence.orchestration import SuperAgentApplication, build_workflow
 from ma_deal_intelligence.planning import ExecutionPlan, ExecutionPlanner
 from ma_deal_intelligence.reconciliation import ReconciliationService
 from ma_deal_intelligence.reconciliation_models import UnifiedDealIntelligenceSnapshot
@@ -16,6 +17,8 @@ __all__ = [
     "ExecutionPlanner",
     "IntentClassifier",
     "ReconciliationService",
+    "SuperAgentApplication",
     "UnifiedDealIntelligenceSnapshot",
     "default_registry",
+    "build_workflow",
 ]
