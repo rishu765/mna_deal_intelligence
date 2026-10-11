@@ -17,7 +17,7 @@ investment advice or autonomous deal decisions.
 | Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
 | Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **Version 1.0 complete** |
 | AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **Version 1.0 complete** |
-| M&A Deal Intelligence Super-Agent | [`06_mna_deal_intelligence_super_agent/`](06_mna_deal_intelligence_super_agent/) | M4/5 complete |
+| M&A Deal Intelligence Super-Agent | [`06_mna_deal_intelligence_super_agent/`](06_mna_deal_intelligence_super_agent/) | **Version 1.0 complete** |
 
 Project 6 M0 defines canonical deal state and integration contracts. M1/2 adds concrete Project 1–5
 boundary adapters, capability discovery and availability, offline-first intent classification,
@@ -27,7 +27,10 @@ valuation and risk views, diligence impact linking, scenario staleness, recomput
 analyst review prioritization, and a unified structured snapshot. M4/5 adds checkpointed LangGraph
 execution, dependency-aware parallel dispatch, bounded retries, partial-failure survival, analyst
 interrupt/resume, controlled specialist reruns, state invariants, and an offline graph evaluation
-harness. Final synthesis, production observability, and the API remain planned for M6/7.
+harness. M6/7 completes validated evidence-backed deal synthesis, bounded deal assessment,
+structured observability, an 18-case final evaluation, local FastAPI, and a three-scenario offline
+demo. Project 6 Version 1.0 is complete; production persistence, authentication, live provider
+composition, and deployment remain future hardening work.
 
 Project 2 Version 1.0 contains a typed acquisition thesis, credential-free discovery,
 evidence-backed enrichment, deterministic screening, grounded strategic-fit assessment,
