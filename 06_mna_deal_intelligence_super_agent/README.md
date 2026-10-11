@@ -6,7 +6,9 @@ adapters, a capability registry, offline-first intent classification, determinis
 planning, idempotent result ingestion, and a deliberately small sequential fixture runner. M3 adds
 deterministic cross-project reconciliation and a structured unified deal intelligence snapshot.
 M4/5 adds the checkpointed LangGraph runtime, dependency-aware fan-out/fan-in, bounded retries,
-failure isolation, analyst interrupts and resume, and controlled specialist reruns.
+failure isolation, analyst interrupts and resume, and controlled specialist reruns. M6/7 completes
+Version 1.0 with validated evidence-backed synthesis, policy-based deal assessment, safe
+observability, an 18-case evaluation, a typed local API, and a polished offline demo.
 
 ## Business Problem
 
@@ -17,10 +19,9 @@ outputs without losing ownership or source precision.
 
 ## Why a Super-Agent Is Needed
 
-Projects 1–5 are intentionally independent specialists. Project 6 will eventually interpret a
-deal-level request, invoke only the needed specialist capabilities, preserve outputs, expose
-conflicts, request analyst judgment, and synthesize an evidence-linked answer. M0–M5 now cover the
-contracts, selection, planning, reconciliation, and checkpointed orchestration layers.
+Projects 1–5 are intentionally independent specialists. Project 6 interprets a deal-level request,
+invokes only the needed specialist capabilities, preserves outputs, exposes conflicts, requests
+analyst judgment, and synthesizes an evidence-linked answer.
 
 ```mermaid
 flowchart LR
@@ -31,7 +32,7 @@ flowchart LR
     P6 --> P4[Project 4<br/>Precedents]
     P6 --> P5[Project 5<br/>Due diligence]
     P1 & P2 & P3 & P4 & P5 --> S[(Shared Deal State)]
-    S --> F[Final Synthesis Contract]
+    S --> F[Validated Final Synthesis]
     C[M1/2: adapters and deterministic plans] -. constrains .-> P6
 ```
 
@@ -154,7 +155,7 @@ flowchart LR
     C --> R[Reconciliation Engine<br/>M3]
     R --> O[LangGraph Orchestration<br/>M4/5]
     O --> H[Checkpointed human review<br/>M4/5]
-    H --> F[Final output<br/>M6/7]
+    H --> F[Final synthesis and API<br/>V1]
     M[M3: reconciliation only] -. no LangGraph runtime .-> R
 ```
 
@@ -314,7 +315,64 @@ specialists. LangGraph is the sole Project 6 orchestration layer.
 2. **M1/2 — Project Adapters + Tool Registry + Intent Routing / Planning** ✅
 3. **M3 — Cross-Agent Reconciliation + Unified Deal Intelligence** ✅
 4. **M4/5 — LangGraph Super-Agent Orchestration + HITL + Resilience** ✅
-5. **M6/7 — Final Synthesis + Evaluation + Observability + API/Demo + Final V1**
+5. **M6/7 — Final Synthesis + Evaluation + Observability + API/Demo + Final V1** ✅
+
+## Final Synthesis
+
+`SynthesisService` builds immutable structured output before narrative. It covers the deal overview,
+stated strategic rationale, company intelligence, screening context, Project 3 trading comps,
+Project 4 precedents, Project 5 diligence, side-by-side valuation, scenarios, reconciliation issues,
+diligence implications, prioritized risks, analyst decisions, open questions, assumptions, and
+limitations. It does not blend methods or recalculate specialist finance.
+
+The final assessment is a transparent policy result: `ATTRACTIVE`,
+`ATTRACTIVE_WITH_CONDITIONS`, `MIXED`, `HIGH_RISK`, or `INSUFFICIENT_INFORMATION`. The output lists
+the structured reasons and issue, risk, and missing-specialist counts. It is decision support and
+not investment advice.
+
+Before publication, deterministic validation compares every surfaced valuation and material metric
+with canonical state. Citation rendering uses only known evidence IDs and retains document pages,
+sections, sheets, cells, rows, chunks, and specialist record IDs. An optional narrative provider is
+guarded against unsupported numeric mentions.
+
+See [Final V1](docs/final-v1.md) for the full output, API, security, integration, and limitation
+details.
+
+## Evaluation
+
+The [final evaluation report](docs/evaluation-report.md) separates intent, routing, planning,
+adapters, orchestration, reconciliation, HITL, synthesis, resilience, and end-to-end metrics. Its 18
+offline cases include missing input, unavailable and transient specialists, EBITDA conflict,
+multiple reviews, entity and currency conflicts, and stale reruns. It reports no composite score
+and makes no production-readiness claim.
+
+## Observability
+
+`build_run_summary` reports safe counts and timings for selected, completed, skipped, failed,
+retried, reviewed, and rerun work plus evidence and reconciliation totals. `safe_trace` exposes IDs,
+statuses, timestamps, capability/result references, branches, retries, and durations. It excludes
+prompts, trace messages, source excerpts, secrets, VDR content, and hidden reasoning.
+
+## API
+
+The local FastAPI service exposes health, create run, run status, review, resume, result, and safe
+trace endpoints under `/deal-intelligence/runs`. V1 supports deterministic offline mode. Typed
+Pydantic schemas reject extra fields; unknown runs, invalid reviews, unavailable results, and
+non-resumable runs receive explicit error statuses without stack traces.
+
+```powershell
+python -m uvicorn ma_deal_intelligence.api:app --reload
+```
+
+## Demo
+
+`demo_final.py` runs target screening, valuation comparison, and a full acquisition evaluation. The
+full run displays routing, staged specialist work, reconciliation, EBITDA review, an analyst-approved
+Project 3 rerun, resume, final sections, citations, safe run metrics, and the benchmark summary.
+
+```powershell
+python demo_final.py
+```
 
 ## Development
 
@@ -328,6 +386,7 @@ python -m pytest
 python demo_routing.py
 python demo_reconciliation.py
 python demo_orchestration.py
+python demo_final.py
 ```
 
 All tests and fixtures are offline. The package has no runtime dependency on Projects 1–5.
@@ -343,6 +402,14 @@ All tests and fixtures are offline. The package has no runtime dependency on Pro
 - Dependency staleness follows explicit metric IDs and `produced_from` metadata; it does not infer
   undocumented specialist dependencies.
 - Native scenario reruns depend on the specialist adapter accepting the approved scenario input.
-- Final synthesis defines the future output shape; M0 creates no generated synthesis content.
 - The included checkpointer is process-local; no production database or distributed worker exists.
-- No final synthesis, production API, frontend, authentication, or deployment exists.
+- The local API has no authentication, enterprise authorization, frontend, or deployment setup.
+- Evaluation relies heavily on deterministic synthetic fixtures and limited native integrations.
+- No real-time market-data guarantee or full legal, tax, cyber, DCF, LBO, or accretion/dilution
+  engine exists.
+- Observability is in process and has no production telemetry backend.
+
+## Portfolio and Interview Materials
+
+- [Portfolio summary, resume bullets, and interview story](docs/portfolio-story.md)
+- [Portfolio-wide hardening handoff](docs/hardening-handoff.md)
