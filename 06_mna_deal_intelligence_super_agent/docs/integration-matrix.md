@@ -49,3 +49,19 @@ understands, emit a warning for partial mappings, and never coerce unknown value
 version change requires an explicit adapter update and contract test. Project 6 state may add
 backward-compatible optional fields within `1.x`; breaking serialized-state changes require a new
 major schema version.
+
+## M3 reconciliation treatment
+
+| Specialist output | M3 comparison | Ownership retained |
+| --- | --- | --- |
+| P1 disclosed facts | Align by entity, metric, period, currency, unit, and reported basis | P1 source string/record and document evidence remain authoritative for the disclosed fact |
+| P2 strategic fit | Add thesis-support evidence and preserve strategic warnings | P2 score and rationale are not recalculated |
+| P3 `ValuationOutput` / ranges | Preserve method range and input metric IDs; flag scenario staleness | P3 multiple selection, traces, and implied values remain unchanged |
+| P4 `PrecedentValuationOutput` / ranges | Preserve transaction basis, range, and low-sample warnings | P4 transaction selection and valuation arithmetic remain unchanged |
+| P5 `DiligenceWorkflowResult` / financial summary | Link adjusted EBITDA, concentration, net debt, and contract findings to affected contexts | P5 adjustments, bridges, findings, conflicts, and evidence remain unchanged |
+
+The native P3 and P4 outputs include calculation traces and warnings that are richer than the
+canonical range reference. Adapters must continue to retain a stable native output ID so later
+drill-down can recover those details. P5 distinguishes reported EBITDA, accepted adjustments,
+diligence-adjusted EBITDA, concentration, NWC, and adjusted net debt; M3 therefore treats these as
+separate facts rather than a single generic financial metric.

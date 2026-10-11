@@ -3,7 +3,8 @@
 Project 6 is the capstone coordination layer for the five specialist projects in this repository.
 M0 established canonical state and typed integration contracts. M1/2 adds concrete boundary
 adapters, a capability registry, offline-first intent classification, deterministic dependency
-planning, idempotent result ingestion, and a deliberately small sequential fixture runner.
+planning, idempotent result ingestion, and a deliberately small sequential fixture runner. M3 adds
+deterministic cross-project reconciliation and a structured unified deal intelligence snapshot.
 
 ## Business Problem
 
@@ -148,12 +149,76 @@ flowchart LR
     A --> P[Projects 1-5 / offline fixtures]
     P --> E[ProjectResultEnvelope]
     E --> C[(Canonical DealState)]
-    C --> R[Future reconciliation<br/>M3]
+    C --> R[Reconciliation Engine<br/>M3]
     R --> O[Orchestration<br/>M4/5]
     O --> H[Human review<br/>M4/5]
     H --> F[Final output<br/>M6/7]
-    M[M1/2 scope] -. no LangGraph runtime .-> PL
+    M[M3: reconciliation only] -. no LangGraph runtime .-> R
 ```
+
+## Reconciliation Architecture
+
+`ReconciliationService` reads canonical state and produces structured issues, metric and valuation
+views, diligence impact insights, stale-output references, recomputation requests, scenarios, open
+questions, and an analyst review queue. Specialist values remain immutable. Applying staleness
+updates only Project 6 metadata and warnings.
+
+```mermaid
+flowchart LR
+    P1[P1 Results] --> R[Reconciliation Engine]
+    P2[P2 Results] --> R
+    P3[P3 Results] --> R
+    P4[P4 Results] --> R
+    P5[P5 Results] --> R
+    R --> M[Unified Metrics]
+    R --> V[Valuation Comparison]
+    R --> K[Risk Links]
+    R --> S[Staleness]
+    R --> Q[Review Queue]
+    R --> U[Unified Deal Snapshot]
+    U -. future .-> L[LangGraph Orchestration M4/5]
+```
+
+### Entity, metric, and evidence reconciliation
+
+Entity matching uses canonical IDs, deterministic legal-name and alias normalization, ticker,
+exchange, and geography. Partial or inconsistent matches remain ambiguous. Financial identity uses
+metric type, entity, exact period, basis, actual/forecast state, currency, unit, source record, and
+evidence. Different periods are explicitly not comparable. Reported and diligence-adjusted EBITDA
+become separate scenarios rather than competing claims.
+
+Same-currency units can be scaled across ones, thousands, millions, and billions. FX conversion is
+never implicit. Values are aligned when their absolute difference is at most `0.01` base units or
+their relative difference is at most `0.1%`. Valuation midpoint divergence is material above `10%`.
+These thresholds are explicit in `NumericTolerancePolicy`.
+
+Evidence references that point to the same document and locator are linked while retaining their
+project IDs and native evidence IDs. Source authority remains contextual: audited history and
+signed contracts may answer different questions than management adjustments.
+
+### Staleness, valuation, and diligence impacts
+
+A valuation that consumes reported EBITDA is marked stale only for a diligence-adjusted scenario
+when a compatible adjusted metric becomes available. M3 creates an analyst-approved recomputation
+request and does not rerun or recalculate the valuation. Artifact supersession and lightweight
+`produced_from` lineage also mark dependent artifacts stale while unrelated outputs remain fresh.
+
+Trading comps and precedents remain separate valuation entries with their ranges, bases, dates,
+assumptions, evidence, and warnings. Their midpoint gap, percentage divergence, and range overlap
+are deterministic comparison facts; no blended valuation is produced.
+
+Project 5 EBITDA, customer concentration, net debt, and contract findings are linked to valuation
+inputs, multiple confidence, equity-value context, and deal execution respectively. Quantified
+deltas describe input differences only.
+
+### Unified views, review queue, and scenarios
+
+The unified snapshot contains all metric observations, valuation methods, risks, issues, stale
+outputs, recomputation requests, thesis support and challenges, questions, evidence links, and
+warnings. It selects a metric only when observations align or were explicitly resolved. Material
+unresolved items enter a deduplicated review queue prioritized by blocking status, severity, and
+downstream impact. Scenario contracts record metric choices and required reruns without generating
+new specialist values.
 
 ## Evidence and Provenance
 
@@ -170,8 +235,8 @@ to later milestones.
 
 `DependencyRequirement` records required, optional, and any-of capability or artifact inputs.
 `ArtifactVersion` records schema and input versions, source artifact IDs, an optional dependency
-fingerprint, stale state and reason, and supersession. M0 does not compute fingerprints or trigger
-recomputation.
+fingerprint, stale state and reason, and supersession. M3 evaluates direct lineage and scenario
+changes but does not trigger recomputation.
 
 The representative fixture retains Project 3 reported LTM EBITDA of 100 and midpoint enterprise
 value of 1,000 alongside Project 5 diligence-adjusted EBITDA of 85. The rejected recurring add-back
@@ -191,21 +256,22 @@ Future AI-assisted work may interpret user intent, assist planning, explain conf
 qualitative synthesis, and draft the final narrative. Deterministic code invokes projects, validates
 schemas, maps IDs, tracks dependencies and state transitions, enforces numeric integrity, detects
 stale artifacts, and retains evidence lineage. An LLM may explain Project 3, 4, or 5 numbers but may
-never silently rewrite them.
+never silently rewrite them. M3 uses no LLM: comparison, tolerance, staleness, review priority, and
+scenario construction are deterministic.
 
 ## Future LangGraph Architecture
 
 LangChain may later provide structured model calls, tool interfaces, prompts, and access to
 specialist retrieval integrations. LangGraph is planned for typed state, routing, execution,
 conditional edges, fan-out/fan-in, checkpointing, human review, retry/resume, and failure isolation.
-No LangChain dependency is needed for the bounded rules and optional classifier protocol. No
-LangGraph runtime is implemented in M1/2.
+No LangChain dependency is needed for classification or reconciliation. No LangGraph runtime is
+implemented through M3.
 
 ## Roadmap
 
 1. **M0 — Architecture + Canonical Deal State + Integration Contracts** ✅
 2. **M1/2 — Project Adapters + Tool Registry + Intent Routing / Planning** ✅
-3. **M3 — Cross-Agent Reconciliation + Unified Deal Intelligence**
+3. **M3 — Cross-Agent Reconciliation + Unified Deal Intelligence** ✅
 4. **M4/5 — LangGraph Super-Agent Orchestration + HITL + Resilience**
 5. **M6/7 — Final Synthesis + Evaluation + Observability + API/Demo + Final V1**
 
@@ -219,19 +285,21 @@ python -m ruff format --check .
 python -m mypy
 python -m pytest
 python demo_routing.py
+python demo_reconciliation.py
 ```
 
 All tests and fixtures are offline. The package has no runtime dependency on Projects 1–5.
 
 ## Limitations
 
-- Canonical entity references do not perform entity resolution.
+- Entity matching is deterministic and bounded; ambiguous identities require analyst review.
 - Native specialist factories must be injected; repository package-name collisions prevent safe
   eager imports of every project in one interpreter.
 - Rules cover a bounded English intent vocabulary; ambiguous requests need the optional classifier
   or later clarification flow.
 - The runner is sequential and in-process. It has no retries, checkpoints, fan-out, or resume.
-- Dependencies are planned, while stale-result recomputation remains unimplemented.
-- Conflicts are represented but not reconciled.
+- Dependency staleness follows explicit metric IDs and `produced_from` metadata; it does not infer
+  undocumented specialist dependencies.
+- Automatic specialist reruns and automatic resolution of material conflicts remain unimplemented.
 - Final synthesis defines the future output shape; M0 creates no generated synthesis content.
 - No full graph execution, human interrupt/resume, API, frontend, or deployment exists.
