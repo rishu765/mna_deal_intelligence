@@ -4,7 +4,7 @@ This matrix reflects the implementation re-inspected for Project 6 M1/2. Project
 adapters because each project is an independently packaged `src` application and repository rules
 prohibit imports from private specialist implementation modules.
 
-| Project | Inputs expected at future boundary | Outputs consumed by Project 6 | Evidence model | Deterministic outputs | AI-assisted outputs | Dependencies | Adapter complexity |
+| Project | Inputs expected at adapter boundary | Outputs consumed by Project 6 | Evidence model | Deterministic outputs | AI-assisted outputs | Dependencies | Adapter complexity |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 Company & Document Intelligence | Entity, local documents/document IDs, question or research request | `ParsedDocument`, chunks, retrieval results, `RAGAnswer`, `CompanyResearchProfile`, disclosed financial facts | `Citation` joins chunk/document IDs, canonical pages, zero-based physical indexes, printed labels, excerpt, and document metadata | PDF provenance, chunking, indexing, retrieval result structure, citation assembly | Grounded answer and structured company research | PDFs; embedding/generation providers for live paths; fixture paths available | Medium: rich page conventions and string-valued financial metrics need mapping |
 | 2 Target Screening & Sourcing | `AcquisitionThesis`, discovery/enrichment inputs, review policy | `CandidateCompany`, `CandidateProfile`, `ScreeningResult`, `RankedCandidate`, `Shortlist`, workflow result | `DiscoveryEvidence` and `EnrichmentEvidence` use source URL/provider/field details; profile facts and inferences separate | Criterion evaluation, eligibility, score summaries, ranking | Strategic-fit assessment and some enrichment | Discovery and enrichment providers; Project 1 adapter already exists for research enrichment | Medium: candidate identity and evidence types differ from P1/P3; scores use project-specific types |
@@ -26,7 +26,7 @@ prohibit imports from private specialist implementation modules.
 | Warning/error shape | P1/P2 often expose strings or local issue objects; P4/P5 use distinct structured failure codes | Project 6 envelope uses `DealWarning`/`DealError`, including project and capability, without raw stack traces | M1/2 adapters |
 | Human review | P2 shortlist actions and P4/P5 workflow decisions have different subjects/actions | Project 6 `AnalystDecision` records general subject/action/reviewer/time while keeping specialist source records | M3 reconciliation and M4/5 HITL |
 | Serialization | P3, P4, and P5 have separate tagged serializers and schema constants; P1/P2 mainly expose dataclasses/API schemas | Project 6 has an independent tagged state serializer and rejects unknown schema versions | Each adapter at its boundary |
-| Package boundaries | Five separate distributions reuse top-level package names such as `src` and expose different service/factory shapes | Concrete adapters use explicit native request models and injectable service callables; fixture mode remains import-safe | Native composition in M4/5 |
+| Package boundaries | Five separate distributions reuse top-level package names such as `src` and expose different service/factory shapes | Concrete adapters use explicit native request models and injectable service callables; fixture mode remains import-safe | M4/5 graph composes the adapters; native bindings remain deployment-specific |
 
 ## M1/2 adapter bindings
 
