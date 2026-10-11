@@ -721,6 +721,16 @@ class OrchestrationNodes:
             OrchestrationStatus.COMPLETED_WITH_WARNINGS,
             OrchestrationStatus.PARTIALLY_COMPLETED,
         }
+        final_output = None
+        if ready and state.get("reconciliation") is not None:
+            final_output = self.services.synthesizer.build(
+                run_id=state["run_id"],
+                deal_state=deal_state,
+                reconciliation=state["reconciliation"],
+                completed_capabilities=completed,
+                failed_capabilities=failed,
+                orchestration_warnings=state.get("warnings", ()),
+            )
         terminal = OrchestrationTerminalResult(
             state["run_id"],
             status,
@@ -733,18 +743,35 @@ class OrchestrationNodes:
             len(state.get("errors", ())) + len(deal_state.errors),
             ready,
             f"Run terminated with status {status.value}.",
+            final_output,
+        )
+        synthesis_trace = (
+            self._trace(
+                state,
+                "finalize_run",
+                TraceEventType.FINAL_SYNTHESIS_BUILT,
+                "Validated structured final synthesis built.",
+                token=final_output.synthesis_id,
+                status=status,
+            )
+            if final_output is not None
+            else ()
         )
         return {
             "status": status,
             "deal_state": deal_state,
             "terminal_result": terminal,
-            "trace": self._trace(
-                state,
-                "finalize_run",
-                TraceEventType.TERMINATED,
-                terminal.message,
-                token=status.value,
-                status=status,
+            "final_output": final_output,
+            "trace": (
+                *synthesis_trace,
+                *self._trace(
+                    state,
+                    "finalize_run",
+                    TraceEventType.TERMINATED,
+                    terminal.message,
+                    token=status.value,
+                    status=status,
+                ),
             ),
         }
 

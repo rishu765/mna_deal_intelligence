@@ -10,6 +10,7 @@ from ma_deal_intelligence.outputs import ProjectResultEnvelope
 from ma_deal_intelligence.planning import ExecutionPlanner
 from ma_deal_intelligence.reconciliation import ReconciliationService
 from ma_deal_intelligence.registry import CapabilityRegistry, default_registry
+from ma_deal_intelligence.synthesis import SynthesisService
 
 
 class TransientAdapterError(RuntimeError):
@@ -35,6 +36,7 @@ class OrchestrationServices:
     planner: ExecutionPlanner
     reconciler: ReconciliationService
     invoker: SpecialistInvoker
+    synthesizer: SynthesisService
 
 
 def default_services() -> OrchestrationServices:
@@ -45,4 +47,5 @@ def default_services() -> OrchestrationServices:
         ExecutionPlanner(registry),
         ReconciliationService(),
         RegistrySpecialistInvoker(registry),
+        SynthesisService(),
     )

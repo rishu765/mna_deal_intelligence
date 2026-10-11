@@ -15,6 +15,7 @@ from ma_deal_intelligence.planning import ClarificationRequirement, ExecutionPla
 from ma_deal_intelligence.reconciliation_models import ReconciliationResult
 from ma_deal_intelligence.requests import UserDealRequest
 from ma_deal_intelligence.state import DealState
+from ma_deal_intelligence.synthesis import FinalDealIntelligenceOutput
 from ma_deal_intelligence.workflow import DealError, ExecutionStatus
 
 
@@ -59,6 +60,7 @@ class TraceEventType(StrEnum):
     REVIEW_INTERRUPTED = "review_interrupted"
     REVIEW_RESUMED = "review_resumed"
     RERUN_SCHEDULED = "rerun_scheduled"
+    FINAL_SYNTHESIS_BUILT = "final_synthesis_built"
     TERMINATED = "terminated"
 
 
@@ -220,6 +222,7 @@ class OrchestrationTerminalResult:
     error_count: int
     ready_for_synthesis: bool
     message: str
+    final_output: FinalDealIntelligenceOutput | None
 
 
 def _merge_attempts(
@@ -279,6 +282,7 @@ class GraphState(TypedDict, total=False):
     trace: Annotated[tuple[GraphTraceEvent, ...], _merge_trace]
     invocation_log: Annotated[tuple[str, ...], _merge_strings]
     terminal_result: OrchestrationTerminalResult
+    final_output: FinalDealIntelligenceOutput | None
     worker_capability_id: str
     worker_attempt: int
     worker_rerun_iteration: int
