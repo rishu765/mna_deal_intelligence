@@ -11,7 +11,7 @@ from ma_deal_intelligence.contracts import HealthStatus, ProjectCapability, Vali
 from ma_deal_intelligence.evidence import EvidenceReference, ProjectId
 from ma_deal_intelligence.identity import DealContext
 from ma_deal_intelligence.outputs import ProjectResultEnvelope
-from ma_deal_intelligence.workflow import DealError, DealWarning, ResultStatus
+from ma_deal_intelligence.workflow import DealError, DealWarning, IssueSeverity, ResultStatus
 
 
 class AdapterRequest(Protocol):
@@ -81,6 +81,8 @@ class BaseAdapter(Generic[RequestT, NativeRequestT, PayloadT]):
         errors.extend(self._validation_errors(request))
         if self.mode is AdapterMode.NATIVE and self._native_executor is None:
             errors.append("native service entry point is unavailable")
+        if not errors and self.mode is AdapterMode.FIXTURE:
+            errors.extend(self._fixture_validation_errors(self.translate_input(request)))
         return ValidationResult(not errors, tuple(errors))
 
     def invoke(self, capability_id: str, request: RequestT) -> ProjectResultEnvelope[PayloadT]:
@@ -93,12 +95,24 @@ class BaseAdapter(Generic[RequestT, NativeRequestT, PayloadT]):
         else:
             assert self._native_executor is not None
             result = self._native_executor(native_request)
+        warnings = result.warnings
+        if self.mode is AdapterMode.FIXTURE:
+            warnings = (
+                DealWarning(
+                    f"warning:{self.project_id.value}:fixture-data",
+                    "FIXTURE_DATA",
+                    IssueSeverity.LOW,
+                    "This specialist result uses deterministic fixture data.",
+                    self.project_id,
+                    affected_capability=capability_id,
+                ),
+            ) + warnings
         generated_at = datetime.now(UTC)
         status = (
             ResultStatus.PARTIAL
             if result.errors
             else ResultStatus.SUCCEEDED_WITH_WARNINGS
-            if result.warnings
+            if warnings
             else ResultStatus.SUCCEEDED
         )
         return ProjectResultEnvelope(
@@ -109,7 +123,7 @@ class BaseAdapter(Generic[RequestT, NativeRequestT, PayloadT]):
             result.payload,
             tuple(item.evidence_id for item in result.evidence),
             (),
-            result.warnings,
+            warnings,
             result.errors,
             generated_at,
             result.data_as_of,
@@ -132,3 +146,6 @@ class BaseAdapter(Generic[RequestT, NativeRequestT, PayloadT]):
 
     def fixture_result(self, request: NativeRequestT) -> NativeProjectResult[PayloadT]:
         raise NotImplementedError
+
+    def _fixture_validation_errors(self, request: NativeRequestT) -> tuple[str, ...]:
+        return ()

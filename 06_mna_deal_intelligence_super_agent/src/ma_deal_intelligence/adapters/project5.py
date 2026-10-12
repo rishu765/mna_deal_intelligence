@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 
 from ma_deal_intelligence.adapters.base import BaseAdapter, NativeProjectResult
 from ma_deal_intelligence.contracts import (
@@ -26,6 +26,7 @@ class Project5NativeRequest:
 
 
 class Project5Adapter(BaseAdapter[DiligenceRequest, Project5NativeRequest, DiligenceOutput]):
+    fixture_document_ids = ("doc:fixture-vdr",)
     project_id = ProjectId.PROJECT_5
     supported_capabilities = (
         ProjectCapability(
@@ -78,5 +79,18 @@ class Project5Adapter(BaseAdapter[DiligenceRequest, Project5NativeRequest, Dilig
             for evidence_id in finding.evidence_refs
         }
         evidence = tuple(item for item in state.evidence if item.evidence_id in evidence_ids)
-        payload = replace(source.payload, target_entity_id=request.target_entity_id)
-        return NativeProjectResult(payload, evidence, source.warnings, data_as_of=source.data_as_of)
+        return NativeProjectResult(
+            source.payload, evidence, source.warnings, data_as_of=source.data_as_of
+        )
+
+    def _fixture_validation_errors(self, request: Project5NativeRequest) -> tuple[str, ...]:
+        state = representative_deal_state()
+        source = state.diligence_results[0].payload
+        errors: list[str] = []
+        if request.target_entity_id != source.target_entity_id:
+            errors.append("fixture target entity does not match the requested target")
+        if request.engagement_id != state.deal_context.engagement_id:
+            errors.append("fixture engagement does not match the requested engagement")
+        if request.vdr_document_ids != self.fixture_document_ids:
+            errors.append("fixture VDR documents do not match the requested documents")
+        return tuple(errors)

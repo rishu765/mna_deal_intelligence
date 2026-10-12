@@ -22,7 +22,8 @@ def test_graph_compiles_and_target_sourcing_invokes_only_project_2() -> None:
         fixture_state(target=False, documents=False),
         thread_id="graph:targets",
     )
-    assert state["status"] is OrchestrationStatus.COMPLETED
+    assert state["status"] is OrchestrationStatus.COMPLETED_WITH_WARNINGS
+    assert any(warning.code == "FIXTURE_DATA" for warning in state["deal_state"].warnings)
     assert state["invocation_log"] == (CapabilityId.P2_SOURCE_TARGETS,)
     assert state["deal_state"].target_screening_results
     assert not state["deal_state"].trading_comps_results
