@@ -175,3 +175,13 @@ validated (2026-10-03)**
 Review and merge the M11 finalization pull request. After merge, Project 1 is complete and the
 next approved portfolio effort is Project 2 — M&A Target Screening & Deal Sourcing Agent.
 
+### 2026-10-13 — Portfolio H1 evidence regression gate
+
+- Added an executable quality gate over the existing deterministic benchmark without changing
+  its dataset, recorded observations, retrieval behavior, prompts, or displayed scores.
+- Added modest minimum floors for abstention and citation metrics and named the existing critical
+  generation/citation failure cases so improvements pass while new cases fail.
+- Added focused regressions proving a metric drop and a new answered-unanswerable case fail the
+  gate. The full Project 1 suite now passes 135 tests.
+- Real-document evaluation and improvement of the known synthetic failures remain H2 work.
+

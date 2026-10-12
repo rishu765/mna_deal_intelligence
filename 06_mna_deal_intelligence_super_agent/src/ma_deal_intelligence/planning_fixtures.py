@@ -12,7 +12,10 @@ from ma_deal_intelligence.requests import RequestMode, UserDealRequest
 from ma_deal_intelligence.state import DealState, SourceDocumentReference
 
 TARGET = CanonicalEntityReference(
-    "entity:targetco", display_name="TargetCo", country="IN", sector="B2B SaaS"
+    "entity:northstar-data",
+    display_name="Northstar Data",
+    country="GB",
+    sector="Data infrastructure",
 )
 
 
@@ -21,12 +24,12 @@ def fixture_state(
 ) -> DealState:
     context = DealContext(
         "deal:fixture",
-        engagement_id="engagement:fixture",
+        engagement_id="engagement:atlas-northstar",
         target_entity_id=TARGET.canonical_entity_id if target else None,
-        sectors=("B2B SaaS",) if target else (),
-        geographies=("India",),
-        reporting_currency="USD",
-        as_of_date=date(2026, 1, 1),
+        sectors=("Data infrastructure",) if target else (),
+        geographies=("United Kingdom",),
+        reporting_currency="GBP",
+        as_of_date=date(2025, 12, 31),
     )
     source_documents = (
         (SourceDocumentReference("doc:fixture-vdr", ProjectId.PROJECT_1, "Fixture VDR"),)
@@ -42,22 +45,30 @@ def fixture_state(
 
 def fixture_requests() -> dict[str, UserDealRequest]:
     return {
-        "company_research": _request("company-research", "Research TargetCo", TARGET),
+        "company_research": _request("company-research", "Research Northstar Data", TARGET),
         "find_targets": _request("find-targets", "Find Indian B2B fintech targets"),
-        "trading_comps": _request("trading-comps", "Value TargetCo using trading comps", TARGET),
+        "trading_comps": _request(
+            "trading-comps", "Value Northstar Data using trading comps", TARGET
+        ),
         "precedents": _request(
-            "precedents", "What have buyers historically paid for companies like TargetCo?", TARGET
+            "precedents",
+            "What have buyers historically paid for companies like Northstar Data?",
+            TARGET,
         ),
         "diligence": _request("diligence", "Review this VDR for red flags", TARGET),
-        "compare": _request("compare", "Compare trading comps and precedents for TargetCo", TARGET),
-        "evaluation": _request("evaluation", "Evaluate the acquisition of TargetCo", TARGET),
+        "compare": _request(
+            "compare", "Compare trading comps and precedents for Northstar Data", TARGET
+        ),
+        "evaluation": _request("evaluation", "Evaluate the acquisition of Northstar Data", TARGET),
         "multi_intent": _request("multi", "Find B2B SaaS targets in India and value the top 3"),
         "missing_target": _request("missing-target", "Value a target using trading comps"),
-        "missing_vdr": _request("missing-vdr", "Run due diligence on TargetCo", TARGET),
+        "missing_vdr": _request("missing-vdr", "Run due diligence on Northstar Data", TARGET),
         "unavailable_specialist": _request(
-            "unavailable", "Compare trading comps and precedents for TargetCo", TARGET
+            "unavailable", "Compare trading comps and precedents for Northstar Data", TARGET
         ),
-        "dependency_cycle": _request("cycle", "Run a full deal analysis for TargetCo", TARGET),
+        "dependency_cycle": _request(
+            "cycle", "Run a full deal analysis for Northstar Data", TARGET
+        ),
     }
 
 

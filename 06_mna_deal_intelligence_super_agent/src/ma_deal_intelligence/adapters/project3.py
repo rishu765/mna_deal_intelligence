@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import date
 
 from ma_deal_intelligence.adapters.base import BaseAdapter, NativeProjectResult
@@ -69,11 +69,31 @@ class Project3Adapter(BaseAdapter[TradingCompsRequest, Project3NativeRequest, Tr
     ) -> NativeProjectResult[TradingCompsOutput]:
         state = representative_deal_state()
         source = state.trading_comps_results[0]
-        payload = replace(source.payload, target_entity_id=request.target_entity_id)
         evidence_ids = {
             evidence_id
             for valuation in source.payload.valuations
             for evidence_id in valuation.evidence_refs
         }
         evidence = tuple(item for item in state.evidence if item.evidence_id in evidence_ids)
-        return NativeProjectResult(payload, evidence, source.warnings, data_as_of=source.data_as_of)
+        return NativeProjectResult(
+            source.payload, evidence, source.warnings, data_as_of=source.data_as_of
+        )
+
+    def _fixture_validation_errors(self, request: Project3NativeRequest) -> tuple[str, ...]:
+        source = representative_deal_state().trading_comps_results[0].payload
+        errors: list[str] = []
+        if request.target_entity_id != source.target_entity_id:
+            errors.append("fixture target entity does not match the requested target")
+        metric_currencies = {
+            item.currency for item in source.financial_metrics if item.currency is not None
+        }
+        valuation_currencies = {
+            item.currency for item in source.valuations if item.currency is not None
+        }
+        currencies = metric_currencies | valuation_currencies
+        if currencies != {request.reporting_currency}:
+            errors.append("fixture currency does not match the requested reporting currency")
+        valuation_dates = {item.as_of_date for item in source.valuations}
+        if valuation_dates != {request.as_of_date}:
+            errors.append("fixture valuation date does not match the requested as-of date")
+        return tuple(errors)

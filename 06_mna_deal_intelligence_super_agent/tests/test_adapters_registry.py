@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from datetime import date
 from typing import Any
 
 import pytest
@@ -62,7 +63,7 @@ def test_all_project_adapters_translate_and_preserve_fixture_provenance() -> Non
         (
             Project5Adapter(),
             CapabilityId.P5_PRODUCE_DILIGENCE_FINDINGS,
-            DiligenceRequest(context, TARGET.canonical_entity_id, ("doc:fixture",)),
+            DiligenceRequest(context, TARGET.canonical_entity_id, ("doc:fixture-vdr",)),
         ),
     )
     for adapter, capability, request in cases:
@@ -73,7 +74,51 @@ def test_all_project_adapters_translate_and_preserve_fixture_provenance() -> Non
         assert envelope.payload is not None
         assert envelope.evidence
         assert envelope.evidence_refs == tuple(item.evidence_id for item in envelope.evidence)
+        assert any(warning.code == "FIXTURE_DATA" for warning in envelope.warnings)
         assert adapter.health_check().healthy
+
+
+def test_project3_fixture_rejects_incompatible_entity_currency_and_date() -> None:
+    state = fixture_state(financials=True)
+    context = replace(
+        state.deal_context,
+        target_entity_id="entity:other",
+        reporting_currency="EUR",
+        as_of_date=date(2020, 1, 1),
+    )
+    request = TradingCompsRequest(context, "entity:other", "profile:fixture")
+    validation = Project3Adapter().validate_input(CapabilityId.P3_PRODUCE_VALUATION_RANGE, request)
+
+    with pytest.raises(AdapterValidationError) as error:
+        Project3Adapter().invoke(CapabilityId.P3_PRODUCE_VALUATION_RANGE, request)
+
+    assert not validation.valid
+    message = str(error.value)
+    assert "target entity" in message
+    assert "reporting currency" in message
+    assert "as-of date" in message
+
+
+def test_project5_fixture_rejects_unrelated_target_engagement_and_documents() -> None:
+    state = fixture_state()
+    context = replace(
+        state.deal_context,
+        engagement_id="engagement:other",
+        target_entity_id="entity:other",
+    )
+    request = DiligenceRequest(context, "entity:other", ("doc:other",))
+    validation = Project5Adapter().validate_input(
+        CapabilityId.P5_PRODUCE_DILIGENCE_FINDINGS, request
+    )
+
+    with pytest.raises(AdapterValidationError) as error:
+        Project5Adapter().invoke(CapabilityId.P5_PRODUCE_DILIGENCE_FINDINGS, request)
+
+    assert not validation.valid
+    message = str(error.value)
+    assert "target entity" in message
+    assert "engagement" in message
+    assert "VDR documents" in message
 
 
 def test_adapter_rejects_bad_input_and_native_mode_without_service() -> None:
@@ -105,7 +150,7 @@ def test_registry_discovery_availability_and_duplicate_rejection() -> None:
 def test_project5_requires_engagement_id() -> None:
     state = fixture_state()
     context = replace(state.deal_context, engagement_id=None)
-    request = DiligenceRequest(context, TARGET.canonical_entity_id, ("doc:fixture",))
+    request = DiligenceRequest(context, TARGET.canonical_entity_id, ("doc:fixture-vdr",))
     assert (
         "engagement ID is required"
         in Project5Adapter()

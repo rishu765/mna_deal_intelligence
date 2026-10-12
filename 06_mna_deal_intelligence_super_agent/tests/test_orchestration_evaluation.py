@@ -17,7 +17,7 @@ def test_evaluation_harness_reports_zero_unnecessary_calls_for_fixture_routes() 
             requests["find_targets"],
             fixture_state(target=False, documents=False),
             (str(CapabilityId.P2_SOURCE_TARGETS),),
-            (OrchestrationStatus.COMPLETED,),
+            (OrchestrationStatus.COMPLETED_WITH_WARNINGS,),
         ),
         GraphEvaluationCase(
             "valuation",
@@ -27,7 +27,7 @@ def test_evaluation_harness_reports_zero_unnecessary_calls_for_fixture_routes() 
                 str(CapabilityId.P3_PRODUCE_VALUATION_RANGE),
                 str(CapabilityId.P4_PRODUCE_VALUATION_RANGE),
             ),
-            (OrchestrationStatus.COMPLETED,),
+            (OrchestrationStatus.COMPLETED_WITH_WARNINGS,),
         ),
     )
     results = tuple(GraphEvaluationHarness().evaluate(case) for case in cases)

@@ -34,6 +34,7 @@
 | Category | **DEFECT** — financial correctness |
 | Severity | **P0** |
 | Status | Verified and reproduced |
+| H1 status | **FIXED** on `fix/portfolio-h1-critical-correctness`; mixed currency/unit histories fail closed and have deterministic regressions. Original H0 evidence retained below. |
 | Observed behavior | `analyze_nwc_trend` and `calculate_nwc_peg` average numeric NWC values without checking currency or unit compatibility. The peg is labeled using the first period's basis. |
 | Expected behavior | Reject incompatible periods or normalize them only with explicit unit and FX inputs, dates, and provenance. Never relabel a mixed-basis result as one input basis. |
 | Reproduction | Construct FY24 NWC `10 GBP million` and FY25 NWC `100 USD thousand`; call both functions. H0 observed `trend_average=55` and `peg=55 GBP million`, with no warnings. |
@@ -55,6 +56,7 @@
 | Category | **DEFECT** — evidence and financial integrity |
 | Severity | **P0** |
 | Status | Verified and reproduced |
+| H1 status | **FIXED** on `fix/portfolio-h1-critical-correctness`; Project 3/5 fixtures are scenario-bound, specialist target IDs are immutable, and incompatible API results are excluded. Original H0 evidence retained below. |
 | Observed behavior | The default Project 3 fixture adapter accepts an unrelated target, requested EUR basis, and earlier as-of date, then returns representative GBP/2025 values without warning. Project 5 similarly replaces its representative fixture target ID with the caller target ID. |
 | Expected behavior | Fixture outputs must remain bound to their declared fixture identity and financial basis, or the request must be rejected. Result metadata must make fixture mode and incompatibilities impossible to miss. |
 | Reproduction | Invoke the default Project 3 adapter for `entity:other`, currency EUR, as-of `2020-01-01`. H0 observed GBP, `2025-12-31`, range `900–1100`, and `warnings=[]`. Inspect the analogous Project 5 target replacement. |
@@ -97,6 +99,7 @@
 | Category | **TEST / EVALUATION GAP** — evidence integrity |
 | Severity | **P1** |
 | Status | Verified benchmark gap; live-provider behavior unconfirmed |
+| H1 status | **PARTIALLY FIXED** on `fix/portfolio-h1-critical-correctness`; executable metric floors and named critical-failure gates were added. Public/live quality improvement remains H2. |
 | Observed behavior | The 14-case synthetic benchmark reports unanswerable no-result rate `0`, citation support precision `0.75`, claim citation coverage `0.7857`, and structured unsupported-claim abstention `0.75`. The fixtures intentionally preserve failures, but no enforced threshold prevents regression or defines acceptable release quality. |
 | Expected behavior | Evidence-critical metrics need explicit thresholds and representative regression cases; unanswerable questions must abstain reliably. |
 | Reproduction | Run the installed `madi-evaluate` entry point with a temporary output directory. |

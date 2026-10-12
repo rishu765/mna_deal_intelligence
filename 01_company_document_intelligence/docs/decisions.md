@@ -440,3 +440,15 @@ choice has meaningful alternatives or downstream effects.
 - **Tradeoff:** Project 2 may initially import or copy a narrow boundary before a deliberate
   shared-package refactor.
 
+## D-038 — Gate evidence regression without hiding known benchmark failures
+
+- **Date:** 2026-10-13
+- **Status:** Accepted
+- **Decision:** Enforce modest minimum floors for deterministic abstention and citation metrics
+  and reject critical failure categories appearing in cases beyond the named M8 failures.
+- **Why:** H0 found that the benchmark accurately exposed evidence failures but could worsen while
+  tests stayed green. The gate makes regression executable without modifying fixtures for a better
+  score or collapsing distinct metrics into a composite.
+- **Tradeoff:** The gate preserves the current floor, including known poor unanswerable behavior;
+  representative public-document evaluation and quality improvement remain H2 work.
+
