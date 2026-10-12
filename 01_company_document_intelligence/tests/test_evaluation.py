@@ -10,7 +10,12 @@ from typing import Any
 
 import pytest
 
-from ma_company_intelligence.evaluation import EvaluationRunner, load_evaluation_dataset
+from ma_company_intelligence.evaluation import (
+    EvaluationRunner,
+    FailureCategory,
+    evaluate_quality_gate,
+    load_evaluation_dataset,
+)
 from ma_company_intelligence.evaluation.errors import (
     EvaluationDatasetError,
     EvaluationJudgeError,
@@ -158,6 +163,44 @@ def test_runner_reports_gold_context_gap_and_no_composite_score(dataset: Any) ->
     assert report.judge_status["enabled"] is False
 
 
+def test_quality_gate_locks_evidence_metrics_and_named_failure_cases(dataset: Any) -> None:
+    report = EvaluationRunner().run(dataset)
+
+    result = evaluate_quality_gate(report)
+
+    assert result.passed
+    assert result.violations == ()
+
+
+def test_quality_gate_rejects_metric_regression_and_new_critical_failure(dataset: Any) -> None:
+    report = EvaluationRunner().run(dataset)
+    aggregate = {
+        key: dict(value) if isinstance(value, dict) else value
+        for key, value in report.aggregate.items()
+    }
+    aggregate["citations"]["support_precision"] = 0.74
+    first = report.cases[0]
+    regressed = replace(
+        report,
+        aggregate=aggregate,
+        cases=(
+            replace(
+                first,
+                failures=first.failures + (FailureCategory.GENERATION_UNEXPECTED_ANSWER,),
+            ),
+            *report.cases[1:],
+        ),
+    )
+
+    result = evaluate_quality_gate(regressed)
+
+    assert not result.passed
+    assert {item.check for item in result.violations} == {
+        "citations.support_precision",
+        "new_failure_cases.generation.answered_unanswerable_question",
+    }
+
+
 def test_structured_metrics_surface_omissions_qualifiers_and_unsafe_population(
     dataset: Any,
 ) -> None:
@@ -253,6 +296,7 @@ def test_cli_completes_deterministically_and_skips_requested_judge_without_key(
 
     assert exit_code == 0
     assert output["judge_status"]["enabled"] is False
+    assert output["quality_gate"] == {"passed": True, "violations": []}
     assert "judge_warning" in output
     assert (tmp_path / "test-baseline.json").is_file()
     assert (tmp_path / "test-baseline.md").is_file()

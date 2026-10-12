@@ -10,6 +10,7 @@ from pathlib import Path
 from ma_company_intelligence.evaluation import (
     EvaluationRunner,
     OpenAIEvaluationJudge,
+    evaluate_quality_gate,
     load_evaluation_dataset,
 )
 from ma_company_intelligence.evaluation.errors import EvaluationError
@@ -45,6 +46,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         judge = OpenAIEvaluationJudge.from_environment() if arguments.llm_judge else None
         dataset = load_evaluation_dataset(arguments.dataset)
         report = EvaluationRunner(top_k_values=top_k, judge=judge).run(dataset)
+        quality_gate = evaluate_quality_gate(report)
         json_path, markdown_path = write_report(
             report,
             arguments.output_dir,
@@ -58,6 +60,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "dataset_version": report.dataset_version,
         "aggregate": report.aggregate,
         "judge_status": report.judge_status,
+        "quality_gate": quality_gate.as_dict(),
         "json_report": str(json_path.resolve()),
         "markdown_report": str(markdown_path.resolve()),
     }
@@ -67,7 +70,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "completed and judge evaluation was skipped."
         )
     print(json.dumps(summary, indent=2, ensure_ascii=False))
-    return 0
+    return 0 if quality_gate.passed else 1
 
 
 if __name__ == "__main__":

@@ -194,6 +194,17 @@ may expose poor scores without failing CI. Only a small, high-confidence subset 
 regression assertions; converting all benchmark scores into test thresholds would make tests
 brittle and encourage overfitting.
 
+### H1 evidence quality gate
+
+The deterministic CLI now fails when evidence-critical metrics fall below deliberately modest
+floors: generation abstention `0.85`, citation validity `0.90`, citation support precision `0.75`,
+claim citation coverage `0.75`, and structured unsupported-section abstention `0.75`. It also
+fails if critical generation or citation failure categories appear in cases beyond the explicitly
+named M8 failures. Improvements to known cases are allowed; new failures are not.
+
+These floors preserve the current benchmark as a regression boundary. They do not relabel the
+known failures as acceptable quality and do not establish real-document readiness.
+
 ## Limitations
 
 - The committed baseline evaluates synthetic recorded observations, not live OpenAI calls or
