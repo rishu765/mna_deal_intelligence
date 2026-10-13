@@ -33,6 +33,9 @@ class AdapterMode(StrEnum):
     NATIVE = "native"
 
 
+SUPPORTED_ENVELOPE_SCHEMA_VERSION = "1.0.0"
+
+
 @dataclass(frozen=True, slots=True)
 class NativeProjectResult(Generic[PayloadT]):
     payload: PayloadT
@@ -40,6 +43,7 @@ class NativeProjectResult(Generic[PayloadT]):
     warnings: tuple[DealWarning, ...] = ()
     errors: tuple[DealError, ...] = ()
     data_as_of: datetime | None = None
+    schema_version: str = SUPPORTED_ENVELOPE_SCHEMA_VERSION
 
 
 class NativeExecutor(Protocol[NativeInputT, PayloadT]):
@@ -95,6 +99,11 @@ class BaseAdapter(Generic[RequestT, NativeRequestT, PayloadT]):
         else:
             assert self._native_executor is not None
             result = self._native_executor(native_request)
+        if result.schema_version != SUPPORTED_ENVELOPE_SCHEMA_VERSION:
+            raise AdapterValidationError(
+                "incompatible specialist result schema: "
+                f"{result.schema_version}; expected {SUPPORTED_ENVELOPE_SCHEMA_VERSION}"
+            )
         warnings = result.warnings
         if self.mode is AdapterMode.FIXTURE:
             warnings = (
@@ -127,7 +136,7 @@ class BaseAdapter(Generic[RequestT, NativeRequestT, PayloadT]):
             result.errors,
             generated_at,
             result.data_as_of,
-            "1.0.0",
+            result.schema_version,
             result.evidence,
         )
 
