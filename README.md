@@ -29,8 +29,10 @@ execution, dependency-aware parallel dispatch, bounded retries, partial-failure 
 interrupt/resume, controlled specialist reruns, state invariants, and an offline graph evaluation
 harness. M6/7 completes validated evidence-backed deal synthesis, bounded deal assessment,
 structured observability, an 18-case final evaluation, local FastAPI, and a three-scenario offline
-demo. Project 6 Version 1.0 is complete; production persistence, authentication, live provider
-composition, and deployment remain future hardening work.
+demo. H2 adds an opt-in native-local composition that executes Projects 1–5 through Project 6
+adapters in a single constrained Python 3.11 environment. Those native paths use deterministic
+offline specialist inputs; live provider composition, production persistence, authentication, and
+deployment remain future work.
 
 Project 2 Version 1.0 contains a typed acquisition thesis, credential-free discovery,
 evidence-backed enrichment, deterministic screening, grounded strategic-fit assessment,
@@ -82,8 +84,10 @@ routing, final subsystem evaluation, offline end-to-end demo, and FastAPI run/re
 ## Development workflow
 
 `main` is the stable branch. Milestones and meaningful features use short-lived branches and
-focused pull requests. Automated checks run for pull requests that affect Project 1 and for
-pushes to `main`. Milestone pull requests should normally use squash merge after review.
+focused pull requests. Each project has a path-scoped CI workflow. The portfolio integration
+workflow installs all six projects together and runs the native-local contract suite when an
+integration-relevant path changes. Milestone pull requests should normally use squash merge after
+review.
 
 Project-specific setup and validation commands live in each project's README.
 
