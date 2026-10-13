@@ -241,3 +241,14 @@ implemented or designed here.
 
 See [the portfolio and interview guide](docs/portfolio-interview-guide.md) for an accurate project
 summary, resume bullets, interview narrative, reusable components, and concepts to know.
+
+## Portfolio quick reference
+
+| Topic | V1 answer |
+| --- | --- |
+| Business problem | Produce auditable trading-comps ranges without mixing financial bases |
+| Inputs / outputs | Target, peer, financial, and market snapshots → peers, multiples, statistics, EV/equity ranges |
+| AI / M&A concepts | Grounded explanation / peer selection, LTM/NTM, multiples, EV-to-equity bridge |
+| Demo / tests / evaluation | `python -m ma_comparable_valuation.demo_valuation`; commands above; eight offline cases |
+| Relationship | Consumes compatible target context and provides specialist valuation outputs to P6 |
+| Limitation | Offline fixtures, no live market feed, implicit FX, DCF, LBO, or merger model |

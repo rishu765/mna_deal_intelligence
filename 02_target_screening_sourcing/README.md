@@ -221,3 +221,14 @@ offline discovery, evidence-backed enrichment, deterministic and semantic screen
 ranking, checkpointed human review, subsystem evaluation, FastAPI interface, and reproducible
 end-to-end demo. It is a portfolio/reference implementation, not a production deal-decision
 system.
+
+## Portfolio quick reference
+
+| Topic | V1 answer |
+| --- | --- |
+| Business problem | Convert an acquisition thesis into an evidence-backed, explainable shortlist |
+| Inputs / outputs | Thesis and candidate evidence → eligibility decisions, scores, ranks, rationale, review state |
+| AI / M&A concepts | Semantic fit, LangGraph, HITL / sourcing, screening criteria, strategic fit |
+| Demo / tests / evaluation | `mats-workflow-demo`; commands above; labeled synthetic ranking benchmark |
+| Relationship | Can provide selected entity context to valuation; callable through the P6 native-local adapter |
+| Limitation | Bundled discovery/enrichment data is synthetic and not comprehensive live sourcing |

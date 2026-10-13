@@ -295,3 +295,24 @@
 - Projects 4 and 5 use deterministic token-hash embeddings in offline paths: fixture/local fallback, not a claim of production embedding quality.
 - APIs do not provide production multi-tenant infrastructure: acceptable for a local portfolio V1 when stated accurately.
 - Two pytest cache warnings in Projects 2 and 3 were caused by temporary-directory permissions; all tests passed and repository behavior was unaffected.
+
+## Final H3 disposition
+
+The original evidence above is retained. These are the terminal portfolio-V1 dispositions:
+
+| Issue | Final status | Closure evidence |
+| --- | --- | --- |
+| H0-001 | **FIXED H1** | NWC currency/unit guards and deterministic regressions |
+| H0-002 | **FIXED H1** | P3/P5 fixture adapters fail closed and disclose fixture mode |
+| H0-003 | **FIXED H2** | Opt-in native-local registry invokes real P1–P5 code through P6 |
+| H0-004 | **FIXED H1** | P1 evidence quality gate runs as a release regression; known failures remain visible |
+| H0-005 | **ACCEPTED V1 LIMITATION** | One primary-source P4 case added; broader public-data validation remains post-V1 |
+| H0-006 | **FIXED H2** | Native contract tests cover identity, finance metadata, evidence, and versions |
+| H0-007 | **FIXED H2** | Constrained Portfolio Integration CI runs native-local contracts |
+| H0-008 | **FIXED H2** | Native scorecard uses run-produced observations; legacy external counts are labeled |
+| H0-009 | **ACCEPTED V1 LIMITATION** | Loopback demos and trusted-process checkpoint boundary are prominent; production auth/state deferred |
+| H0-010 | **FIXED H2** | Tested Python 3.11 constraints and clean integrated install |
+| H0-011 | **FIXED H3** | Root README now describes all project and portfolio workflows truthfully |
+| H0-012 | **FIXED H2** | Denominators, four labeled theses, and representative ranking failures are reported |
+
+No issue was silently removed. Post-V1 work is tracked in `docs/POST_V1_BACKLOG.md`.

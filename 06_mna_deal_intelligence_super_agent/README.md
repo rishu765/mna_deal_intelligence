@@ -366,8 +366,11 @@ Pydantic schemas reject extra fields; unknown runs, invalid reviews, unavailable
 non-resumable runs receive explicit error statuses without stack traces.
 
 ```powershell
-python -m uvicorn ma_deal_intelligence.api:app --reload
+python -m uvicorn ma_deal_intelligence.api:app --host 127.0.0.1 --port 8006
 ```
+
+Keep the V1 service on loopback. It has no authentication or multi-user isolation, and its trusted
+process-local checkpoints must never deserialize externally supplied bytes.
 
 ## Demo
 
@@ -423,3 +426,14 @@ the same environment. The repository-level integration workflow records the test
 
 - [Portfolio summary, resume bullets, and interview story](docs/portfolio-story.md)
 - [Portfolio-wide hardening handoff](docs/hardening-handoff.md)
+
+## Portfolio quick reference
+
+| Topic | V1 answer |
+| --- | --- |
+| Business problem | Coordinate specialist M&A systems while preserving finance and evidence semantics |
+| Inputs / outputs | Analyst request and DealState → plan, versioned specialist results, reviews, reconciliation, synthesis |
+| AI / M&A concepts | Tool routing, LangGraph, fan-out/fan-in, HITL / basis-aware deal reconciliation |
+| Demo / tests / evaluation | `python demo_final.py`; commands above; 18 scenarios plus 5/5 native-local observations |
+| Relationship | Orchestrates Projects 1–5 through fixture or native-local public adapter boundaries |
+| Limitation | No single live unified deal, durable state, authentication, deployment, or autonomous decision authority |
