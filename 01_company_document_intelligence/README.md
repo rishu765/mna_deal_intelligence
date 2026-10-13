@@ -309,3 +309,14 @@ Project 2 will extend these foundations into M&A target screening and deal sourc
 reusable boundaries are documented in the
 [portfolio and interview guide](docs/portfolio-interview-guide.md), but code remains inside
 Project 1 until a second concrete consumer justifies extraction into `shared/`.
+
+## Portfolio quick reference
+
+| Topic | V1 answer |
+| --- | --- |
+| Business problem | Turn company documents into traceable research rather than unsupported summaries |
+| Inputs / outputs | Local PDFs and questions → normalized documents, retrieved evidence, cited answers, structured research |
+| AI / M&A concepts | Embeddings, semantic RAG, structured generation / company and financial-statement research |
+| Demo / tests / evaluation | `madi-create-demo-pdf`; commands above; 14-case synthetic evidence benchmark |
+| Relationship | Supplies document intelligence and evidence concepts to later specialists and P6 adapters |
+| Limitation | No OCR, live company discovery, production auth, or broad real-document accuracy claim |

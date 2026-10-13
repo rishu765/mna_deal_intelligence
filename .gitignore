@@ -7,6 +7,9 @@
 **/.ruff_cache/
 **/.venv/
 **/venv/
+**/.tox/
+**/dist/
+**/build/
 
 # Secrets
 **/.env
@@ -24,6 +27,9 @@
 # Coverage, editors, and operating systems
 **/.coverage
 **/htmlcov/
+**/coverage.xml
+**/*.log
+work/
 .idea/
 .vscode/
 .DS_Store

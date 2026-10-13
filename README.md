@@ -1,93 +1,158 @@
 # AI × M&A Deal Intelligence Portfolio
 
-This monorepo contains a progressive portfolio of six applied AI engineering projects for
-mergers and acquisitions research. Each project builds a focused capability, while later
-projects may reuse stable components proven in earlier work.
+Six connected Python systems model an M&A workflow from source documents and target screening
+through valuation, diligence, and deal-level synthesis. The portfolio emphasizes deterministic
+finance, traceable evidence, explicit human review, and honest offline evaluation.
 
-The portfolio emphasizes document intelligence, retrieval, evaluation, traceable evidence,
-and understandable engineering decisions. It is an educational portfolio and does not provide
-investment advice or autonomous deal decisions.
+This is an educational Version 1 portfolio. It is not investment advice, a production VDR, or an
+autonomous transaction decision system.
 
-## Projects
+## Portfolio architecture
 
-| Project | Planned path | Status |
-| --- | --- | --- |
-| Company Research & Document Intelligence | [`01_company_document_intelligence/`](01_company_document_intelligence/) | Version 1.0 complete |
-| Target Screening & Sourcing | [`02_target_screening_sourcing/`](02_target_screening_sourcing/) | **Version 1.0 complete** |
-| Comparable Companies & Valuation | [`03_comparable_companies_valuation/`](03_comparable_companies_valuation/) | **Version 1.0 complete** |
-| Precedent Transactions | [`04_precedent_transactions/`](04_precedent_transactions/) | **Version 1.0 complete** |
-| AI Due Diligence | [`05_ai_due_diligence/`](05_ai_due_diligence/) | **Version 1.0 complete** |
-| M&A Deal Intelligence Super-Agent | [`06_mna_deal_intelligence_super_agent/`](06_mna_deal_intelligence_super_agent/) | **Version 1.0 complete** |
+| # | System | Business purpose | Implemented boundary |
+| --- | --- | --- | --- |
+| 1 | [Company & Document Intelligence](01_company_document_intelligence/) | Research companies from source documents | PDF ingestion, chunking, semantic retrieval, grounded RAG, citations, structured research |
+| 2 | [Target Screening & Deal Sourcing](02_target_screening_sourcing/) | Turn an acquisition thesis into a ranked shortlist | Discovery, enrichment, deterministic filters, ranking, LangGraph review |
+| 3 | [Comparable Companies & Valuation](03_comparable_companies_valuation/) | Estimate value from public-company trading multiples | Peer selection, normalized metrics, multiples, statistics, EV/equity ranges |
+| 4 | [Precedent Transactions](04_precedent_transactions/) | Estimate value from comparable M&A transactions | Deal retrieval, extraction, verification, selection, multiples, ranges, review |
+| 5 | [AI Due Diligence](05_ai_due_diligence/) | Find and quantify diligence risks in a VDR | VDR retrieval, specialist analysis, QoE, NWC, net debt, findings, HITL report |
+| 6 | [M&A Deal Intelligence Super-Agent](06_mna_deal_intelligence_super_agent/) | Coordinate specialists without copying their logic | Routing, planning, adapters, LangGraph, reconciliation, HITL, synthesis |
 
-Project 6 M0 defines canonical deal state and integration contracts. M1/2 adds concrete Project 1–5
-boundary adapters, capability discovery and availability, offline-first intent classification,
-deterministic dependency planning, versioned result ingestion, failure isolation, and a small
-sequential fixture runner. M3 adds basis-, period-, currency-, and lineage-aware reconciliation,
-valuation and risk views, diligence impact linking, scenario staleness, recomputation requests,
-analyst review prioritization, and a unified structured snapshot. M4/5 adds checkpointed LangGraph
-execution, dependency-aware parallel dispatch, bounded retries, partial-failure survival, analyst
-interrupt/resume, controlled specialist reruns, state invariants, and an offline graph evaluation
-harness. M6/7 completes validated evidence-backed deal synthesis, bounded deal assessment,
-structured observability, an 18-case final evaluation, local FastAPI, and a three-scenario offline
-demo. H2 adds an opt-in native-local composition that executes Projects 1–5 through Project 6
-adapters in a single constrained Python 3.11 environment. Those native paths use deterministic
-offline specialist inputs; live provider composition, production persistence, authentication, and
-deployment remain future work.
+```mermaid
+flowchart LR
+    U[Analyst request] --> P6[Project 6<br/>Deal orchestration]
+    P6 --> P1[Project 1<br/>Documents]
+    P6 --> P2[Project 2<br/>Screening]
+    P6 --> P3[Project 3<br/>Trading comps]
+    P6 --> P4[Project 4<br/>Precedents]
+    P6 --> P5[Project 5<br/>Diligence]
+    P1 -. evidence and research context .-> P3
+    P1 -. document evidence .-> P5
+    P2 -. selected target context .-> P3
+    P3 --> R[Reconciliation]
+    P4 --> R
+    P5 --> R
+    R --> H[Analyst review]
+    H --> S[Grounded synthesis]
+```
 
-Project 2 Version 1.0 contains a typed acquisition thesis, credential-free discovery,
-evidence-backed enrichment, deterministic screening, grounded strategic-fit assessment,
-transparent ranking, checkpointed LangGraph human review, a subsystem benchmark, FastAPI, and an
-offline end-to-end demo.
+Solid arrows are implemented Project 6 orchestration paths. Dotted arrows describe bounded
+handoffs; a value-bearing Project 1-to-Project 3 feed is still a post-V1 item. Native-local mode
+executes real Projects 1–5 code with offline inputs. Fixture mode remains available for fast,
+deterministic demonstrations. No default live-provider composition is included.
 
-Project 3 Version 1.0 defines the public trading-comps workflow, normalizes the target profile,
-selects an auditable peer set, ingests evidence-backed financial and timestamped market data,
-calculates deterministic multiples and valuation ranges, adds grounded explanations, and exposes
-an offline evaluation suite, demo, and FastAPI interface.
+## Why these six projects
 
-Project 5 M0 establishes provider-neutral, evidence-first diligence contracts. M1/2 adds offline
-multi-format VDR ingestion, deterministic document/workstream classification, table- and
-clause-aware chunks, exact duplicate/version handling, semantic plus BM25 hybrid retrieval,
-metadata filters, cross-document evidence grouping, bounded RAG context, and retrieval evaluation.
-M3 adds evidence-linked financial observations, explicit normalization and source priority,
-deterministic QoE adjustment assessment, EBITDA, customer concentration, working-capital and net
-debt bridges, candidate financial findings, and a category-specific offline evaluation.
-M4/5 adds filtered financial, commercial, legal/contractual, and operational analyzers,
-period- and revision-aware claim comparison, retained cross-document conflicts, finding
-consolidation, compound risk linking, information requests, and an offline evaluation/demo.
-M6/7 completes a checkpointed LangGraph workflow, policy-based analyst interruption and resume,
-audited review decisions, deterministic risk prioritization, evidence-linked diligence reporting,
-a 14-scenario final evaluation, offline end-to-end demo, and local FastAPI run/review/report API.
+Projects 1–5 each own a bounded research or finance workflow. Project 6 coordinates their public
+boundaries, checks identity and financial compatibility, retains warnings and evidence, and asks
+for analyst decisions when results conflict. Financial arithmetic stays outside model prompts and
+specialist results are not silently rewritten.
 
-## Portfolio foundations
+## AI concepts covered
 
-[Project 1](01_company_document_intelligence/) establishes a provenance-first document
-intelligence and retrieval-augmented generation foundation for company and M&A research.
-It provides PDF ingestion, provenance-aware chunking, semantic retrieval, grounded answers,
-citations, structured research, component-level evaluation, and a hardened FastAPI interface.
+- PDF and spreadsheet-aware parsing, chunking, embeddings, lexical/semantic hybrid retrieval,
+  grounded RAG, and structured extraction;
+- evidence-linked specialist analysis and bounded narrative generation;
+- typed tools, LangGraph state and routing, checkpointed HITL, failure isolation, and reruns;
+- subsystem evaluation, safe observability, and local FastAPI interfaces.
 
-[Project 3](03_comparable_companies_valuation/) provides an auditable comparable-company
-valuation V1 with strict period/basis semantics, calculation traces, subsystem evaluation, and a
-callable offline API.
+LangChain is used selectively through provider and structured-output integrations; it is not the
+portfolio-wide orchestrator. Offline modes do not require an LLM.
 
-[Project 4](04_precedent_transactions/) begins with provider-neutral, evidence-grounded transaction
-contracts that distinguish deal identity, lifecycle, consideration, ownership, headline/equity/EV
-value bases, point-in-time financials, and disputed source observations. Its M1/2 research layer
-adds reproducible deal discovery, document ingestion, transaction-aware chunking, semantic and BM25
-retrieval, hybrid ranking, provenance, and an offline retrieval benchmark. Structured extraction
-in M3 adds validated evidence-linked observations, deterministic normalization, cross-source
-verification, amendment/conflict retention, and traceable derived values. M4/5 adds auditable
-precedent selection, transaction multiples, peer statistics, implied valuation ranges, and grounded
-explanation while preserving transaction-specific dates, ownership, and value bases.
-M6/7 completes the checkpointed LangGraph workflow, focused analyst review, structured failure
-routing, final subsystem evaluation, offline end-to-end demo, and FastAPI run/review interface.
+## M&A concepts covered
 
-## Development workflow
+- company research, acquisition theses, target screening, and strategic-fit ranking;
+- enterprise versus equity value, LTM/FY/NTM semantics, trading comps, precedents, and ranges;
+- reported versus adjusted EBITDA, QoE, working capital, NWC peg, net debt, debt-like items,
+  concentration, and diligence findings;
+- valuation comparison, specialist reconciliation, evidence review, and deal synthesis.
 
-`main` is the stable branch. Milestones and meaningful features use short-lived branches and
-focused pull requests. Each project has a path-scoped CI workflow. The portfolio integration
-workflow installs all six projects together and runs the native-local contract suite when an
-integration-relevant path changes. Milestone pull requests should normally use squash merge after
-review.
+## Repository structure
 
-Project-specific setup and validation commands live in each project's README.
+```text
+01_company_document_intelligence/       Document research and RAG
+02_target_screening_sourcing/            Target discovery, screening, and ranking
+03_comparable_companies_valuation/       Trading-comps valuation
+04_precedent_transactions/               Precedent-transaction valuation
+05_ai_due_diligence/                     VDR and diligence analysis
+06_mna_deal_intelligence_super_agent/    Portfolio orchestration and synthesis
+constraints/                             Tested portfolio dependency resolution
+docs/                                    Architecture, evaluation, demos, and limitations
+.github/workflows/                       Six project checks plus portfolio integration CI
+```
 
+## Quick start
+
+Python 3.11 is the tested version. Each project can be installed independently from its directory:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+```
+
+For a combined environment, install all six projects with
+[`constraints/portfolio-python311.txt`](constraints/portfolio-python311.txt), following
+[the demo guide](docs/DEMO_GUIDE.md).
+
+## Running tests
+
+From each numbered project directory:
+
+```powershell
+python -m ruff check .
+python -m ruff format --check .
+python -m mypy
+python -m pytest
+```
+
+Six path-scoped workflows run these checks without paid APIs. Portfolio Integration CI installs
+all projects together and runs the eight native-local contract tests.
+
+## Running demos
+
+Every project has a credential-free demonstration. The portfolio-level demonstration is:
+
+```powershell
+cd 06_mna_deal_intelligence_super_agent
+python demo_final.py
+```
+
+It labels fixture-backed execution and shows routing, specialist selection, valuation comparison,
+diligence review, rerun/resume, evidence, synthesis, and evaluation. See
+[DEMO_GUIDE.md](docs/DEMO_GUIDE.md) for all commands and modes.
+
+## Evaluation
+
+Evaluations remain separate by subsystem. They cover retrieval, citation support, ranking,
+financial arithmetic, precedent selection, diligence calculations, orchestration, HITL, and
+native-local contracts. One primary-source IBM/HashiCorp case supplements the synthetic suites.
+There is intentionally no portfolio-wide accuracy percentage.
+
+See [PORTFOLIO_EVALUATION.md](docs/PORTFOLIO_EVALUATION.md) and
+[PORTFOLIO_CAPABILITY_MATRIX.md](docs/PORTFOLIO_CAPABILITY_MATRIX.md).
+
+## Documentation map
+
+- [Architecture](docs/PORTFOLIO_ARCHITECTURE.md)
+- [AI versus deterministic logic](docs/AI_DETERMINISTIC_BOUNDARY.md)
+- [Finance implementation](docs/FINANCE_MODELING_SUMMARY.md)
+- [AI engineering implementation](docs/AI_ENGINEERING_SUMMARY.md)
+- [Demos](docs/DEMO_GUIDE.md)
+- [Evaluation](docs/PORTFOLIO_EVALUATION.md)
+- [Limitations](docs/PORTFOLIO_LIMITATIONS.md)
+- [Project summaries](docs/PORTFOLIO_PROJECT_SUMMARIES.md)
+- [Version 1 status](docs/PORTFOLIO_V1_STATUS.md)
+
+## Limitations
+
+Most evaluations use small synthetic fixtures. Live market-data and licensed transaction
+connectors, production authentication, durable multi-user persistence, complex OCR, enterprise
+VDR controls, comprehensive legal/tax/cyber diligence, and banker-format Excel/PowerPoint output
+are not implemented. See [PORTFOLIO_LIMITATIONS.md](docs/PORTFOLIO_LIMITATIONS.md).
+
+## Portfolio status
+
+**Version 1 implementation and H0–H3 hardening are complete on this branch, pending final
+independent acceptance review.** No verified P0 correctness blocker remains. Native-local
+integration, deterministic CI, explicit limitations, and reproducible demos are included; broader
+production and real-data work belongs to the [post-V1 backlog](docs/POST_V1_BACKLOG.md).

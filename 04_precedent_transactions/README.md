@@ -614,3 +614,14 @@ screening, trading comps, and future diligence outputs. Stable candidates for in
 compact final result, evidence IDs, calculation traces, structured failures, review audit, and
 start/status/review lifecycle. Project 6 should not import Project 4 private nodes or rely on its
 in-memory persistence implementation.
+
+## Portfolio quick reference
+
+| Topic | V1 answer |
+| --- | --- |
+| Business problem | Convert conflicting deal disclosures into defensible precedent ranges |
+| Inputs / outputs | Deal observations/documents and target metrics → verified transactions, multiples, ranges, review audit |
+| AI / M&A concepts | Hybrid retrieval, extraction, LangGraph/HITL / deal basis, control, precedents |
+| Demo / tests / evaluation | `python -m ma_precedent_transactions.demo_final`; commands above; synthetic suite plus one public case |
+| Relationship | Provides precedent valuation envelopes to P6 native-local orchestration |
+| Limitation | Fixture discovery, no licensed deal database, live provider, or comprehensive amendment resolution |
