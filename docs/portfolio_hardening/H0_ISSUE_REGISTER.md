@@ -78,6 +78,7 @@
 | Category | **INTEGRATION GAP** |
 | Severity | **P1** |
 | Status | Verified |
+| H2 status | **FIXED FOR NATIVE LOCAL MODE** on `feat/portfolio-h2-integration-evaluation`; an opt-in Project 6 registry binds and executes public Projects 1–5 services. Live-provider mode remains unavailable and is not claimed. |
 | Observed behavior | `build_default_registry` creates all adapters in `FIXTURE` mode without native executors. `NATIVE` mode calls an injected callable, but no repository composition factory supplies Projects 1–5. The default API uses the default fixture workflow. |
 | Expected behavior | A supported composition entry point should bind selected native/offline specialist capabilities with explicit configuration and preserve adapter envelopes and failure isolation. |
 | Reproduction | Build the default registry/API and inspect adapter modes/executors; run the final demo and observe fixture-backed outputs. |
@@ -121,6 +122,7 @@
 | Category | **TEST / EVALUATION GAP** |
 | Severity | **P2** |
 | Status | Verified |
+| H2 status | **PARTIALLY FIXED**; one primary-source public precedent case is reproducible offline. Public document, screening, trading-comps, and diligence cases remain deferred. |
 | Observed behavior | All six evaluations rely primarily on synthetic, curated, local, or representative fixture data. No small committed/reproducible public-data benchmark spans annual reports, public transaction announcements, and diligence-style exhibits. |
 | Expected behavior | Each externally facing capability should have a small legally usable public-data case with source snapshot/hash, expected assertions, and separated metrics. |
 | Reproduction | Inspect evaluation datasets/reports and run all six evaluation commands. |
@@ -142,6 +144,7 @@
 | Category | **INTEGRATION GAP** |
 | Severity | **P1** |
 | Status | Verified gap |
+| H2 status | **PARTIALLY FIXED**; native P1–P5 output translations now preserve selected entity, metric, basis, period, currency, unit, as-of, and evidence fields and fail closed on incompatible P3 identity/currency/date, P5 document sets, and schema versions. P1 financial-fact-to-P3 input remains unavailable. |
 | Observed behavior | Projects use typed local contracts, while cross-project tests use protocols, fakes, or Project 6 fixtures. No test demonstrates a Project 1 financial observation becoming a Project 3 input, or native Project 3/4/5 outputs reconciling in Project 6 with invariant entity/basis/evidence fields. |
 | Expected behavior | Narrow adapter contracts should validate canonical entity, metric basis, period, currency, units, source reference, and as-of time at every handoff. |
 | Reproduction | Inspect Project 3 adapters and Project 6 registry/tests; run current integration tests and observe substituted data. |
@@ -163,6 +166,7 @@
 | Category | **TEST / EVALUATION GAP** |
 | Severity | **P1** |
 | Status | Verified |
+| H2 status | **FIXED**; `portfolio-integration-ci.yml` installs all six projects in one constrained Python 3.11 environment and runs the native-local contract suite. |
 | Observed behavior | Six path-scoped workflows validate projects independently. No workflow installs the selected integrated set and executes cross-project contract or native handoff checks. |
 | Expected behavior | Once native paths exist, CI should run a bounded portfolio contract suite and fail on incompatible package or schema changes. |
 | Reproduction | Inspect `.github/workflows/p01-ci.yml` through `p06-ci.yml`. |
@@ -184,6 +188,7 @@
 | Category | **TEST / EVALUATION GAP** |
 | Severity | **P2** |
 | Status | Verified |
+| H2 status | **PARTIALLY FIXED**; a separate native-local scorecard reports five run-produced observations. The legacy final synthetic scorecard still contains clearly documented statement-based coverage counts and remains a cleanup candidate. |
 | Observed behavior | Routing/planning cases execute, while several adapter/orchestration/numeric/citation metric counts are constructed from statements that existing tests verify the behavior. The evaluation run itself does not execute every counted behavior. |
 | Expected behavior | Evaluation metrics should derive from observations produced in that evaluation run or be labeled as a test-coverage summary. |
 | Reproduction | Run `FinalEvaluationHarness().evaluate()` and inspect metric construction. |
@@ -226,6 +231,7 @@
 | Category | **SECURITY / CONFIG RISK** |
 | Severity | **P2** |
 | Status | Verified |
+| H2 status | **FIXED FOR PORTFOLIO CI**; `constraints/portfolio-python311.txt` records the known-good integrated resolution used by the portfolio workflow. |
 | Observed behavior | Each project has bounded but broad `pyproject.toml` dependencies. No lock or constraints file captures the tested portfolio resolution. |
 | Expected behavior | A reproducible portfolio/demo environment should pin or constrain a known-good Python 3.11 resolution while preserving maintainable update workflow. |
 | Reproduction | Search dependency manifests and lock files; build a clean environment. |
@@ -268,6 +274,7 @@
 | Category | **TEST / EVALUATION GAP** |
 | Severity | **P2** |
 | Status | Verified |
+| H2 status | **PARTIALLY FIXED**; four synthetic theses now carry top-k labels, three carry pairwise labels, denominators are reported, and ranking failures remain visible. Public candidate labels and complete full-order labels remain unavailable. |
 | Observed behavior | The five-case evaluation has complete downstream labels for only the payments case. Perfect downstream labeled metrics therefore have very small effective sample support. |
 | Expected behavior | Ranking, exclusions, and explanations should be evaluated across several varied, fully labeled acquisition theses and candidate universes. |
 | Reproduction | Run the Project 2 evaluation CLI and inspect its dataset/documentation. |

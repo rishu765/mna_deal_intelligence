@@ -98,9 +98,14 @@ dependencies, execution nature, review needs, offline support, and version.
 
 `Project1Adapter` through `Project5Adapter` implement the common M0 protocol. Each has an explicit
 canonical-to-native request model and a typed native-to-envelope mapper. Fixture mode is the
-default and is deterministic. Native mode accepts a specialist service callable, so later adapter
-composition can bind the actual factories without importing five colliding top-level package names
-at module import time. Health checks verify fixture usability or the presence of that callable.
+default and is deterministic. Native mode accepts a specialist service callable. The optional
+`build_native_local_registry` composition binds all five installed specialist packages lazily and
+executes their public parsing, screening, valuation, precedent, and diligence services. Health
+checks verify fixture usability or the presence of that callable.
+
+Native-local execution is distinct from live-provider execution. It calls specialist-owned code
+with deterministic offline inputs and emits `OFFLINE_SPECIALIST_FIXTURE`; default fixture adapters
+emit `FIXTURE_DATA`. Native results with an unsupported schema version fail closed.
 
 The adapters expose only verified repository capabilities: Project 1 document research and cited
 answers; Project 2 sourcing and screening; Project 3 trading-comps valuation; Project 4 precedent
@@ -389,13 +394,17 @@ python demo_orchestration.py
 python demo_final.py
 ```
 
-All tests and fixtures are offline. The package has no runtime dependency on Projects 1–5.
+All tests and fixtures are offline. The core package has no mandatory runtime dependency on
+Projects 1–5; native-local composition requires all five specialist packages to be installed in
+the same environment. The repository-level integration workflow records the tested versions in
+`constraints/portfolio-python311.txt`.
 
 ## Limitations
 
 - Entity matching is deterministic and bounded; ambiguous identities require analyst review.
-- Native specialist factories must be injected; repository package-name collisions prevent safe
-  eager imports of every project in one interpreter.
+- Native-local specialist execution is opt-in and uses each specialist's bounded offline dataset.
+- The five existing specialist demo datasets describe different entities and currencies. The
+  integration layer rejects incompatible requests and does not present them as one unified deal.
 - Rules cover a bounded English intent vocabulary; ambiguous requests need the optional classifier
   or later clarification flow.
 - The M1/2 runner remains sequential scaffolding; M4/5 uses the checkpointed LangGraph runtime.
@@ -404,7 +413,8 @@ All tests and fixtures are offline. The package has no runtime dependency on Pro
 - Native scenario reruns depend on the specialist adapter accepting the approved scenario input.
 - The included checkpointer is process-local; no production database or distributed worker exists.
 - The local API has no authentication, enterprise authorization, frontend, or deployment setup.
-- Evaluation relies heavily on deterministic synthetic fixtures and limited native integrations.
+- Evaluation remains predominantly synthetic. A run-derived native-local scorecard and one
+  primary-source public precedent snapshot add bounded evidence without implying general accuracy.
 - No real-time market-data guarantee or full legal, tax, cyber, DCF, LBO, or accretion/dilution
   engine exists.
 - Observability is in process and has no production telemetry backend.

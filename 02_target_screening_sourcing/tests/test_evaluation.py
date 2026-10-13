@@ -24,6 +24,7 @@ def test_curated_dataset_contains_five_distinct_valid_theses() -> None:
         "partial-industrial-tech-thesis",
         "india-fintech-exclusion-heavy",
     }
+    assert sum(bool(case.expected_top_domains) for case in dataset.cases) == 4
 
 
 def test_offline_evaluation_reports_separate_subsystem_metrics() -> None:
@@ -47,6 +48,9 @@ def test_offline_evaluation_reports_separate_subsystem_metrics() -> None:
     assert subsystems["screening"]["unknown_handling_agreement"] == 1.0
     assert subsystems["strategic_fit"]["unsupported_known_claim_rate"] == 0.0
     assert subsystems["ranking"]["deterministic_stability"] == 1.0
+    assert subsystems["ranking"]["labeled_case_count"] == 4.0
+    assert subsystems["ranking"]["top_k_label_count"] == 10.0
+    assert subsystems["ranking"]["pair_label_count"] == 6.0
     assert subsystems["workflow"]["final_state_accuracy"] == 1.0
     assert subsystems["workflow"]["scenario_count"] == 9.0
     assert report.limitations

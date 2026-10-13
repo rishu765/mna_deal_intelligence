@@ -128,10 +128,12 @@ separate for thesis, discovery, enrichment, screening, strategic fit, ranking, a
 mats-evaluate
 ```
 
-The October 7, 2026 fixture run reported 1.00 recall and 0.5556 precision for discovery, 1.00
-evidence support, 1.00 labeled screening/strategic-fit agreement, 1.00 pairwise ranking agreement,
-and 1.00 workflow status accuracy across nine routing scenarios. These are fixture results, not a
-claim of general M&A accuracy. See [evaluation.md](docs/evaluation.md).
+The October 13, 2026 fixture run reported 1.00 recall and 0.5556 precision for discovery, 1.00
+evidence support, 1.00 labeled screening/strategic-fit agreement, 0.90 top-k ranking inclusion,
+0.6667 pairwise ranking agreement, and 1.00 workflow status accuracy across nine routing scenarios.
+Ranking uses 10 top-k and six pairwise labels across four theses and retains two ordering failures.
+These are fixture results, not a claim of general M&A accuracy. See
+[evaluation.md](docs/evaluation.md).
 
 ## API
 
