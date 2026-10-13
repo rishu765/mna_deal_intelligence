@@ -1,0 +1,57 @@
+name: Portfolio Integration CI
+
+on:
+  pull_request:
+    paths:
+      - "01_company_document_intelligence/**"
+      - "02_target_screening_sourcing/**"
+      - "03_comparable_companies_valuation/**"
+      - "04_precedent_transactions/**"
+      - "05_ai_due_diligence/**"
+      - "06_mna_deal_intelligence_super_agent/**"
+      - "constraints/portfolio-python311.txt"
+      - ".github/workflows/portfolio-integration-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "01_company_document_intelligence/**"
+      - "02_target_screening_sourcing/**"
+      - "03_comparable_companies_valuation/**"
+      - "04_precedent_transactions/**"
+      - "05_ai_due_diligence/**"
+      - "06_mna_deal_intelligence_super_agent/**"
+      - "constraints/portfolio-python311.txt"
+      - ".github/workflows/portfolio-integration-ci.yml"
+
+jobs:
+  native-local-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            constraints/portfolio-python311.txt
+            01_company_document_intelligence/pyproject.toml
+            02_target_screening_sourcing/pyproject.toml
+            03_comparable_companies_valuation/pyproject.toml
+            04_precedent_transactions/pyproject.toml
+            05_ai_due_diligence/pyproject.toml
+            06_mna_deal_intelligence_super_agent/pyproject.toml
+      - name: Install the six projects in one constrained environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -c constraints/portfolio-python311.txt \
+            -e './01_company_document_intelligence[dev]' \
+            -e './02_target_screening_sourcing[dev]' \
+            -e './03_comparable_companies_valuation[dev]' \
+            -e './04_precedent_transactions[ai,dev]' \
+            -e './05_ai_due_diligence[dev]' \
+            -e './06_mna_deal_intelligence_super_agent[dev]'
+      - name: Verify native-local cross-project contracts
+        run: >-
+          pytest -q
+          06_mna_deal_intelligence_super_agent/tests/test_native_local_integration.py

@@ -1,0 +1,14 @@
+# Known-good Python 3.11 portfolio integration environment, validated during H2.
+fastapi==0.143.0
+httpx==0.28.1
+langchain-core==1.6.9
+langgraph==1.2.14
+mypy==1.20.2
+openai==2.54.0
+openpyxl==3.1.5
+pydantic==2.14.0
+pymupdf==1.28.2
+pytest==8.4.2
+ruff==0.17.0
+typing-extensions==4.16.0
+uvicorn==0.54.0
