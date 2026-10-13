@@ -18,7 +18,8 @@ versioned, small enough to inspect manually, and safe to publish.
 
 Labels cover criterion classification, relevant discovery domains, selected profile fields and
 unknowns, screening outcomes, strategic-fit outcomes, top-k candidates, and pairwise ordering.
-Only the payments case has complete labels across every downstream subsystem.
+Only the payments case has complete labels across every downstream subsystem. Ranking-specific
+top-k labels cover four cases and pairwise labels cover three.
 
 ## Metrics
 
@@ -53,7 +54,7 @@ quality because the fixture benchmark is too small to justify automated judging.
 
 ## Final fixture results
 
-Run on October 7, 2026:
+Run on October 13, 2026:
 
 | Subsystem | Metric | Result |
 | --- | --- | ---: |
@@ -71,8 +72,9 @@ Run on October 7, 2026:
 | Screening | UNKNOWN agreement | 1.0000 |
 | Strategic fit | Labeled outcome agreement | 1.0000 |
 | Strategic fit | Known-assessment grounding | 1.0000 |
-| Ranking | Top-k inclusion | 1.0000 |
-| Ranking | Pairwise ordering agreement | 1.0000 |
+| Ranking | Top-k inclusion | 0.9000 (10 labels) |
+| Ranking | Pairwise ordering agreement | 0.6667 (6 labels) |
+| Ranking | Labeled case count | 4 |
 | Ranking | Deterministic stability | 1.0000 |
 | Workflow | Scenario final-state accuracy | 1.0000 across 9 scenarios |
 
@@ -92,7 +94,9 @@ Weaknesses and representative blind spots:
 - discovery precision is deliberately modest because sourcing prioritizes recall;
 - the six-company corpus cannot represent open-web noise or corporate-family ambiguity;
 - the AI target is discovered but lacks a matching enrichment fixture, correctly producing gaps;
-- only one thesis has complete strategic-fit and ranking labels; and
+- public ranking labels and complete full-order labels remain unavailable;
+- geographic-expansion and exclusion-heavy cases rank LedgerBridge above the independently
+  labeled PayFlow ordering; and
 - no independent M&A professional panel labeled the benchmark.
 
 ## Running the evaluation

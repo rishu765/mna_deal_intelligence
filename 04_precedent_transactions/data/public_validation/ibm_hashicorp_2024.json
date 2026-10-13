@@ -1,0 +1,40 @@
+{
+  "case_id": "public-ibm-hashicorp-2024",
+  "mode": "checked_in_public_snapshot",
+  "acquirer": "International Business Machines Corporation",
+  "target": "HashiCorp, Inc.",
+  "announcement_date": "2024-04-24",
+  "transaction_value": {
+    "value": "6400",
+    "currency": "USD",
+    "unit": "million",
+    "basis": "enterprise_value_net_of_cash"
+  },
+  "target_revenue": {
+    "value": "583.1",
+    "currency": "USD",
+    "unit": "million",
+    "period": "FY2024",
+    "period_end": "2024-01-31",
+    "basis": "reported"
+  },
+  "expected_ev_revenue_multiple": "10.976",
+  "sources": [
+    {
+      "fact": "announcement_date_and_enterprise_value",
+      "publisher": "IBM",
+      "url": "https://newsroom.ibm.com/2024-04-24-IBM-to-Acquire-HashiCorp-Inc-Creating-a-Comprehensive-End-to-End-Hybrid-Cloud-Platform",
+      "accessed_at": "2026-10-13"
+    },
+    {
+      "fact": "fy2024_revenue",
+      "publisher": "U.S. Securities and Exchange Commission",
+      "url": "https://www.sec.gov/Archives/edgar/data/1720671/000162828024012350/hcp-20240131.htm",
+      "accessed_at": "2026-10-13"
+    }
+  ],
+  "limitations": [
+    "One historical transaction does not establish broad real-world accuracy.",
+    "The simple validation uses reported FY2024 revenue and does not calendarize the denominator."
+  ]
+}

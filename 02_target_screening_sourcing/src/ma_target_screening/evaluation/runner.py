@@ -56,8 +56,8 @@ class EvaluationRunner:
             ),
             limitations=(
                 "The benchmark has five synthetic cases and does not establish external validity.",
-                "Only the payments case has complete enrichment, semantic, and ranking "
-                "gold labels.",
+                "Only the payments case has complete enrichment and semantic gold labels; "
+                "ranking top-k labels cover four cases and pairwise labels cover three.",
                 "Discovery metrics measure the bundled six-company fixture rather than "
                 "the open web.",
                 "Strategic-fit labels are human-authored fixtures, not an independent "
@@ -310,10 +310,12 @@ class EvaluationRunner:
         pair_correct = 0
         stable = 0
         stability_cases = 0
+        labeled_cases = 0
         failures: list[str] = []
         for case, artifact in zip(dataset.cases, artifacts, strict=True):
             if not case.expected_top_domains and not case.expected_pairs:
                 continue
+            labeled_cases += 1
             ranked = [_domain(item.result.profile) for item in artifact.shortlist.ranked_candidates]
             top_expected += len(case.expected_top_domains)
             top_present += len(
@@ -338,11 +340,17 @@ class EvaluationRunner:
             "ranking",
             (
                 ("expected_top_k_inclusion", _ratio(top_present, top_expected)),
+                ("top_k_label_count", float(top_expected)),
                 ("pairwise_ordering_accuracy", _ratio(pair_correct, pairs)),
+                ("pair_label_count", float(pairs)),
+                ("labeled_case_count", float(labeled_cases)),
                 ("deterministic_stability", _ratio(stable, stability_cases)),
             ),
             strengths=("Fixed inputs and fixed semantic outputs produce stable ranking.",),
-            weaknesses=("Only one case has defensible full-order labels.",),
+            weaknesses=(
+                "Top-k and pairwise labels cover several synthetic theses; public labels and "
+                "complete full-order labels remain unavailable.",
+            ),
             representative_failures=tuple(failures),
         )
 

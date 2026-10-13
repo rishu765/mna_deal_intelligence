@@ -50,7 +50,7 @@
       "profile_expectations": {},
       "screening_expectations": {},
       "strategic_fit_expectations": {},
-      "expected_top_domains": [],
+      "expected_top_domains": ["datamesh.example"],
       "expected_pairs": []
     },
     {
@@ -62,8 +62,8 @@
       "profile_expectations": {},
       "screening_expectations": {},
       "strategic_fit_expectations": {},
-      "expected_top_domains": [],
-      "expected_pairs": []
+      "expected_top_domains": ["payflow.example", "ledgerbridge.example", "cashgrid.example"],
+      "expected_pairs": [["payflow.example", "ledgerbridge.example"], ["ledgerbridge.example", "cashgrid.example"]]
     },
     {
       "case_id": "incomplete-thesis",
@@ -86,8 +86,8 @@
       "profile_expectations": {},
       "screening_expectations": {"consumercredit.example": {"exclude-consumer-credit": "fail"}},
       "strategic_fit_expectations": {},
-      "expected_top_domains": [],
-      "expected_pairs": []
+      "expected_top_domains": ["payflow.example", "ledgerbridge.example", "cashgrid.example"],
+      "expected_pairs": [["payflow.example", "ledgerbridge.example"], ["ledgerbridge.example", "cashgrid.example"]]
     }
   ]
 }
