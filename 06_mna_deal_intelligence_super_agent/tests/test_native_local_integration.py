@@ -23,6 +23,12 @@ from ma_deal_intelligence.native_local import NativeLocalSettings, build_native_
 from ma_deal_intelligence.outputs import CompanyIntelligenceOutput
 from ma_deal_intelligence.portfolio_evaluation import evaluate_native_local
 
+pytest.importorskip("ma_company_intelligence", reason="portfolio integration dependencies absent")
+pytest.importorskip("ma_target_screening", reason="portfolio integration dependencies absent")
+pytest.importorskip("ma_comparable_valuation", reason="portfolio integration dependencies absent")
+pytest.importorskip("ma_precedent_transactions", reason="portfolio integration dependencies absent")
+pytest.importorskip("ma_due_diligence", reason="portfolio integration dependencies absent")
+
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 PROJECT_2_ROOT = REPOSITORY_ROOT / "02_target_screening_sourcing"
 P5_DOCUMENTS = (
